@@ -1,3 +1,0 @@
-D:\Projects\EpidemicSim\EpidemicSim\EpidemicSim\obj\Debug\EpidemicSim.njsprojAssemblyReference.cache
-D:\Projects\EpidemicSim\EpidemicSim\EpidemicSim\obj\Debug\EpidemicSim.njsproj.CoreCompileInputs.cache
-D:\Projects\EpidemicSim\EpidemicSim\EpidemicSim\bin\Microsoft.NodejsTools.WebRole.dll
