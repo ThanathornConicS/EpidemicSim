@@ -111,54 +111,41 @@
 let mapMarker;
 let placeService;
 
-const latLng = { lat: 13.760908340064168, lng: 100.50323524044852 }
+const latLng = 
+[
+    { lat: 13.760908340064168, lng: 100.50323524044852 },
+    { lat: 13.796141420615395, lng: 100.5179707956749},
+    { lat: 13.773579874674216, lng: 100.51335956111564},
+    { lat: 13.765024187194893, lng: 100.53825408115135},
+];
+const image = "Ahegaopng.png";
 
 var mapOptions = 
 {
-    center: latLng,
+    center: latLng[0],
     // Zoom range: 0-22
     zoom: 12,
     mapId: "5afdd176907dbee8",
     fullscreenControl: false,
+    mapTypeControl: false,
+    streetViewControl: false,
 };
 var placeRequest = 
 {
-    query: 'Resturant',
-    fields: ['name', 'geometry'],
-}
+    location: latLng[0],
+    radius: 1000,
+    type: ["resturant"],
+};
 
 function InitMap()
 {
     map = new google.maps.Map(document.getElementById('map'), mapOptions);
 
-    const image = "Ahegaopng.png";
+    placeService = new google.maps.places.PlacesService(map);
 
-    // placeService = new google.maps.places.PlacesService(map);
+    placeService.nearbySearch(placeRequest, SearchNearbyCallback);
 
-    // placeService.findPlaceFromQuery(placeRequest, (results, status) => {
-    //     if (status === google.maps.places.PlacesServiceStatus.OK && results) {
-    //       for (let i = 0; i < results.length; i++) {
-    //         createMarker(results[i]);
-    //       }
-    //       //map.setCenter(results[0].geometry.location);
-    //     }
-    //   });
-
-    mapMarker = new google.maps.Marker
-    ({
-        map,
-        draggable: true,
-        animation: google.maps.Animation.DROP,
-        position: latLng,
-        title: "AHEGAO",
-        icon: 
-        {
-            url: image,
-            scaledSize: new google.maps.Size(80, 80)
-        },
-    });
-
-    mapMarker.addListener("click", ToggleBounce);
+    map.setCenter(latLng[0]);
 }
 
 function CreateMarker(place)
@@ -191,13 +178,13 @@ function ToggleBounce()
         mapMarker.setAnimation(google.maps.Animation.BOUNCE);
 }
 
-// function MarkFromQuery(result, status)
-// {
-//     if(status === google.maps.places.PlacesServiceStatus.OK && result)
-//     {
-//         for(let i = 0; i < result.length; i++)
-//         {
-//             CreateMarker(result[i]);
-//         }
-//     }
-// }
+function SearchNearbyCallback(results, status)
+{
+    if (status == google.maps.places.PlacesServiceStatus.OK) 
+    {
+        for (var i = 0; i < results.length; i++) 
+        {
+          CreateMarker(results[i]);
+        }
+    }
+}
