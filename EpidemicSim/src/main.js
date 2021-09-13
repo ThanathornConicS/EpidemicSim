@@ -111,6 +111,8 @@
 let mapMarker;
 let placeService;
 
+let disablePlaces = true;
+
 const latLng = 
 [
     { lat: 13.760908340064168, lng: 100.50323524044852 },
@@ -141,9 +143,11 @@ function InitMap()
 {
     map = new google.maps.Map(document.getElementById('map'), mapOptions);
 
-    placeService = new google.maps.places.PlacesService(map);
-
-    placeService.nearbySearch(placeRequest, SearchNearbyCallback);
+    if(disablePlaces === false)
+    {
+        placeService = new google.maps.places.PlacesService(map);
+        placeService.nearbySearch(placeRequest, SearchNearbyCallback);
+    }
 
     map.setCenter(latLng[0]);
 }
