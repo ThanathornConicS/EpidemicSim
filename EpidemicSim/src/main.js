@@ -4,8 +4,6 @@ let placeService;
 
 const units = 100;
 const dests = 10;
-const maxdest = 3;
-const maxTime = 5;
 
 let disablePlaces = true;
 
@@ -47,40 +45,54 @@ function InitMap()
 
     //map.setCenter(latLng[0]);
 
+
+    //test
     console.time("init_time")
 
     let manager = new Manager();
-
-    for(let i = 0; i < dests; i++){
-        manager.m_destList.push(Dest);
-    }
-
-    for(let i = 0; i < units; i++){
-        manager.m_unitList.push(new Unit(Math.floor(Math.random()* maxTime) + 1, Math.floor(Math.random()* maxTime) + 1));
-        manager.m_unitList[i].InitDest(manager.m_destList.length, maxdest);
-    }
+    manager.Init(units, dests);
 
     console.timeEnd("init_time")
 
+    // check manager init
+    document.write("Manager: ");
+    document.write("<br>");
+    document.write("m_unitList: " + manager.m_unitList.length);
+    document.write("<br>");
+    document.write("m_destList: " + manager.m_destList.length);
+    document.write("<br>");
+    document.write("<br>");
 
-    for(let i = 0; i < manager.m_unitList.length; i++){
-        document.write(manager.m_unitList[i].m_dest[0] + " " + manager.m_unitList[i].m_dest[1] + " " + manager.m_unitList[i].m_dest[2]);
-        document.write("<br>");
-        document.write("stay: " + manager.m_unitList[i].m_stayDelay + " trav:  " + manager.m_unitList[i].m_travDelay);
-        document.write("<br>");
-        document.write("<br>");
-    }
+    // // check unit init
+    // document.write("Unit: ");
+    // document.write("<br>");
+    // for(let i = 0; i < manager.m_unitList.length; i++){
+    //     document.write("dest: " + manager.m_unitList[i].m_dest[0] + " " + manager.m_unitList[i].m_dest[1] + " " + manager.m_unitList[i].m_dest[2] + ", ");
+    //     document.write("stay: " + manager.m_unitList[i].m_stayDelay + " trav:  " + manager.m_unitList[i].m_travDelay);
+    //     document.write("<br>");
+    //     document.write("<br>");
+    // }    
 
-    while(true){
+    // check dest init
+
+    for(let i = 0; i < manager.m_destList.length; i++){
+        document.write("Destination: " + i);
+        document.write("<br>");
         
-        for(let i = 0; i < manager.m_unitList.length; i++){
-            manager.m_unitList[i].Update();
+        // sus
+        document.write("sus_list: ");
+        for(let j = 0; j < manager.m_destList[i].m_susList.length; j++){
+            document.write(manager.m_destList[i].m_susList[j] + " ");
         }
-
+        document.write("<br>");
+        // inf
+        document.write("inf_list: ");
+        for(let j = 0; j < manager.m_destList[i].m_infList.length; j++){
+            document.write(manager.m_destList[i].m_infList[j] + " ");
+        }
+        document.write("<br>");
+        document.write("<br>");
     }
-
-    
-    
 }
 
 function CreateMarker(place)
