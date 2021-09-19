@@ -1,5 +1,5 @@
 // control the simulation
-const MAXTIME = 5;
+const MAXTIME = 2;
 const MAXDEST = 3;
 const INF_PER = 0.50; // range 0 to 1
 
@@ -32,6 +32,7 @@ function Manager() {
         this.m_unitList[spawn].m_state = true;   // set infected state
         this.m_destList[dest_num].m_infList.push(spawn);        // move to infList
     }
+    
     this.MoveUnits = function(){
         for(let i = 0; i < this.m_unitList.length; i++){
             if(!this.m_unitList[i].m_onTrav){   // staying
@@ -40,21 +41,21 @@ function Manager() {
                 }else{  // moving out
                     let prevPos = this.m_unitList[i].m_pos;
                     this.m_unitList[i].m_pos = (this.m_unitList[i].m_pos + 1) % this.m_unitList[i].m_destPath.length;  
-                    
-                    if(this.m_unitList[i].m_destPath[prevPos] == this.m_unitList[i].m_destPath[this.m_unitList[i].m_pos]){ //same place
-                        this.m_unitList[i].m_counter = 0; // reset counter
-                    }else{
-                        let unit_pos;
-                        if(this.m_unitList[i].m_state == false){
-                            unit_pos = this.m_destList[this.m_unitList[i].m_destPath[this.m_unitList[i].m_pos]].m_susList.indexOf(i);
-                            this.m_destList[this.m_unitList[i].m_destPath[this.m_unitList[i].m_pos]].m_susList.splice(unit_pos, 1);
+                    if(i == 0){ document.write("prevDest: " + this.m_unitList[i].m_destPath[prevPos] + "--> nextDest: " + this.m_unitList[i].m_destPath[this.m_unitList[i].m_pos] +"<br>");}
+                    if(this.m_unitList[i].m_destPath[prevPos] != this.m_unitList[i].m_destPath[this.m_unitList[i].m_pos]){ // different dest
+                        let unit_pos = 0;
+                        if(!this.m_unitList[i].m_state){
+                            unit_pos = this.m_destList[this.m_unitList[i].m_destPath[prevPos]].m_susList.indexOf(i);
+                            if(i == 0){ document.write("unit_pos: " + unit_pos + "<br>");}
+                            this.m_destList[this.m_unitList[i].m_destPath[prevPos]].m_susList.splice(unit_pos, 1);
                         }else{
-                            unit_pos = this.m_destList[this.m_unitList[i].m_destPath[this.m_unitList[i].m_pos]].m_infList.indexOf(i);
-                            this.m_destList[this.m_unitList[i].m_destPath[this.m_unitList[i].m_pos]].m_infList.splice(unit_pos, 1);
+                            unit_pos = this.m_destList[this.m_unitList[i].m_destPath[prevPos]].m_infList.indexOf(i);
+                            if(i == 0){ document.write("unit_pos: " + unit_pos + "<br>");}
+                            this.m_destList[this.m_unitList[i].m_destPath[prevPos]].m_infList.splice(unit_pos, 1);
                         }
-                        this.m_unitList[i].m_counter = 0; // reset counter
                         this.m_unitList[i].m_onTrav = true   // is on travel
                     }
+                    this.m_unitList[i].m_counter = 1; // reset counter
                 }
             }else{  // traveling
                 if(this.m_unitList[i].m_counter < this.m_unitList[i].m_travDelay){  // keep staying

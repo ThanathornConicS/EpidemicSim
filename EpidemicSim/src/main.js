@@ -54,25 +54,24 @@ function InitMap()
     manager.SpawnSpot(Math.floor(Math.random() * dests));
     console.timeEnd("init_time")
 
-    document.write("----------INIT----------<br>");
-    for(let i = 0; i < manager.m_destList.length; i++){
-        document.write("Destination" + i + ": ");
-        document.write("<br>");
+    // document.write("----------INIT----------<br>");
+    // for(let i = 0; i < manager.m_destList.length; i++){
+    //     document.write("Destination" + i + ": ");
+    //     document.write("<br>");
         
-        // sus
-        document.write("sus_list: ");
-        for(let j = 0; j < manager.m_destList[i].m_susList.length; j++){
-            document.write(manager.m_destList[i].m_susList[j] + " ");
-        }
-        document.write("<br>");
-        // inf
-        document.write("inf_list: ");
-        for(let j = 0; j < manager.m_destList[i].m_infList.length; j++){
-            document.write(manager.m_destList[i].m_infList[j] + " ");
-        }
-        document.write("<br><br>");
-    }
-
+    //     // sus
+    //     document.write("sus_list: ");
+    //     for(let j = 0; j < manager.m_destList[i].m_susList.length; j++){
+    //         document.write(manager.m_destList[i].m_susList[j] + " ");
+    //     }
+    //     document.write("<br>");
+    //     // inf
+    //     document.write("inf_list: ");
+    //     for(let j = 0; j < manager.m_destList[i].m_infList.length; j++){
+    //         document.write(manager.m_destList[i].m_infList[j] + " ");
+    //     }
+    //     document.write("<br><br>");
+    // }
 
     // test Loop
     
@@ -81,39 +80,55 @@ function InitMap()
         manager.MoveUnits();
         manager.UpdateDests();
 
-        document.write("----------LOOP:" + i + "----------<br>");
-        for(let i = 0; i < manager.m_destList.length; i++){
-            document.write("Destination" + i + ": ");
+        document.write("**********LOOP:" + i + "**********<br>");
+        for(let j = 0; j < manager.m_destList.length; j++){
+            document.write("Destination" + j + ": ");
             document.write("<br>");
             
             // sus
             document.write("sus_list: ");
-            for(let j = 0; j < manager.m_destList[i].m_susList.length; j++){
-                document.write(manager.m_destList[i].m_susList[j] + " ");
+            for(let k = 0; k < manager.m_destList[j].m_susList.length; k++){
+                document.write(manager.m_destList[j].m_susList[k] + " ");
             }
             document.write("<br>");
             // inf
             document.write("inf_list: ");
-            for(let j = 0; j < manager.m_destList[i].m_infList.length; j++){
-                document.write(manager.m_destList[i].m_infList[j] + " ");
+            for(let k = 0; k < manager.m_destList[j].m_infList.length; k++){
+                document.write(manager.m_destList[j].m_infList[k] + " ");
             }
             document.write("<br>");
             document.write("<br>");
         }
-        document.write("---Sample0: properties---<br>");
-        document.write("-->m_destPath:");
-        for(let j = 0; j < manager.m_unitList[0].m_destPath.length; j++){
-            document.write(" " + manager.m_unitList[0].m_destPath[j]);
-        }document.write("<br>");
-        document.write("-->m_stayDelay: " + manager.m_unitList[0].m_stayDelay + "<br>");
-        document.write("-->m_travDelay: " + manager.m_unitList[0].m_travDelay + "<br>");
-        
-        document.write("-->m_state: " + manager.m_unitList[0].m_state + "<br>");
-        document.write("-->m_onTrav: " + manager.m_unitList[0].m_onTrav + "<br>");
-        document.write("-->m_pos: " + manager.m_unitList[0].m_pos + "<br>");
-        document.write("-->m_counter: " + manager.m_unitList[0].m_counter + "<br>");
 
-        document.write("<br><br>");
+        document.write("Traveling: <br>");
+        document.write("sus_list: ");
+        for(let j = 0; j < manager.m_unitList.length; j++){
+            if(manager.m_unitList[j].m_onTrav && !manager.m_unitList[j].m_state){document.write(j + " ");}
+        }
+        document.write("<br>");
+        document.write("inf_list: ");
+        for(let j = 0; j < manager.m_unitList.length; j++){
+            if(manager.m_unitList[j].m_onTrav && manager.m_unitList[j].m_state){document.write(j + " ");}
+        }
+        document.write("<br>");
+        document.write("<br>");
+        
+        for(let j = 0; j < manager.m_unitList.length; j++){
+            document.write("---Sample" + j + ": properties---<br>");
+            document.write("-->m_destPath:");
+            for(let k = 0; k < manager.m_unitList[j].m_destPath.length; k++){
+                document.write(" " + manager.m_unitList[j].m_destPath[k]);
+            }document.write("<br>");
+            document.write("-->m_stayDelay: " + manager.m_unitList[j].m_stayDelay + "<br>");
+            document.write("-->m_travDelay: " + manager.m_unitList[j].m_travDelay + "<br>");
+            
+            document.write("-->m_state: " + manager.m_unitList[j].m_state + "<br>");
+            document.write("-->m_onTrav: " + manager.m_unitList[j].m_onTrav + "<br>");
+            document.write("-->m_pos: " + manager.m_unitList[j].m_pos + "<br>");
+            document.write("-->m_counter: " + manager.m_unitList[j].m_counter + "<br>");
+
+            document.write("<br><br>");
+        }
     }
     console.timeEnd("loop_time")
 
