@@ -113,22 +113,22 @@ function InitMap()
         document.write("<br>");
         document.write("<br>");
         
-        for(let j = 0; j < manager.m_unitList.length; j++){
-            document.write("---Sample" + j + ": properties---<br>");
-            document.write("-->m_destPath:");
-            for(let k = 0; k < manager.m_unitList[j].m_destPath.length; k++){
-                document.write(" " + manager.m_unitList[j].m_destPath[k]);
-            }document.write("<br>");
-            document.write("-->m_stayDelay: " + manager.m_unitList[j].m_stayDelay + "<br>");
-            document.write("-->m_travDelay: " + manager.m_unitList[j].m_travDelay + "<br>");
+        // for(let j = 0; j < manager.m_unitList.length; j++){
+        //     document.write("---Sample" + j + ": properties---<br>");
+        //     document.write("-->m_destPath:");
+        //     for(let k = 0; k < manager.m_unitList[j].m_destPath.length; k++){
+        //         document.write(" " + manager.m_unitList[j].m_destPath[k]);
+        //     }document.write("<br>");
+        //     document.write("-->m_stayDelay: " + manager.m_unitList[j].m_stayDelay + "<br>");
+        //     document.write("-->m_travDelay: " + manager.m_unitList[j].m_travDelay + "<br>");
             
-            document.write("-->m_state: " + manager.m_unitList[j].m_state + "<br>");
-            document.write("-->m_onTrav: " + manager.m_unitList[j].m_onTrav + "<br>");
-            document.write("-->m_pos: " + manager.m_unitList[j].m_pos + "<br>");
-            document.write("-->m_counter: " + manager.m_unitList[j].m_counter + "<br>");
+        //     document.write("-->m_state: " + manager.m_unitList[j].m_state + "<br>");
+        //     document.write("-->m_onTrav: " + manager.m_unitList[j].m_onTrav + "<br>");
+        //     document.write("-->m_pos: " + manager.m_unitList[j].m_pos + "<br>");
+        //     document.write("-->m_counter: " + manager.m_unitList[j].m_counter + "<br>");
 
-            document.write("<br><br>");
-        }
+        //     document.write("<br><br>");
+        // }
     }
     console.timeEnd("loop_time")
 

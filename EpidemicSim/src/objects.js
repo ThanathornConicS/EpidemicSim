@@ -30,7 +30,7 @@ function Manager() {
         let spawn = this.m_destList[dest_num].m_susList.splice(Math.floor(Math.random() * this.m_destList[dest_num].m_susList.length), 1);
         //let spawn = this.m_destList[dest_num].m_susList.pop();   // last unit of the selected dest
         this.m_unitList[spawn].m_state = true;   // set infected state
-        this.m_destList[dest_num].m_infList.push(spawn);        // move to infList
+        this.m_destList[dest_num].m_infList.push(parseInt(spawn,10));        // move to infList
     }
     
     this.MoveUnits = function(){
@@ -40,18 +40,22 @@ function Manager() {
                     this.m_unitList[i].m_counter++; // update                        
                 }else{  // moving out
                     let prevPos = this.m_unitList[i].m_pos;
-                    this.m_unitList[i].m_pos = (this.m_unitList[i].m_pos + 1) % this.m_unitList[i].m_destPath.length;  
-                    if(i == 0){ document.write("prevDest: " + this.m_unitList[i].m_destPath[prevPos] + "--> nextDest: " + this.m_unitList[i].m_destPath[this.m_unitList[i].m_pos] +"<br>");}
-                    if(this.m_unitList[i].m_destPath[prevPos] != this.m_unitList[i].m_destPath[this.m_unitList[i].m_pos]){ // different dest
-                        let unit_pos = 0;
+                    this.m_unitList[i].m_pos = (this.m_unitList[i].m_pos + 1) % this.m_unitList[i].m_destPath.length;
+                    if(this.m_unitList[i].m_destPath[prevPos] !== this.m_unitList[i].m_destPath[this.m_unitList[i].m_pos]){ // different dest
                         if(!this.m_unitList[i].m_state){
-                            unit_pos = this.m_destList[this.m_unitList[i].m_destPath[prevPos]].m_susList.indexOf(i);
-                            if(i == 0){ document.write("unit_pos: " + unit_pos + "<br>");}
-                            this.m_destList[this.m_unitList[i].m_destPath[prevPos]].m_susList.splice(unit_pos, 1);
+                            let unit_pos = this.m_destList[this.m_unitList[i].m_destPath[prevPos]].m_susList.indexOf(i);
+                            let removed = this.m_destList[this.m_unitList[i].m_destPath[prevPos]].m_susList.splice(unit_pos, 1);
+                            // document.write("m_pos: " + prevPos + "-->" + this.m_unitList[i].m_pos + "<br>");
+                            // document.write("inf_unit: " + i + ", unit_pos: " + unit_pos + ", fromDest: " + this.m_unitList[i].m_destPath[prevPos] + ", removed: " + removed + "<br>");
                         }else{
-                            unit_pos = this.m_destList[this.m_unitList[i].m_destPath[prevPos]].m_infList.indexOf(i);
-                            if(i == 0){ document.write("unit_pos: " + unit_pos + "<br>");}
-                            this.m_destList[this.m_unitList[i].m_destPath[prevPos]].m_infList.splice(unit_pos, 1);
+                            // document.write("m_infList:")
+                            // for(j = 0; j < this.m_destList[this.m_unitList[i].m_destPath[prevPos]].m_infList.length; j++){
+                            //     document.write(" " +  this.m_destList[this.m_unitList[i].m_destPath[prevPos]].m_infList[j]);
+                            // }document.write("<br>");
+                            let unit_pos = this.m_destList[this.m_unitList[i].m_destPath[prevPos]].m_infList.indexOf(parseInt(i,10));
+                            let removed /* for checking */ = this.m_destList[this.m_unitList[i].m_destPath[prevPos]].m_infList.splice(unit_pos, 1);
+                            document.write("m_pos: " + prevPos + "-->" + this.m_unitList[i].m_pos + "<br>");
+                            document.write("inf_unit: " + i + ", unit_pos: " + unit_pos + ", fromDest: " + this.m_unitList[i].m_destPath[prevPos] + ", removed: " + removed + "<br>");
                         }
                         this.m_unitList[i].m_onTrav = true   // is on travel
                     }
@@ -64,7 +68,7 @@ function Manager() {
                     if(this.m_unitList[i].m_state == false){
                         this.m_destList[this.m_unitList[i].m_destPath[this.m_unitList[i].m_pos]].m_susList.push(i); 
                     }else{
-                        this.m_destList[this.m_unitList[i].m_destPath[this.m_unitList[i].m_pos]].m_infList.push(i); 
+                        this.m_destList[this.m_unitList[i].m_destPath[this.m_unitList[i].m_pos]].m_infList.push(parseInt(i)); 
                     }
                     // this.m_destList[this.m_unitList[i].m_destPath[pos]].push(i);    // add to dest
                     this.m_unitList[i].m_counter = 0;   // reset counter
@@ -80,7 +84,7 @@ function Manager() {
                 for(let j = 0; j < this.m_destList[i].m_susList.length; j++){
                     if(Math.random() >= INF_PER){
                         this.m_unitList[this.m_destList[i].m_susList[j]].m_state = true;
-                        let newInf = this.m_destList[i].m_susList.splice(j, 1);
+                        let newInf = parseInt(this.m_destList[i].m_susList.splice(j, 1), 10);
                         this.m_destList[i].m_infList.push(newInf);
                         
                     }
