@@ -4,7 +4,7 @@ let placeService;
 
 const units = 10;
 const dests = 3;
-const LOOP = 100; // second
+const LOOP = 10; // second
 
 let disablePlaces = true;
 
@@ -87,14 +87,14 @@ function InitMap()
             
             // sus
             document.write("sus_list: ");
-            for(let k = 0; k < manager.m_destList[j].m_susList.length; k++){
-                document.write(manager.m_destList[j].m_susList[k] + " ");
+            for(let [key, value] of manager.m_destList[j].m_susList){
+                document.write(manager.m_destList[j].m_susList.get(value) + " ");
             }
             document.write("<br>");
             // inf
             document.write("inf_list: ");
-            for(let k = 0; k < manager.m_destList[j].m_infList.length; k++){
-                document.write(manager.m_destList[j].m_infList[k] + " ");
+            for(let [key, value] of manager.m_destList[j].m_infList){
+                document.write(manager.m_destList[j].m_infList.get(value) + " ");
             }
             document.write("<br>");
             document.write("<br>");
