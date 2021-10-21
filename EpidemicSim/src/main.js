@@ -1,5 +1,3 @@
-import {GoogleMapsOverlay as DeckOverlay} from '@deck.gl/google-maps';
-
 // source: Natural Earth http://www.naturalearthdata.com/ via geojson.xyz
 const AIR_PORTS =
   'https://d2ad6b4ur7yvpq.cloudfront.net/naturalearth-3.3.0/ne_10m_airports.geojson';
@@ -29,7 +27,7 @@ loadScript(GOOGLE_MAPS_API_URL).then(() =>
   });
 
   // Create overlay instance
-  const overlay = new DeckOverlay
+  const overlay = new GoogleMapsOverlay
   ({
       layers: []
   });
