@@ -3,6 +3,23 @@ const MAXTIME = 2;
 const MAXDEST = 3;
 const INF_PER = 0.50; // range 0 to 1
 
+function Vec2(x, y){
+    this.x = x;
+    this.y = y;
+
+    this.Add = function(vec){
+        return Vec2(this.x + vec.x, this.y + vec.y);
+    }
+
+    this.Sub = function(vec){
+        return Vec2(this.x - vec.x, this.y - vec.y);
+    }
+
+    this.Div = function(vec){
+        return Vec2((float)(this.x / vec.x), (float)(this.y / vec.y));
+    }
+}
+
 function Manager() {
     this.m_unitList = [],
     this.m_destList = [],
@@ -188,6 +205,10 @@ function Manager() {
             }
         }
     }
+
+    this.UpdateLocation = function(){
+
+    }
 }
 
 function Unit(arg_stay, arg_trav) {
@@ -200,6 +221,8 @@ function Unit(arg_stay, arg_trav) {
     this.m_stayDelay = arg_stay,
     this.m_travDelay = arg_trav,
     this.m_counter = 0
+
+    this.m_position = new Vec2(0,0);    // for visualization
 }
 
 function Dest(){
@@ -211,21 +234,23 @@ function Dest(){
     // using map for optimization
     this.m_susList = new Map();
     this.m_infList = new Map();
+
+    this.m_position = new Vec2(0,0);    // for visualization
 }
 
 // test class 2
 // separate sus and inf 
 
-var Sus = {     // susceptible
-    m_dest: [],     // array of destination that unit will take
+// var Sus = {     // susceptible
+//     m_dest: [],     // array of destination that unit will take
 
-    m_stayDelay: 0,     // time spent in one location
-    m_travDelay: 0     // time spent travel from one place to another
-}
+//     m_stayDelay: 0,     // time spent in one location
+//     m_travDelay: 0     // time spent travel from one place to another
+// }
 
-var Inf = {     // infected
-    m_dest: [],     // array of destination that unit will take
+// var Inf = {     // infected
+//     m_dest: [],     // array of destination that unit will take
 
-    m_stayDelay: 0,     // time spent in one location
-    m_travDelay: 0      // time spent travel from one place to another
-}
+//     m_stayDelay: 0,     // time spent in one location
+//     m_travDelay: 0      // time spent travel from one place to another
+// }

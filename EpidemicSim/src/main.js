@@ -4,7 +4,8 @@ let placeService;
 
 const units = 10;
 const dests = 3;
-const LOOP = 10; // second
+const loop = 10; 
+const timeStep = 1000 // msec
 
 let disablePlaces = true;
 
@@ -54,31 +55,17 @@ function InitMap()
     manager.SpawnSpot(Math.floor(Math.random() * dests));
     console.timeEnd("init_time")
 
-    // document.write("----------INIT----------<br>");
-    // for(let i = 0; i < manager.m_destList.length; i++){
-    //     document.write("Destination" + i + ": ");
-    //     document.write("<br>");
-        
-    //     // sus
-    //     document.write("sus_list: ");
-    //     for(let j = 0; j < manager.m_destList[i].m_susList.length; j++){
-    //         document.write(manager.m_destList[i].m_susList[j] + " ");
-    //     }
-    //     document.write("<br>");
-    //     // inf
-    //     document.write("inf_list: ");
-    //     for(let j = 0; j < manager.m_destList[i].m_infList.length; j++){
-    //         document.write(manager.m_destList[i].m_infList[j] + " ");
-    //     }
-    //     document.write("<br><br>");
-    // }
+    let i = 0;
 
     // test Loop
-    
-    console.time("loop_time")
-    for(let i = 0; i < LOOP; i++){
+
+    var mainLoop = window.setInterval(function(){
+        /// call your function here
+        console.time("loop_time")
         manager.MoveUnits();
         manager.UpdateDests();
+
+        // checking
 
         document.write("**********LOOP:" + i + "**********<br>");
         for(let j = 0; j < manager.m_destList.length; j++){
@@ -112,65 +99,12 @@ function InitMap()
         }
         document.write("<br>");
         document.write("<br>");
+        if(i >= loop){ clearInterval(mainLoop); }
+        else{ i++; /*iterate*/ }
         
-        // for(let j = 0; j < manager.m_unitList.length; j++){
-        //     document.write("---Sample" + j + ": properties---<br>");
-        //     document.write("-->m_destPath:");
-        //     for(let k = 0; k < manager.m_unitList[j].m_destPath.length; k++){
-        //         document.write(" " + manager.m_unitList[j].m_destPath[k]);
-        //     }document.write("<br>");
-        //     document.write("-->m_stayDelay: " + manager.m_unitList[j].m_stayDelay + "<br>");
-        //     document.write("-->m_travDelay: " + manager.m_unitList[j].m_travDelay + "<br>");
-            
-        //     document.write("-->m_state: " + manager.m_unitList[j].m_state + "<br>");
-        //     document.write("-->m_onTrav: " + manager.m_unitList[j].m_onTrav + "<br>");
-        //     document.write("-->m_pos: " + manager.m_unitList[j].m_pos + "<br>");
-        //     document.write("-->m_counter: " + manager.m_unitList[j].m_counter + "<br>");
-
-        //     document.write("<br><br>");
-        // }
-    }
-    console.timeEnd("loop_time")
-
-    // // check manager init
-    // document.write("Manager: ");
-    // document.write("<br>");
-    // document.write("m_unitList: " + manager.m_unitList.length);
-    // document.write("<br>");
-    // document.write("m_destList: " + manager.m_destList.length);
-    // document.write("<br>");
-    // document.write("<br>");
-
-    // // check unit init
-    // document.write("Unit: ");
-    // document.write("<br>");
-    // for(let i = 0; i < manager.m_unitList.length; i++){
-    //     document.write("dest: " + manager.m_unitList[i].m_dest[0] + " " + manager.m_unitList[i].m_dest[1] + " " + manager.m_unitList[i].m_dest[2] + ", ");
-    //     document.write("stay: " + manager.m_unitList[i].m_stayDelay + " trav:  " + manager.m_unitList[i].m_travDelay);
-    //     document.write("<br>");
-    //     document.write("<br>");
-    // }    
-
-    // check dest init
-
-    // for(let i = 0; i < manager.m_destList.length; i++){
-    //     document.write("Destination" + i + ": ");
-    //     document.write("<br>");
-        
-    //     // sus
-    //     document.write("sus_list: ");
-    //     for(let j = 0; j < manager.m_destList[i].m_susList.length; j++){
-    //         document.write(manager.m_destList[i].m_susList[j] + " ");
-    //     }
-    //     document.write("<br>");
-    //     // inf
-    //     document.write("inf_list: ");
-    //     for(let j = 0; j < manager.m_destList[i].m_infList.length; j++){
-    //         document.write(manager.m_destList[i].m_infList[j] + " ");
-    //     }
-    //     document.write("<br>");
-    //     document.write("<br>");
-    // }
+        console.timeEnd("loop_time")
+      }, timeStep);
+    
 }
 
 function CreateMarker(place)
