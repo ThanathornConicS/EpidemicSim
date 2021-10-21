@@ -1,68 +1,39 @@
-var ctx = document.getElementById('myChart').getContext('2d');
+import {GoogleMapsOverlay as DeckOverlay} from '@deck.gl/google-maps';
 
-var x;
+// source: Natural Earth http://www.naturalearthdata.com/ via geojson.xyz
+const AIR_PORTS =
+  'https://d2ad6b4ur7yvpq.cloudfront.net/naturalearth-3.3.0/ne_10m_airports.geojson';
 
-function SetInt()
-{
-    x = document.getElementById("xVal").value;
-    x = parseInt(x);
+// Set your Google Maps API key here or via environment variable
+const GOOGLE_MAPS_API_KEY = "AIzaSyDEQPWQuG15KfetsMZM2jPzrwJyz0vAdAc"; // eslint-disable-line
+const GOOGLE_MAP_ID = "5afdd176907dbee8"; // eslint-disable-line
+const GOOGLE_MAPS_API_URL = "https://maps.googleapis.com/maps/api/js?key=AIzaSyDEQPWQuG15KfetsMZM2jPzrwJyz0vAdAc&map_ids=5afdd176907dbee8&v=beta";
+
+function loadScript(url) {
+  const script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src = url;
+  const head = document.querySelector('head');
+  head.appendChild(script);
+  return new Promise(resolve => {
+    script.onload = resolve;
+  });
 }
 
-function Entry()
+loadScript(GOOGLE_MAPS_API_URL).then(() => 
 {
-    var arr = [ 12, 15, 5, 6, 9, x];
-    var delayed;
+  const map = new google.maps.Map(document.getElementById('map'), {
+    center: {lat: 51.47, lng: 0.45},
+    zoom: 5,
+    mapId: GOOGLE_MAP_ID
+  });
 
-    var myChart = new Chart(ctx, {
-        type: 'bar',
-        data: {
-            labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
-            datasets: [{
-                label: '# of Votes',
-                data: arr,
-                backgroundColor: [
-                    'rgba(255, 99, 132, 0.8)',
-                    'rgba(54, 162, 235, 0.8)',
-                    'rgba(255, 206, 86, 0.8)',
-                    'rgba(75, 192, 192, 0.8)',
-                    'rgba(153, 102, 255, 0.8)', 
-                    'rgba(255, 159, 64, 0.8)'
-                ],
-                borderColor: [
-                    'rgba(255, 99, 132, 1)',
-                    'rgba(54, 162, 235, 1)',
-                    'rgba(255, 206, 86, 1)',
-                    'rgba(75, 192, 192, 1)',
-                    'rgba(153, 102, 255, 1)',
-                    'rgba(255, 159, 64, 1)'
-                ],
-                borderWidth: 1
-            }]
-        },
-        options: 
-        {
-            animation: 
-            {
-                onComplete: () => {
-                    delayed = true;
-                },
-                delay: (context) => {
-                    let delay = 0;
-                    if (context.type === 'data' && context.mode === 'default' && !delayed) {
-                    delay = context.dataIndex * 300 + context.datasetIndex * 100;
-                    }
-                    return delay;
-                },
-            },
-            scales: 
-            {
-                x: {
-                  stacked: true,
-                },
-                y: {
-                  stacked: true
-                }
-            }
-        }
-    });
-}
+  // Create overlay instance
+  const overlay = new DeckOverlay
+  ({
+      layers: []
+  });
+
+  // Add overlay to map
+  overlay.setMap(map);
+});

@@ -7,22 +7,20 @@
         <title>General JS test</title>
         <link rel="stylesheet" href="style.css">
         <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+
+        <script src="https://unpkg.com/@deck.gl/core@^7.0.0/dist.min.js"></script>
+        <script src="https://unpkg.com/@deck.gl/google-maps@^7.0.0/dist.min.js"></script>
+        <!-- usage -->
+        <script type="text/javascript">
+            const {GoogleMapsOverlay} = deck;
+        </script>
     </head>
 <!--=======================================================================================================-->
     <body>
         <h1> TEST!!!!!!! </h1>
 
-        <form>
-            xVal: <input type="number" id="xVal" name="xVal"><br>
-            <input type="button" value="Set Integer" id="setint" onclick="SetInt()">
-        </form>
-
-        <canvas id="myChart" style="width:100%;max-width:700px"></canvas>
+        <div id="map"></div>
         <script src="main.js"></script>
-
-        <form>
-            <input type="button" value="Run" id="run" onclick="Entry()">
-        </form>
 
     </body>
 </html>
