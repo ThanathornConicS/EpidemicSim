@@ -24,6 +24,12 @@ function Vec2(x, y){
     }
 }
 
+function lerp (start, end, amt){
+    return (1-amt)*start+amt*end
+}
+
+// class
+
 function Manager() {
     this.m_unitList = [],
     this.m_destList = [],
@@ -222,8 +228,8 @@ function Manager() {
     this.UpdateLocation = function(renderStep){
         for(let i = 0; i < this.m_unitList.length; i++){
             if(this.m_unitList[i].m_onTrav){
-                // this.m_unitList[i].m_position.x = lerp (this.m_unitList[i].m_position.x, this.m_destList[this.m_unitList[i].GetDest()].m_position.x , (float)(renderStep * 0.001));
-                // this.m_unitList[i].m_position.y = lerp (this.m_unitList[i].m_position.y, this.m_destList[this.m_unitList[i].GetDest()].m_position.y , (float)(renderStep * 0.001));
+                this.m_unitList[i].m_position.x = lerp (this.m_unitList[i].m_position.x, this.m_destList[this.m_unitList[i].GetDest()].m_position.x , renderStep * 0.001);
+                this.m_unitList[i].m_position.y = lerp (this.m_unitList[i].m_position.y, this.m_destList[this.m_unitList[i].GetDest()].m_position.y , renderStep * 0.001);
             }
         }
     }
