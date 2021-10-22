@@ -6,6 +6,7 @@ const units = 10;
 const dests = 3;
 const loop = 10; 
 const timeStep = 1000 // msec
+const renderStep = 100 // msec
 
 let disablePlaces = true;
 
@@ -53,12 +54,13 @@ function InitMap()
     let manager = new Manager();
     manager.Init(units, dests);
     manager.SpawnSpot(Math.floor(Math.random() * dests));
+
+    manager.InitLocation()
     console.timeEnd("init_time")
 
     let i = 0;
 
-    // test Loop
-
+    // Logic Loop
     var mainLoop = window.setInterval(function(){
         /// call your function here
         console.time("loop_time")
@@ -67,43 +69,54 @@ function InitMap()
 
         // checking
 
-        document.write("**********LOOP:" + i + "**********<br>");
-        for(let j = 0; j < manager.m_destList.length; j++){
-            document.write("Destination" + j + ": ");
-            document.write("<br>");
+        // document.write("**********LOOP:" + i + "**********<br>");
+        // for(let j = 0; j < manager.m_destList.length; j++){
+        //     document.write("Destination" + j + ": ");
+        //     document.write("<br>");
             
-            // sus
-            document.write("sus_list: ");
-            for(let [key, value] of manager.m_destList[j].m_susList){
-                document.write(manager.m_destList[j].m_susList.get(value) + " ");
-            }
-            document.write("<br>");
-            // inf
-            document.write("inf_list: ");
-            for(let [key, value] of manager.m_destList[j].m_infList){
-                document.write(manager.m_destList[j].m_infList.get(value) + " ");
-            }
-            document.write("<br>");
-            document.write("<br>");
-        }
+        //     // sus
+        //     document.write("sus_list: ");
+        //     for(let [key, value] of manager.m_destList[j].m_susList){
+        //         document.write(manager.m_destList[j].m_susList.get(value) + " ");
+        //     }
+        //     document.write("<br>");
+        //     // inf
+        //     document.write("inf_list: ");
+        //     for(let [key, value] of manager.m_destList[j].m_infList){
+        //         document.write(manager.m_destList[j].m_infList.get(value) + " ");
+        //     }
+        //     document.write("<br>");
+        //     document.write("<br>");
+        // }
 
-        document.write("Traveling: <br>");
-        document.write("sus_list: ");
-        for(let j = 0; j < manager.m_unitList.length; j++){
-            if(manager.m_unitList[j].m_onTrav && !manager.m_unitList[j].m_state){document.write(j + " ");}
-        }
-        document.write("<br>");
-        document.write("inf_list: ");
-        for(let j = 0; j < manager.m_unitList.length; j++){
-            if(manager.m_unitList[j].m_onTrav && manager.m_unitList[j].m_state){document.write(j + " ");}
-        }
-        document.write("<br>");
-        document.write("<br>");
+        // document.write("Traveling: <br>");
+        // document.write("sus_list: ");
+        // for(let j = 0; j < manager.m_unitList.length; j++){
+        //     if(manager.m_unitList[j].m_onTrav && !manager.m_unitList[j].m_state){document.write(j + " ");}
+        // }
+        // document.write("<br>");
+        // document.write("inf_list: ");
+        // for(let j = 0; j < manager.m_unitList.length; j++){
+        //     if(manager.m_unitList[j].m_onTrav && manager.m_unitList[j].m_state){document.write(j + " ");}
+        // }
+        // document.write("<br>");
+        // document.write("<br>");
+
+        i++; /*iterate*/
         if(i >= loop){ clearInterval(mainLoop); }
-        else{ i++; /*iterate*/ }
         
         console.timeEnd("loop_time")
-      }, timeStep);
+    }, timeStep);
+
+    // render Loop
+    var renderLoop = window.setInterval(function(){
+        console.time("render_time")
+
+        manager.UpdateLocation(renderStep);
+
+        if(i >= loop){ clearInterval(renderLoop); }
+        console.timeEnd("render_time")
+    }, renderStep);
     
 }
 

@@ -15,8 +15,12 @@ function Vec2(x, y){
         return Vec2(this.x - vec.x, this.y - vec.y);
     }
 
+    this.Mul = function(vec){
+        return Vec2(this.x * vec.x, this.y * vec.y);
+    }
+
     this.Div = function(vec){
-        return Vec2((float)(this.x / vec.x), (float)(this.y / vec.y));
+        return Vec2(this.x / vec.x, this.y / vec.y);
     }
 }
 
@@ -206,8 +210,22 @@ function Manager() {
         }
     }
 
-    this.UpdateLocation = function(){
 
+    // positioning
+
+    this.InitLocation = function(){
+        for(let i = 0; i < this.m_unitList.length; i++){
+            this.m_unitList[i].m_position = this.m_destList[this.m_unitList[i].GetDest()].m_position;
+        }
+    }
+
+    this.UpdateLocation = function(renderStep){
+        for(let i = 0; i < this.m_unitList.length; i++){
+            if(this.m_unitList[i].m_onTrav){
+                // this.m_unitList[i].m_position.x = lerp (this.m_unitList[i].m_position.x, this.m_destList[this.m_unitList[i].GetDest()].m_position.x , (float)(renderStep * 0.001));
+                // this.m_unitList[i].m_position.y = lerp (this.m_unitList[i].m_position.y, this.m_destList[this.m_unitList[i].GetDest()].m_position.y , (float)(renderStep * 0.001));
+            }
+        }
     }
 }
 
@@ -223,6 +241,8 @@ function Unit(arg_stay, arg_trav) {
     this.m_counter = 0
 
     this.m_position = new Vec2(0,0);    // for visualization
+
+    this.GetDest = function() { return this.m_destPath[this.m_pos]; }
 }
 
 function Dest(){
