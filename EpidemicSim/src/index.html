@@ -8,11 +8,14 @@
         <link rel="stylesheet" href="style.css">
         <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
 
-        <script src="https://unpkg.com/@deck.gl/core@^7.0.0/dist.min.js"></script>
-        <script src="https://unpkg.com/@deck.gl/google-maps@^7.0.0/dist.min.js"></script>
+        <script src="https://unpkg.com/deck.gl@^8.0.0/dist.min.js"></script>
+
+        <!-- <script src="https://unpkg.com/@deck.gl/core@^8.0.0/dist.min.js"></script>
+        <script src="https://unpkg.com/@deck.gl/layers@^8.0.0/dist.min.js"></script>
+        <script src="https://unpkg.com/@deck.gl/google-maps@^8.0.0/dist.min.js"></script> -->
         <!-- usage -->
         <script type="text/javascript">
-            const {GoogleMapsOverlay} = deck;
+            const {GoogleMapsOverlay, TripsLayer} = deck;
         </script>
     </head>
 <!--=======================================================================================================-->
@@ -20,7 +23,7 @@
         <h1> TEST!!!!!!! </h1>
 
         <div id="map"></div>
-        <script type="module" src="main.js"></script>
+        <script src="main.js"></script>
 
     </body>
 </html>
