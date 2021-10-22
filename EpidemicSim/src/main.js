@@ -33,50 +33,60 @@ loadScript(GOOGLE_MAPS_API_URL).then(() =>
   // Create overlay instance
   const overlay = new GoogleMapsOverlay({});
 
-  const tripsLayer = new TripsLayer
-  ({
-    id: "TripsLayer",
-    data: DATA_URL,
-     /* props from TripsLayer class */
-  
-    currentTime: 500,
-    // fadeTrail: true,
-    getTimestamps: d => d.waypoints.map(p => p.timestamp - 1554772579000),
-    trailLength: 600,
-    
-    /* props inherited from PathLayer class */
-    
-    // billboard: false,
-    capRounded: true,
-    getColor: [0, 255, 0],
-    getPath: d => d.waypoints.map(p => p.coordinates),
-    // getWidth: 1,
-    jointRounded: true,
-    // miterLimit: 4,
-    // rounded: true,
-    // widthMaxPixels: Number.MAX_SAFE_INTEGER,
-    widthMinPixels: 8,
-    // widthScale: 1,
-    // widthUnits: 'meters',
-    
-    /* props inherited from Layer class */
-    
-    // autoHighlight: false,
-    // coordinateOrigin: [0, 0, 0],
-    // coordinateSystem: COORDINATE_SYSTEM.LNGLAT,
-    // highlightColor: [0, 0, 128, 128],
-    // modelMatrix: null,
-    opacity: 0.8,
-    // pickable: false,
-    // visible: true,
-    // wrapLongitude: false,
-  });
+  const props = 
+    {
+      id: "TripsLayer",
+      data: DATA_URL,
+      /* props from TripsLayer class */
+      fadeTrail: true,
+      getTimestamps: d => d.waypoints.map(p => p.timestamp - 1554772579000),
+      trailLength: 50,
+      
+      /* props inherited from PathLayer class */
+      
+      // billboard: false,
+      capRounded: true,
+      getColor: [255, 0, 255],
+      getPath: d => d.waypoints.map(p => p.coordinates),
+      // getWidth: 1,
+      jointRounded: true,
+      // miterLimit: 4,
+      rounded: true,
+      // widthMaxPixels: Number.MAX_SAFE_INTEGER,
+      widthMinPixels: 8,
+      // widthScale: 1,
+      // widthUnits: 'meters',
+      
+      /* props inherited from Layer class */
+      
+      // autoHighlight: false,
+      // coordinateOrigin: [0, 0, 0],
+      // coordinateSystem: COORDINATE_SYSTEM.LNGLAT,
+      // highlightColor: [0, 0, 128, 128],
+      // modelMatrix: null,
+      opacity: 1,
+      // pickable: false,
+      // visible: true,
+      // wrapLongitude: false,
+    }
 
-  overlay.setProps
-  ({
-    layers: [tripsLayer],
-  });
+  let currentTime = 0;
 
-  // Add overlay to map
+  const animate = () => 
+  {
+    currentTime = (currentTime + 1) % LOOP_LENGTH;
+
+    const tripsLayer = new TripsLayer({
+      ...props,
+      currentTime,
+    });
+
+    overlay.setProps({
+      layers: [tripsLayer],
+    });
+    window.requestAnimationFrame(animate);
+  };
+
+  window.requestAnimationFrame(animate);
   overlay.setMap(map);
 });
