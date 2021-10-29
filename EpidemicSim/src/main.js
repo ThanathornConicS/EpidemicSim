@@ -1,9 +1,23 @@
 let currentTime = 0;
 
+var map;
+var placeService
+
 // Main Function
 loadScript(GOOGLE_MAPS_API_URL).then(() => 
 {
-  const map = new google.maps.Map(document.getElementById('map'), mapOptions);
+  map = new google.maps.Map(document.getElementById('map'), mapOptions);
+  placeService = new google.maps.places.PlacesService(map);
+
+  placeService.nearbySearch(CreateSearchRequest("Resturant"), SearchNearbyCallback);
+
+  // Logic==========================================================
+  map.addListener("click", (mapMouseEvent) => 
+  {
+    // Add Circle Later
+    console.log(mapMouseEvent.latLng.lat() + " - " + mapMouseEvent.latLng.lng());
+  });
+  // Logic==========================================================
 
   // Create overlay instance
   const overlay = new GoogleMapsOverlay({});
