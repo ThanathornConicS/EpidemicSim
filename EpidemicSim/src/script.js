@@ -13,7 +13,23 @@ const VENDOR_COLORS =
   [190, 25, 25], // vendor #1
 ];
 
-function loadScript(url) {
+const mapOptions = 
+{
+  center: { lat: 40.72, lng: -74 },   // New York
+  //center: { lat: 13.764919202829386, lng: 100.53824571809045},  // Victory Monument
+  tilt: 45, 
+  zoom: 15,
+  mapId: GOOGLE_MAP_ID,
+  zoomControl: true,
+  mapTypeControl: false,
+  scaleControl: true,
+  streetViewControl: false,
+  rotateControl: true,
+  fullscreenControl: false
+};
+
+function loadScript(url) 
+{
   const script = document.createElement('script');
   script.type = 'text/javascript';
   script.src = url;
@@ -22,4 +38,47 @@ function loadScript(url) {
   return new Promise(resolve => {
     script.onload = resolve;
   });
+}
+
+function CreateAnimProperties(idName, data)
+{
+  var properties = 
+  {
+    id: idName,
+    data: data,
+    currentTime,
+    /* props from TripsLayer class */
+    fadeTrail: true,
+    getTimestamps: (data) => data.timestamps,
+    trailLength: 20,
+    
+    /* props inherited from PathLayer class */
+    
+    // billboard: false,
+    capRounded: true,
+    getColor:  (data) => VENDOR_COLORS[data.vendor],
+    getPath: (data) => data.path,
+    // getWidth: 1,
+    jointRounded: true,
+    // miterLimit: 4,
+    // widthMaxPixels: Number.MAX_SAFE_INTEGER,
+    widthMinPixels: 4,
+    // widthScale: 1,
+    // widthUnits: 'meters',
+    
+    /* props inherited from Layer class */
+    
+    // autoHighlight: false,
+    // coordinateOrigin: [0, 0, 0],
+    // coordinateSystem: COORDINATE_SYSTEM.LNGLAT,
+    // highlightColor: [0, 0, 128, 128],
+    // modelMatrix: null,
+    opacity: 1,
+    // pickable: false,
+    // visible: true,
+    // wrapLongitude: false,
+    shadowEnabled: true,
+  }
+
+  return properties;
 }
