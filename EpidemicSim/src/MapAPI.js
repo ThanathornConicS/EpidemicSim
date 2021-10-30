@@ -29,3 +29,13 @@ function CreateMarker(place)
         },
     });
 }
+
+function AddCircle()
+{
+    circle.setMap(map);
+}
+
+function RemoveCircle()
+{
+    circle.setMap(null);
+}

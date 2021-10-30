@@ -1,8 +1,8 @@
-function CreateSearchRequest(placeToSearch)
+function CreateSearchRequest(location, placeToSearch)
 {
     var searchOption = 
     {
-        location: { lat: 40.72, lng: -74 },     // Fized Center for now
+        location: location,
         radius: 3000,
         type: [placeToSearch],
     };

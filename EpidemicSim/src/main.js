@@ -1,7 +1,9 @@
 let currentTime = 0;
 
 var map;
-var placeService
+var placeService;
+
+var circle;
 
 // Main Function
 loadScript(GOOGLE_MAPS_API_URL).then(() => 
@@ -9,13 +11,29 @@ loadScript(GOOGLE_MAPS_API_URL).then(() =>
   map = new google.maps.Map(document.getElementById('map'), mapOptions);
   placeService = new google.maps.places.PlacesService(map);
 
-  placeService.nearbySearch(CreateSearchRequest("Resturant"), SearchNearbyCallback);
-
   // Logic==========================================================
   map.addListener("click", (mapMouseEvent) => 
   {
     // Add Circle Later
-    console.log(mapMouseEvent.latLng.lat() + " - " + mapMouseEvent.latLng.lng());
+    let lat = mapMouseEvent.latLng.lat();
+    let lng =  mapMouseEvent.latLng.lng();
+
+    circle = new google.maps.Circle
+    ({
+      strokeColor: "#FF0000",
+      strokeOpacity: 0.8,
+      strokeWeight: 2,
+      fillColor: "#FF0000",
+      fillOpacity: 0.35,
+      center: {lat: lat, lng: lng},
+      radius: 3000,
+    });
+
+    AddCircle();
+
+    placeService.nearbySearch(CreateSearchRequest({lat, lng}, "Resturant"), SearchNearbyCallback);
+
+    console.log(lat + " - " + lng);
   });
   // Logic==========================================================
 
