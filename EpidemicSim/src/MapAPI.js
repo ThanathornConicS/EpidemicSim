@@ -1,4 +1,4 @@
-const image = "Ahegaopng.png";
+const image = "../Assets/mapPin.png";
 
 function latlngObj(lat, lng)
 {
@@ -25,7 +25,7 @@ function CreateMarker(place)
         icon: 
         {
             url: image,
-            scaledSize: new google.maps.Size(80, 80)
+            scaledSize: new google.maps.Size(40, 50)
         },
     });
 }
