@@ -7,6 +7,7 @@ const dests = 3;
 const loop = 10; 
 const timeStep = 1000 // msec
 const renderStep = 100 // msec
+let stepCounter = 0;
 
 let disablePlaces = true;
 
@@ -36,6 +37,8 @@ var placeRequest =
     type: ["resturant"],
 };
 
+
+// --------------main--------------
 function InitMap()
 {
     //map = new google.maps.Map(document.getElementById('map'), mapOptions);
@@ -55,10 +58,38 @@ function InitMap()
     manager.Init(units, dests);
     manager.SpawnSpot(Math.floor(Math.random() * dests));
 
-    manager.InitLocation()
+    
+    manager.InitLocation(renderStep);
+
     console.timeEnd("init_time")
 
-    let i = 0;
+    document.write("-------------Location_list-------------<br>");
+    for(let i = 0; i < manager.m_destList.length; i++){
+        document.write("Destination" + i + ": ");
+        manager.m_destList[i].m_position.Write()
+        document.write("<br>");
+    }
+
+    document.write("<br>");
+    document.write("---------------Sample_0---------------<br>");
+    document.write("travDelay : " +  manager.m_unitList[0].m_travDelay + "<br>");
+    document.write("Dest_Path : ");
+    for(let i = 0; i < manager.m_unitList[0].m_destPath.length; i++){
+        document.write(manager.m_unitList[0].m_destPath[i] + " ");
+    }
+    document.write("<br><br>");
+
+    document.write("------------------Step------------------<br>");
+        
+    for(let i = 0; i < manager.m_unitList[0].m_pathStep.length; i++){
+        document.write("Path" + i + ": ");
+        for(let j = 0; j < manager.m_unitList[0].m_pathStep[i].length; j++){
+            manager.m_unitList[0].m_pathStep[i][j].Write();
+            document.write(" ");
+        }
+        document.write("<br>");
+    }
+
 
     // Logic Loop
     var mainLoop = window.setInterval(function(){
@@ -102,8 +133,8 @@ function InitMap()
         // document.write("<br>");
         // document.write("<br>");
 
-        i++; /*iterate*/
-        if(i >= loop){ clearInterval(mainLoop); }
+        stepCounter++; /*iterate*/
+        if(stepCounter >= loop){ clearInterval(mainLoop); }
         
         console.timeEnd("loop_time")
     }, timeStep);
@@ -112,9 +143,9 @@ function InitMap()
     var renderLoop = window.setInterval(function(){
         console.time("render_time")
 
-        manager.UpdateLocation(renderStep);
+       
 
-        if(i >= loop){ clearInterval(renderLoop); }
+        if(stepCounter >= loop){ clearInterval(renderLoop); }
         console.timeEnd("render_time")
     }, renderStep);
     
