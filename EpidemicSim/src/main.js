@@ -4,6 +4,7 @@ const loop = 100;
 const timeStep = 1000 // msec
 const renderStep = 100 // msec
 let stepCounter = 0;
+let executeStep = 0;
 
 let currentTime = 0;
 
@@ -16,7 +17,7 @@ let manager = new Manager();
 loadScript(GOOGLE_MAPS_API_URL).then(() => 
 {
   //Initialize
-  console.time("init_time")
+  console.time("init_map")
 
   // Google Map Init
   map = new google.maps.Map(document.getElementById('map'), mapOptions);
@@ -25,7 +26,7 @@ loadScript(GOOGLE_MAPS_API_URL).then(() =>
   // Create overlay instance
   const overlay = new GoogleMapsOverlay({});
 
-  console.timeEnd("init_time")
+  console.timeEnd("init_map")
 
   // document.write("-------------Location_list-------------<br>");
   // for(let i = 0; i < manager.m_destList.length; i++){
@@ -60,9 +61,10 @@ loadScript(GOOGLE_MAPS_API_URL).then(() =>
   var unitColor = [];
 
   // Logic Loop
-  var mainLoop = window.setInterval(() =>
-  {
-    /// call your function here
+var mainLoop = window.setInterval(() =>
+{
+  /// call your function here
+  if(executeStep >= 1){
     console.time("loop_time")
     manager.MoveUnits();
     manager.UpdateDests();
@@ -79,16 +81,21 @@ loadScript(GOOGLE_MAPS_API_URL).then(() =>
     stepCounter++; /*iterate*/
     if(stepCounter >= loop){ clearInterval(mainLoop); }
     
-    console.log("Place Counter: " + placeCounter);
+    //console.log("Place Counter: " + placeCounter);
 
     console.timeEnd("loop_time")
-  }, timeStep);
 
-  // render Loop
-  var renderLoop = window.setInterval(() =>
-  {
+    executeStep = 2;
+  }
+}, timeStep);
+
+
+// render Loop
+var renderLoop = window.setInterval(() =>
+{
+  if(executeStep >= 2){
     console.time("render_time")
-
+    console.log("[renderLoop] Place Counter: " + placeCounter);
     currentTime = (currentTime + 1) % LOOP_LENGTH;
 
     const animate = () => 
@@ -110,7 +117,8 @@ loadScript(GOOGLE_MAPS_API_URL).then(() =>
     
     if(stepCounter >= loop){ clearInterval(renderLoop); }
     console.timeEnd("render_time")
-  }, renderStep);
+  }
+}, renderStep);
 
   map.addListener("click", (mouseEvent) => 
   {
@@ -132,6 +140,7 @@ loadScript(GOOGLE_MAPS_API_URL).then(() =>
     Initmanager(lat, lng);
 
     console.log(lat + " - " + lng);
+
   });
 
 });
@@ -139,18 +148,30 @@ loadScript(GOOGLE_MAPS_API_URL).then(() =>
 async function Initmanager(lat, lng)
 {
   await AddCircle();
+
+  console.time("init_time")
+
   // Search
-  placeService.nearbySearch(CreateSearchRequest({lat, lng}, "airport"), SearchNearbyCallback);
-  placeService.nearbySearch(CreateSearchRequest({lat, lng}, "bus_station"), SearchNearbyCallback);
-  placeService.nearbySearch(CreateSearchRequest({lat, lng}, "hospital"), SearchNearbyCallback);
-  placeService.nearbySearch(CreateSearchRequest({lat, lng}, "school"), SearchNearbyCallback);
-  placeService.nearbySearch(CreateSearchRequest({lat, lng}, "shopping_mall"), SearchNearbyCallback);
+  //placeService.nearbySearch(CreateSearchRequest({lat, lng}, "airport"), SearchNearbyCallback);
+  // placeService.nearbySearch(CreateSearchRequest({lat, lng}, "bus_station"), SearchNearbyCallback);
+  // placeService.nearbySearch(CreateSearchRequest({lat, lng}, "hospital"), SearchNearbyCallback);
+  // placeService.nearbySearch(CreateSearchRequest({lat, lng}, "school"), SearchNearbyCallback);
+  // placeService.nearbySearch(CreateSearchRequest({lat, lng}, "shopping_mall"), SearchNearbyCallback);
   placeService.nearbySearch(CreateSearchRequest({lat, lng}, "resturant"), SearchNearbyCallback);
 
-  console.log("Counter: " + placeCounter);
+  
 
-  manager.Init(units, placeCounter);     // #of unit, #of dest
-  manager.SpawnSpot(Math.floor(Math.random() * placeCounter));
+  setTimeout(function (){
 
-  manager.InitLocation(renderStep);
+    console.log("Counter: " + placeCounter);
+    manager.Init(units, placeCounter);     // #of unit, #of dest
+    manager.SpawnSpot(Math.floor(Math.random() * placeCounter));
+
+    manager.InitLocation(renderStep);
+  
+  }, 1000); 
+
+  executeStep = 1;  
+
+  console.timeEnd("init_time")
 }
