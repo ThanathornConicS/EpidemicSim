@@ -2,20 +2,13 @@ const image = "../Assets/mapPin.png";
 
 var circle;
 
-function latlngObj(lat, lng)
-{
-    this.lat = lat;
-    this.lng = lng;
-}
-
-var locationLatLng = [];
+var locationLngLat = [];
 
 function CreateMarker(place)
 {
     if(!place.geometry || !place.geometry.location) return;
 
-    // locationLatLng.push(new latlngObj(place.geometry.location.lat(), place.geometry.location.lng()));
-    // console.log(locationLatLng);
+    locationLngLat.push(new Vec2(place.geometry.location.lng(), place.geometry.location.lat()));
 
     mapMarker = new google.maps.Marker
     ({
@@ -27,7 +20,7 @@ function CreateMarker(place)
         icon: 
         {
             url: image,
-            scaledSize: new google.maps.Size(40, 50)
+            scaledSize: new google.maps.Size(10, 20)
         },
     });
 }

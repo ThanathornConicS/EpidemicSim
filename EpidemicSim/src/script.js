@@ -56,7 +56,7 @@ function CreateAnimProperties(idName, data)
     
     // billboard: false,
     capRounded: true,
-    getColor:  (data) => VENDOR_COLORS[data.vendor],
+    //getColor:  (data) => VENDOR_COLORS[data.vendor],
     getPath: (data) => data.path,
     // getWidth: 1,
     jointRounded: true,

@@ -1,6 +1,6 @@
 const units = 10;
 const dests = 3;
-const loop = 10; 
+const loop = 100; 
 const timeStep = 1000 // msec
 const renderStep = 100 // msec
 let stepCounter = 0;
@@ -57,22 +57,31 @@ loadScript(GOOGLE_MAPS_API_URL).then(() =>
   // Create Properties for overlay
   const props = CreateAnimProperties("trips", DATA_URL);
 
+  var unitColor = [];
+
   // Logic Loop
   var mainLoop = window.setInterval(() =>
   {
     /// call your function here
-    //console.time("loop_time")
+    console.time("loop_time")
     manager.MoveUnits();
     manager.UpdateDests();
 
-    console.log("CHECK: " + manager.m_unitList[0].m_counter);
+    //console.log("CHECK: " + manager.m_unitList[0].m_counter);
+    
+    unitColor = [];
+
+    for(let i = 0; i < manager.m_unitList.length; i++)
+    {
+      unitColor.push(manager.m_unitList[i].m_state);
+    }
 
     stepCounter++; /*iterate*/
     if(stepCounter >= loop){ clearInterval(mainLoop); }
     
     console.log("Place Counter: " + placeCounter);
 
-    //console.timeEnd("loop_time")
+    console.timeEnd("loop_time")
   }, timeStep);
 
   // render Loop
@@ -87,6 +96,7 @@ loadScript(GOOGLE_MAPS_API_URL).then(() =>
       const tripsLayer = new TripsLayer({
         ...props,
         currentTime,
+        getColor: (color) => VENDOR_COLORS[color],
       });
 
       overlay.setProps({
@@ -119,18 +129,28 @@ loadScript(GOOGLE_MAPS_API_URL).then(() =>
       radius: 3000,
     });
     
-    Initmanager();
+    Initmanager(lat, lng);
 
     console.log(lat + " - " + lng);
   });
 
 });
 
-async function Initmanager()
+async function Initmanager(lat, lng)
 {
   await AddCircle();
-  manager.Init(units, dests);     // #of unit, #of dest
-  manager.SpawnSpot(Math.floor(Math.random() * dests));
+  // Search
+  placeService.nearbySearch(CreateSearchRequest({lat, lng}, "airport"), SearchNearbyCallback);
+  placeService.nearbySearch(CreateSearchRequest({lat, lng}, "bus_station"), SearchNearbyCallback);
+  placeService.nearbySearch(CreateSearchRequest({lat, lng}, "hospital"), SearchNearbyCallback);
+  placeService.nearbySearch(CreateSearchRequest({lat, lng}, "school"), SearchNearbyCallback);
+  placeService.nearbySearch(CreateSearchRequest({lat, lng}, "shopping_mall"), SearchNearbyCallback);
+  placeService.nearbySearch(CreateSearchRequest({lat, lng}, "resturant"), SearchNearbyCallback);
+
+  console.log("Counter: " + placeCounter);
+
+  manager.Init(units, placeCounter);     // #of unit, #of dest
+  manager.SpawnSpot(Math.floor(Math.random() * placeCounter));
 
   manager.InitLocation(renderStep);
 }
