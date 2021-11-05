@@ -1,5 +1,7 @@
 const image = "../Assets/mapPin.png";
 
+var circle;
+
 function latlngObj(lat, lng)
 {
     this.lat = lat;
@@ -30,7 +32,7 @@ function CreateMarker(place)
     });
 }
 
-function AddCircle()
+async function AddCircle()
 {
     circle.setMap(map);
 }

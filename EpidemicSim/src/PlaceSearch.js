@@ -1,3 +1,5 @@
+var placeCounter = 0;
+
 function CreateSearchRequest(location, placeToSearch)
 {
     var searchOption = 
@@ -17,6 +19,7 @@ function SearchNearbyCallback(results, status)
         for (var i = 0; i < results.length; i++) 
         {
           CreateMarker(results[i]);
+          placeCounter++;
         }
     }
 }

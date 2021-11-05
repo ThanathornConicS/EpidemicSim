@@ -82,3 +82,14 @@ function CreateAnimProperties(idName, data)
 
   return properties;
 }
+
+
+// function SearchPalace()
+// {
+//   placeService.nearbySearch(CreateSearchRequest({lat, lng}, "airport"), SearchNearbyCallback);
+//   placeService.nearbySearch(CreateSearchRequest({lat, lng}, "bus_station"), SearchNearbyCallback);
+//   placeService.nearbySearch(CreateSearchRequest({lat, lng}, "hospital"), SearchNearbyCallback);
+//   placeService.nearbySearch(CreateSearchRequest({lat, lng}, "school"), SearchNearbyCallback);
+//   placeService.nearbySearch(CreateSearchRequest({lat, lng}, "shopping_mall"), SearchNearbyCallback);
+//   placeService.nearbySearch(CreateSearchRequest({lat, lng}, "resturant"), SearchNearbyCallback);
+// }

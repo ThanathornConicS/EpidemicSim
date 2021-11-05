@@ -10,7 +10,7 @@ let currentTime = 0;
 var map;
 var placeService;
 
-var circle;
+let manager = new Manager();
 
 // Main Function
 loadScript(GOOGLE_MAPS_API_URL).then(() => 
@@ -25,13 +25,7 @@ loadScript(GOOGLE_MAPS_API_URL).then(() =>
   // Create overlay instance
   const overlay = new GoogleMapsOverlay({});
 
-  let manager = new Manager();
-  manager.Init(units, dests);
-  manager.SpawnSpot(Math.floor(Math.random() * dests));
-
-  manager.InitLocation(renderStep);
-
-  // console.timeEnd("init_time")
+  console.timeEnd("init_time")
 
   // document.write("-------------Location_list-------------<br>");
   // for(let i = 0; i < manager.m_destList.length; i++){
@@ -67,14 +61,18 @@ loadScript(GOOGLE_MAPS_API_URL).then(() =>
   var mainLoop = window.setInterval(() =>
   {
     /// call your function here
-    console.time("loop_time")
+    //console.time("loop_time")
     manager.MoveUnits();
     manager.UpdateDests();
+
+    console.log("CHECK: " + manager.m_unitList[0].m_counter);
 
     stepCounter++; /*iterate*/
     if(stepCounter >= loop){ clearInterval(mainLoop); }
     
-    console.timeEnd("loop_time")
+    console.log("Place Counter: " + placeCounter);
+
+    //console.timeEnd("loop_time")
   }, timeStep);
 
   // render Loop
@@ -82,10 +80,10 @@ loadScript(GOOGLE_MAPS_API_URL).then(() =>
   {
     console.time("render_time")
 
+    currentTime = (currentTime + 1) % LOOP_LENGTH;
+
     const animate = () => 
     {
-      currentTime = (currentTime + 1) % LOOP_LENGTH;
-
       const tripsLayer = new TripsLayer({
         ...props,
         currentTime,
@@ -109,7 +107,7 @@ loadScript(GOOGLE_MAPS_API_URL).then(() =>
     // Add Circle Later
     let lat = mouseEvent.latLng.lat();
     let lng =  mouseEvent.latLng.lng();
-
+    
     circle = new google.maps.Circle
     ({
       strokeColor: "#FF0000",
@@ -120,12 +118,19 @@ loadScript(GOOGLE_MAPS_API_URL).then(() =>
       center: {lat: lat, lng: lng},
       radius: 3000,
     });
-
-    AddCircle();
-
-    placeService.nearbySearch(CreateSearchRequest({lat, lng}, "Resturant"), SearchNearbyCallback);
+    
+    Initmanager();
 
     console.log(lat + " - " + lng);
   });
 
 });
+
+async function Initmanager()
+{
+  await AddCircle();
+  manager.Init(units, dests);     // #of unit, #of dest
+  manager.SpawnSpot(Math.floor(Math.random() * dests));
+
+  manager.InitLocation(renderStep);
+}
