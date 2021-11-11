@@ -1,4 +1,4 @@
-const units = 10;
+const units = 100000;
 const dests = 3;
 const loop = 100; 
 const timeStep = 1000 // msec
@@ -28,33 +28,6 @@ loadScript(GOOGLE_MAPS_API_URL).then(() =>
 
   console.timeEnd("init_map")
 
-  // document.write("-------------Location_list-------------<br>");
-  // for(let i = 0; i < manager.m_destList.length; i++){
-  //     document.write("Destination" + i + ": ");
-  //     manager.m_destList[i].m_position.Write()
-  //     document.write("<br>");
-  // }
-
-  // document.write("<br>");
-  // document.write("---------------Sample_0---------------<br>");
-  // document.write("travDelay : " +  manager.m_unitList[0].m_travDelay + "<br>");
-  // document.write("Dest_Path : ");
-  // for(let i = 0; i < manager.m_unitList[0].m_destPath.length; i++){
-  //     document.write(manager.m_unitList[0].m_destPath[i] + " ");
-  // }
-  // document.write("<br><br>");
-
-  // document.write("------------------Step------------------<br>");
-      
-  // for(let i = 0; i < manager.m_unitList[0].m_pathStep.length; i++){
-  //     document.write("Path" + i + ": ");
-  //     for(let j = 0; j < manager.m_unitList[0].m_pathStep[i].length; j++){
-  //         manager.m_unitList[0].m_pathStep[i][j].Write();
-  //         document.write(" ");
-  //     }
-  //     document.write("<br>");
-  // }
-
   // Create Properties for overlay
   const props = CreateAnimProperties("trips", DATA_URL);
 
@@ -68,8 +41,6 @@ var mainLoop = window.setInterval(() =>
     console.time("loop_time")
     manager.MoveUnits();
     manager.UpdateDests();
-
-    //console.log("CHECK: " + manager.m_unitList[0].m_counter);
     
     unitColor = [];
 
@@ -96,14 +67,14 @@ var renderLoop = window.setInterval(() =>
   if(executeStep >= 2){
     console.time("render_time")
     console.log("[renderLoop] Place Counter: " + placeCounter);
-    currentTime = (currentTime + 1) % LOOP_LENGTH;
+    currentTime = (currentTime + 4) % LOOP_LENGTH;
 
     const animate = () => 
     {
       const tripsLayer = new TripsLayer({
         ...props,
         currentTime,
-        getColor: (color) => VENDOR_COLORS[color],
+        //getColor: (color) => VENDOR_COLORS[color],
       });
 
       overlay.setProps({
@@ -158,8 +129,6 @@ async function Initmanager(lat, lng)
   // placeService.nearbySearch(CreateSearchRequest({lat, lng}, "school"), SearchNearbyCallback);
   // placeService.nearbySearch(CreateSearchRequest({lat, lng}, "shopping_mall"), SearchNearbyCallback);
   placeService.nearbySearch(CreateSearchRequest({lat, lng}, "resturant"), SearchNearbyCallback);
-
-  
 
   setTimeout(function (){
 
