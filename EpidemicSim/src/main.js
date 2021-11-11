@@ -66,7 +66,7 @@ var renderLoop = window.setInterval(() =>
 {
   if(executeStep >= 2){
     console.time("render_time")
-    console.log("[renderLoop] Place Counter: " + placeCounter);
+    //console.log("[renderLoop] Place Counter: " + placeCounter);
     currentTime = (currentTime + 4) % LOOP_LENGTH;
 
     const animate = () => 
@@ -110,7 +110,7 @@ var renderLoop = window.setInterval(() =>
     
     Initmanager(lat, lng);
 
-    console.log(lat + " - " + lng);
+    // console.log(lat + " - " + lng);
 
   });
 
@@ -120,7 +120,7 @@ async function Initmanager(lat, lng)
 {
   await AddCircle();
 
-  console.time("init_time")
+  console.time("init_Sim")
 
   // Search
   //placeService.nearbySearch(CreateSearchRequest({lat, lng}, "airport"), SearchNearbyCallback);
@@ -142,5 +142,5 @@ async function Initmanager(lat, lng)
 
   executeStep = 1;  
 
-  console.timeEnd("init_time")
+  console.timeEnd("init_Sim")
 }

@@ -25,22 +25,22 @@ function Vec2(x, y){
         return new Vec2(this.x / vec.x, this.y / vec.y);
     }
 
-    this.Write = function(vec){
-        document.write("(" + this.x + ", " + this.y + ")");
+    this.Log = function(vec){
+        console.log("(" + this.x + ", " + this.y + ")");
     }
 
     this.LerpTo = function(end, amount){
        let result = this.Mul(new Vec2(1.0 - amount, 1.0 - amount)).Add(end.Mul(new Vec2(amount,amount)));
-       // fixed floating point
-       result.x = result.x.toFixed(2);
-       result.y = result.y.toFixed(2);
+    //    // fixed floating point
+    //    result.x = result.x.toFixed(2);
+    //    result.y = result.y.toFixed(2);
        return result;  
     }
 }
 
-// function lerp (start, end, amt){
-//     return (1-amt)*start+amt*end
-// }
+function Lerp (start, end, amt){
+    return (1-amt)*start+amt*end
+}
 
 
 // ----------class----------
@@ -137,11 +137,9 @@ function Manager() {
     this.Init = function(units, dests){
         // init destination first, unit need to know how many dest there are
         for(let i = 0; i < dests; i++){
-            this.m_destList.push(new Dest());
-            
-            // hard code init position
-            this.m_destList[i].m_position = this.m_destList[i].m_position.Add(new Vec2(parseFloat(i),parseFloat(i)))
+            this.m_destList.push(new Dest(locationLngLat[i]));
         }
+
         // init unit
         for(let i = 0; i < units; i++){
             this.m_unitList.push(new Unit(Math.floor(Math.random()* MAXTIME) + 1, Math.floor(Math.random()* MAXTIME) + 1));
@@ -223,15 +221,24 @@ function Manager() {
         for(let i = 0; i < this.m_unitList.length; i++){
             let step =  this.m_unitList[i].m_travDelay / (renderStep / 1000.0);
             for(j = 0; j < this.m_unitList[i].m_destPath.length; j++){
+
+                // datPath
                 let A = this.m_unitList[i].m_destPath[j];
                 let B = this.m_unitList[i].m_destPath[(j+1) % this.m_unitList[i].m_destPath.length];
-                let tempVec = [];
                 for(k = 0; k <= step; k++){
-                    let stepVec = k/step;
-                    let Cal = this.m_destList[A].m_position.LerpTo(this.m_destList[B].m_position, stepVec);
-                    tempVec.push(Cal);
+                    let stepFrac = k/step;
+                    let Cal = this.m_destList[A].m_position.LerpTo(this.m_destList[B].m_position, stepFrac);
+                    this.m_unitList[i].m_anim.datPath.push(Cal);
                 }
-                this.m_unitList[i].m_pathStep.push(tempVec);
+
+                // datTimestamp
+                let start = (this.m_unitList[i].m_stayDelay + (i * (this.m_unitList[i].m_stayDelay + this.m_unitList[i].m_stayDelay))) - 1;
+                let end = start + this.m_unitList[i].m_travDelay;
+                for(k = 0; k <= step; k++){
+                    let stepFrac = k/step;
+                    let time = Lerp(start, end, stepFrac);
+                    this.m_unitList[i].m_anim.datTimestamp.push(time);
+                }
             }
         } 
     }
@@ -259,13 +266,13 @@ function Unit(arg_stay, arg_trav) {
     this.m_counter = 0
 
     //this.m_position = new Vec2(0,0);    // for visualization
-    this.m_pathStep = [],
+    this.m_anim = new DrawData();
 
     this.GetDest = function() { return this.m_destPath[this.m_pathPos]; }
     //this.GetDest = function(m_destPos) { return this.m_destPath[m_destPos]; }
 }
 
-function Dest(){
+function Dest(lnglat){
 
     // // using array
     // this.m_susList = [],  // list of sus in this location, position of unit in unitList[]
@@ -275,7 +282,7 @@ function Dest(){
     this.m_susList = new Map();
     this.m_infList = new Map();
 
-    this.m_position = new Vec2(0,0);    // for visualization
+    this.m_position = lnglat;    // for visualization
 }
 
 // test class 2
