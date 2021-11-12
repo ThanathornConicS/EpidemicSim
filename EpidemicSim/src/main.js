@@ -137,6 +137,18 @@ async function Initmanager(lat, lng)
     manager.SpawnSpot(Math.floor(Math.random() * placeCounter));
 
     manager.InitLocation(renderStep);
+
+    // // checking
+
+    // console.log(manager.m_unitList[0].m_stayDelay + " " + manager.m_unitList[0].m_travDelay);
+
+    // for(let i = 0; i < manager.m_unitList[0].m_anim.datPath.length; i++){
+    //   manager.m_unitList[0].m_anim.datPath[i].Log();
+    // }
+
+    // for(let i = 0; i < manager.m_unitList[0].m_anim.datTimestamp.length; i++){
+    //   console.log(manager.m_unitList[0].m_anim.datTimestamp[i]);
+    // }
   
   }, 1000); 
 

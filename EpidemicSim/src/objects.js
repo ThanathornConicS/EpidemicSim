@@ -232,7 +232,7 @@ function Manager() {
                 }
 
                 // datTimestamp
-                let start = (this.m_unitList[i].m_stayDelay + (i * (this.m_unitList[i].m_stayDelay + this.m_unitList[i].m_stayDelay))) - 1;
+                let start = (this.m_unitList[i].m_stayDelay - 1) + (j * (this.m_unitList[i].m_stayDelay + this.m_unitList[i].m_stayDelay)) ;
                 let end = start + this.m_unitList[i].m_travDelay;
                 for(k = 0; k <= step; k++){
                     let stepFrac = k/step;
