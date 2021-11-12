@@ -111,7 +111,7 @@ var renderLoop = window.setInterval(() =>
     Initmanager(lat, lng);
 
     // console.log(lat + " - " + lng);
-
+    google.maps.event.clearInstanceListeners(map);
   });
 
 });
