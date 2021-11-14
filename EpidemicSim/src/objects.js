@@ -226,10 +226,18 @@ function Manager() {
                 let A = this.m_unitList[i].m_destPath[j];
                 let B = this.m_unitList[i].m_destPath[(j+1) % this.m_unitList[i].m_destPath.length];
                 for(k = 0; k <= step; k++){
+                    let tempLngLat = [];
                     let stepFrac = k/step;
                     let Cal = this.m_destList[A].m_position.LerpTo(this.m_destList[B].m_position, stepFrac);
-                    this.m_unitList[i].m_anim.datPath.push(Cal);
+                    
+                    tempLngLat.push(Cal.x);
+                    tempLngLat.push(Cal.y);
+                    this.m_unitList[i].m_anim.datPath.push(tempLngLat); 
+
                 }
+
+
+                
 
                 // datTimestamp
                 let start = (this.m_unitList[i].m_stayDelay - 1) + (j * (this.m_unitList[i].m_stayDelay + this.m_unitList[i].m_stayDelay)) ;

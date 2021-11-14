@@ -143,7 +143,7 @@ async function Initmanager(lat, lng)
     // console.log(manager.m_unitList[0].m_stayDelay + " " + manager.m_unitList[0].m_travDelay);
 
     // for(let i = 0; i < manager.m_unitList[0].m_anim.datPath.length; i++){
-    //   manager.m_unitList[0].m_anim.datPath[i].Log();
+    //   console.log(manager.m_unitList[0].m_anim.datPath[i][0] + ", " + manager.m_unitList[0].m_anim.datPath[i][1]);
     // }
 
     // for(let i = 0; i < manager.m_unitList[0].m_anim.datTimestamp.length; i++){
