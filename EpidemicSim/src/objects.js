@@ -48,6 +48,10 @@ function Manager() {
     this.m_unitList = [],
     this.m_destList = [],
 
+    this.m_datPath = [],
+    this.m_datTimestamp = [],
+    this.m_datColor = [],
+
     // // initialize unit and destination
     // this.Init = function(units, dests){
     //     // init destination first, unit need to know how many dest there are
@@ -232,7 +236,7 @@ function Manager() {
                     
                     tempLngLat.push(Cal.x);
                     tempLngLat.push(Cal.y);
-                    this.m_unitList[i].m_anim.datPath.push(tempLngLat); 
+                    this.m_datPath.push(tempLngLat); 
 
                 }
 
@@ -245,11 +249,20 @@ function Manager() {
                 for(k = 0; k <= step; k++){
                     let stepFrac = k/step;
                     let time = Lerp(start, end, stepFrac);
-                    this.m_unitList[i].m_anim.datTimestamp.push(time);
+                    this.m_datTimestamp.push(time);
                 }
             }
         } 
+
+        // console.log("datLength: " + this.m_datPath.length);
+
+        // for(let i = 0; i < this.m_datPath.length; i++){
+        //     console.log("datPath: " + this.m_datPath[i][0] + ", " + this.m_datPath[i][1]);
+        // }
+    
     }
+
+    
 
     // this.UpdateLocation = function(renderStep){
     //     for(let i = 0; i < this.m_unitList.length; i++){
@@ -274,7 +287,7 @@ function Unit(arg_stay, arg_trav) {
     this.m_counter = 0
 
     //this.m_position = new Vec2(0,0);    // for visualization
-    this.m_anim = new DrawData();
+    // this.m_anim = new DrawData();
 
     this.GetDest = function() { return this.m_destPath[this.m_pathPos]; }
     //this.GetDest = function(m_destPos) { return this.m_destPath[m_destPos]; }
@@ -310,8 +323,8 @@ function Dest(lnglat){
 //     m_travDelay: 0      // time spent travel from one place to another
 // }
 
-function DrawData()
-{
-    this.datPath = [];
-    this.datTimestamp = [];
-}
+// function DrawData()
+// {
+//     this.datPath = [];
+//     this.datTimestamp = [];
+// }

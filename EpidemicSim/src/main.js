@@ -1,5 +1,5 @@
-const units = 100000;
-const dests = 3;
+const units = 100;
+//const dests = 3;
 const loop = 100; 
 const timeStep = 1000 // msec
 const renderStep = 100 // msec
@@ -150,7 +150,7 @@ async function Initmanager(lat, lng)
     //   console.log(manager.m_unitList[0].m_anim.datTimestamp[i]);
     // }
   
-  }, 1000); 
+  }, 5000); 
 
   executeStep = 1;  
 
