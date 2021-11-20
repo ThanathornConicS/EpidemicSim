@@ -13,6 +13,8 @@ var placeService;
 
 let manager = new Manager();
 
+const placeList = ["resturant"]; 
+
 // Create Properties for overlay
 //let props;
 
@@ -34,6 +36,34 @@ loadScript(GOOGLE_MAPS_API_URL).then(() =>
   const props = CreateAnimProperties("trip", DATA_URL);
 
   var unitColor = [];
+  
+  // Init 
+var initLoop = window.setInterval(() => 
+{ 
+  if(searchComplete == placeList.length){ 
+    console.log("Counter: " + placeCounter); 
+ 
+    manager.Init(units, placeCounter);     // #of unit, #of dest 
+    manager.SpawnSpot(Math.floor(Math.random() * placeCounter)); 
+ 
+    manager.InitLocation(renderStep); 
+ 
+    // // checking 
+ 
+    // console.log(manager.m_unitList[0].m_stayDelay + " " + manager.m_unitList[0].m_travDelay); 
+ 
+    // for(let i = 0; i < manager.m_unitList[0].m_anim.datPath.length; i++){ 
+    //   console.log(manager.m_unitList[0].m_anim.datPath[i][0] + ", " + manager.m_unitList[0].m_anim.datPath[i][1]); 
+    // } 
+ 
+    // for(let i = 0; i < manager.m_unitList[0].m_anim.datTimestamp.length; i++){ 
+    //   console.log(manager.m_unitList[0].m_anim.datTimestamp[i]); 
+    // } 
+    executeStep = 1; 
+    clearInterval(initLoop); 
+  } 
+ 
+}, timeStep); 
 
   // Logic Loop
 var mainLoop = window.setInterval(() =>
@@ -131,40 +161,44 @@ async function Initmanager(lat, lng)
 
   console.time("init_Sim")
 
+  for(let i = 0; i < placeList.length; i++){ 
+    placeService.nearbySearch(CreateSearchRequest({lat, lng}, placeList[i]), SearchNearbyCallback); 
+  } 
+
   // Search
   //placeService.nearbySearch(CreateSearchRequest({lat, lng}, "airport"), SearchNearbyCallback);
   // placeService.nearbySearch(CreateSearchRequest({lat, lng}, "bus_station"), SearchNearbyCallback);
   // placeService.nearbySearch(CreateSearchRequest({lat, lng}, "hospital"), SearchNearbyCallback);
   // placeService.nearbySearch(CreateSearchRequest({lat, lng}, "school"), SearchNearbyCallback);
   // placeService.nearbySearch(CreateSearchRequest({lat, lng}, "shopping_mall"), SearchNearbyCallback);
-  placeService.nearbySearch(CreateSearchRequest({lat, lng}, "resturant"), SearchNearbyCallback);
+  //placeService.nearbySearch(CreateSearchRequest({lat, lng}, "resturant"), SearchNearbyCallback);
 
-  setTimeout(function (){
+  // setTimeout(function (){
 
-    console.log("Counter: " + placeCounter);
-    manager.Init(units, placeCounter);     // #of unit, #of dest
-    manager.SpawnSpot(Math.floor(Math.random() * placeCounter));
+  //   console.log("Counter: " + placeCounter);
+  //   manager.Init(units, placeCounter);     // #of unit, #of dest
+  //   manager.SpawnSpot(Math.floor(Math.random() * placeCounter));
 
-    manager.InitLocation(renderStep);
+  //   manager.InitLocation(renderStep);
     
-    //let json = JSON.stringify(manager.m_animData);
-    //props = CreateAnimProperties("trips", dat)
+  //   //let json = JSON.stringify(manager.m_animData);
+  //   //props = CreateAnimProperties("trips", dat)
 
-    // // checking
+  //   // // checking
 
-    // console.log(manager.m_unitList[0].m_stayDelay + " " + manager.m_unitList[0].m_travDelay);
+  //   // console.log(manager.m_unitList[0].m_stayDelay + " " + manager.m_unitList[0].m_travDelay);
 
-    // for(let i = 0; i < manager.m_unitList[0].m_anim.datPath.length; i++){
-    //   console.log(manager.m_unitList[0].m_anim.datPath[i][0] + ", " + manager.m_unitList[0].m_anim.datPath[i][1]);
-    // }
+  //   // for(let i = 0; i < manager.m_unitList[0].m_anim.datPath.length; i++){
+  //   //   console.log(manager.m_unitList[0].m_anim.datPath[i][0] + ", " + manager.m_unitList[0].m_anim.datPath[i][1]);
+  //   // }
 
-    // for(let i = 0; i < manager.m_unitList[0].m_anim.datTimestamp.length; i++){
-    //   console.log(manager.m_unitList[0].m_anim.datTimestamp[i]);
-    // }
+  //   // for(let i = 0; i < manager.m_unitList[0].m_anim.datTimestamp.length; i++){
+  //   //   console.log(manager.m_unitList[0].m_anim.datTimestamp[i]);
+  //   // }
   
-  }, 5000); 
+  // }, 5000); 
 
-  executeStep = 1;  
+  // executeStep = 1;  
 
   console.timeEnd("init_Sim")
 }

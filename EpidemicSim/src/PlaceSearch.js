@@ -1,4 +1,5 @@
 var placeCounter = 0;
+var searchComplete = 0; 
 
 function CreateSearchRequest(location, placeToSearch)
 {
@@ -22,4 +23,5 @@ function SearchNearbyCallback(results, status)
           placeCounter++;
         }
     }
+    searchComplete++; 
 }

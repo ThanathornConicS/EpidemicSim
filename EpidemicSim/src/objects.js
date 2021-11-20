@@ -167,8 +167,8 @@ function Manager() {
     // Spawn one infected at selected location
     this.SpawnSpot = function(dest_num){
         let spawn = this.m_destList[dest_num].m_susList.values().next().value;
-        console.log("Dest_num: " + dest_num);
-        console.log("Spawn: " + spawn);
+        // console.log("Dest_num: " + dest_num);
+        // console.log("Spawn: " + spawn);
         this.m_destList[dest_num].m_susList.delete(parseInt(spawn,10));                                                                                   
         //let spawn = this.m_destList[dest_num].m_susList.pop();   // last unit of the selected dest
         this.m_unitList[spawn].m_state = true;   // set infected state
