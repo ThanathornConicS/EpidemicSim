@@ -3,6 +3,11 @@ const MAXTIME = 2;
 const MAXDEST = 3;
 const INF_PER = 0.50; // range 0 to 1
 
+function DrawData()
+{
+    this.datPath = [];
+    this.datTimestamp = [];
+}
 
 //-------types and methods-------
 function Vec2(x, y){
@@ -48,9 +53,11 @@ function Manager() {
     this.m_unitList = [],
     this.m_destList = [],
 
-    this.m_datPath = [],
-    this.m_datTimestamp = [],
-    this.m_datColor = [],
+    // this.m_datPath = [],
+    // this.m_datTimestamp = [],
+    // this.m_datColor = [],
+
+    this.m_animData = []
 
     // // initialize unit and destination
     // this.Init = function(units, dests){
@@ -224,34 +231,32 @@ function Manager() {
 
         for(let i = 0; i < this.m_unitList.length; i++){
             let step =  this.m_unitList[i].m_travDelay / (renderStep / 1000.0);
+            let tempDrawData = new DrawData();
             for(j = 0; j < this.m_unitList[i].m_destPath.length; j++){
 
                 // datPath
                 let A = this.m_unitList[i].m_destPath[j];
                 let B = this.m_unitList[i].m_destPath[(j+1) % this.m_unitList[i].m_destPath.length];
+                // datTimestamp
+                let start = (this.m_unitList[i].m_stayDelay - 1) + (j * (this.m_unitList[i].m_stayDelay + this.m_unitList[i].m_stayDelay)) ;
+                let end = start + this.m_unitList[i].m_travDelay;
+
                 for(k = 0; k <= step; k++){
                     let tempLngLat = [];
                     let stepFrac = k/step;
                     let Cal = this.m_destList[A].m_position.LerpTo(this.m_destList[B].m_position, stepFrac);
                     
+                    //let stepFrac = k/step;
+                    let time = Lerp(start, end, stepFrac) * 100;
+
                     tempLngLat.push(Cal.x);
                     tempLngLat.push(Cal.y);
-                    this.m_datPath.push(tempLngLat); 
 
-                }
-
-
-                
-
-                // datTimestamp
-                let start = (this.m_unitList[i].m_stayDelay - 1) + (j * (this.m_unitList[i].m_stayDelay + this.m_unitList[i].m_stayDelay)) ;
-                let end = start + this.m_unitList[i].m_travDelay;
-                for(k = 0; k <= step; k++){
-                    let stepFrac = k/step;
-                    let time = Lerp(start, end, stepFrac);
-                    this.m_datTimestamp.push(time);
+                    tempDrawData.datPath.push(tempLngLat); 
+                    tempDrawData.datTimestamp.push(time)
                 }
             }
+            this.m_animData.push(tempDrawData);
         } 
 
         // console.log("datLength: " + this.m_datPath.length);
@@ -321,10 +326,4 @@ function Dest(lnglat){
 
 //     m_stayDelay: 0,     // time spent in one location
 //     m_travDelay: 0      // time spent travel from one place to another
-// }
-
-// function DrawData()
-// {
-//     this.datPath = [];
-//     this.datTimestamp = [];
 // }

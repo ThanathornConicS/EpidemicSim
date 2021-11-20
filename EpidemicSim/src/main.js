@@ -1,4 +1,4 @@
-const units = 100;
+const units = 10;
 //const dests = 3;
 const loop = 100; 
 const timeStep = 1000 // msec
@@ -6,12 +6,15 @@ const renderStep = 100 // msec
 let stepCounter = 0;
 let executeStep = 0;
 
-let currentTime = 0;
+var currentTime = 0;
 
 var map;
 var placeService;
 
 let manager = new Manager();
+
+// Create Properties for overlay
+//let props;
 
 // Main Function
 loadScript(GOOGLE_MAPS_API_URL).then(() => 
@@ -28,8 +31,7 @@ loadScript(GOOGLE_MAPS_API_URL).then(() =>
 
   console.timeEnd("init_map")
 
-  // Create Properties for overlay
-  const props = CreateAnimProperties("trips", DATA_URL);
+  const props = CreateAnimProperties("trip", DATA_URL);
 
   var unitColor = [];
 
@@ -67,14 +69,21 @@ var renderLoop = window.setInterval(() =>
   if(executeStep >= 2){
     console.time("render_time")
     //console.log("[renderLoop] Place Counter: " + placeCounter);
-    currentTime = (currentTime + 4) % LOOP_LENGTH;
+    currentTime = (currentTime + 1) % LOOP_LENGTH;
+    
+    //let json = JSON.stringify(manager.m_animData);
+    console.log(currentTime);
+    //console.log(json);
 
     const animate = () => 
     {
       const tripsLayer = new TripsLayer({
         ...props,
+        //data: dat,
         currentTime,
-        //getColor: (color) => VENDOR_COLORS[color],
+        getColor: [0, 0, 255],
+        //getPath: (data) => data.datPath,
+        //getTimestamps: (data) => data.datTimestamps,
       });
 
       overlay.setProps({
@@ -137,6 +146,9 @@ async function Initmanager(lat, lng)
     manager.SpawnSpot(Math.floor(Math.random() * placeCounter));
 
     manager.InitLocation(renderStep);
+    
+    //let json = JSON.stringify(manager.m_animData);
+    //props = CreateAnimProperties("trips", dat)
 
     // // checking
 

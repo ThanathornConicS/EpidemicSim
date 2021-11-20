@@ -5,7 +5,34 @@ const GOOGLE_MAPS_API_URL = "https://maps.googleapis.com/maps/api/js?key=AIzaSyD
 
 //const DATA_URL = "https://raw.githubusercontent.com/visgl/deck.gl-data/master/website/sf.trips.json";         // DeckGL Test
 const DATA_URL = "https://raw.githubusercontent.com/visgl/deck.gl-data/master/examples/trips/trips-v7.json";    // Google Map Test
-const LOOP_LENGTH = 1800;
+const LOOP_LENGTH = 1600;
+
+const dat = 
+[
+  {
+    "vendor": 0,
+    "datPath": [
+      [-74.20986, 40.81773],
+      [-74.20987, 40.81765],
+      [-74.20998, 40.81746],
+      [-74.21062, 40.81682],
+      [-74.21002, 40.81644],
+      [-74.21084, 40.81536],
+      [-74.21142, 40.8146],
+      [-74.20965, 40.81354],
+      [-74.21166, 40.81158],
+      [-74.21247, 40.81073],
+      [-74.21294, 40.81019],
+      [-74.21302, 40.81009],
+      [-74.21055, 40.80768],
+      [-74.20995, 40.80714],
+      [-74.20674, 40.80398],
+      [-74.20659, 40.80382],
+      [-74.20634, 40.80352],
+      [-74.20466, 40.80157]],
+      "datTimestamps": [ 1191, 1193.803, 1205.321, 1249.883, 1277.923, 1333.85, 1373.257, 1451.769, 1527.939, 1560.114, 1579.966, 1583.555, 1660.904, 1678.797, 1779.882, 1784.858, 1793.853, 1868.948]
+  }
+]
 
 const VENDOR_COLORS = 
 [
@@ -56,14 +83,14 @@ function CreateAnimProperties(idName, data)
     
     // billboard: false,
     capRounded: true,
-    getColor:  (data) => VENDOR_COLORS[data.vendor],
+    //getColor:  (data) => VENDOR_COLORS[data.vendor],
     getPath: (data) => data.path,
     // getWidth: 1,
     jointRounded: true,
     // miterLimit: 4,
     // widthMaxPixels: Number.MAX_SAFE_INTEGER,
     widthMinPixels: 4,
-    // widthScale: 1,
+    //widthScale: 2,
     // widthUnits: 'meters',
     
     /* props inherited from Layer class */
