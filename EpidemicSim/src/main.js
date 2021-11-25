@@ -45,7 +45,14 @@ var initLoop = window.setInterval(() =>
     console.log("Counter: " + placeCounter); 
  
     manager.Init(units, placeCounter);     // #of unit, #of dest 
-    manager.SpawnSpot(Math.floor(Math.random() * placeCounter)); 
+
+    let spawnPos = 0;//Math.floor(Math.random() * placeCounter);
+    
+    while(manager.m_destList[spawnPos].m_susList.size == 0){
+      spawnPos = (spawnPos + 1) % placeCounter;
+    }
+
+    manager.SpawnSpot(spawnPos); 
  
     manager.InitLocation(renderStep); 
 
