@@ -13,7 +13,7 @@ var placeService;
 
 let manager = new Manager();
 
-const placeList = ["resturant"]; 
+const placeList = ["resturant", "airport","bus_station" ,"hospital" ,"school" ,"shopping_mall" ]; 
 
 // Create Properties for overlay
 let props;
@@ -49,8 +49,8 @@ var initLoop = window.setInterval(() =>
  
     manager.InitLocation(renderStep); 
 
-    // data = JSON.stringify(manager.m_animData);
-    // console.log(data);
+    data = JSON.stringify(manager.m_animData);
+    console.log(data);
 
     props = CreateAnimProperties("trip", dat);
     //props = CreateAnimProperties("trip", DATA_URL);
@@ -105,7 +105,7 @@ var renderLoop = window.setInterval(() =>
   if(executeStep >= 2){
     console.time("render_time")
     //console.log("[renderLoop] Place Counter: " + placeCounter);
-    currentTime = (currentTime + 1) % LOOP_LENGTH;
+    currentTime = (currentTime + 5) % LOOP_LENGTH;
     
     console.log(currentTime);
 

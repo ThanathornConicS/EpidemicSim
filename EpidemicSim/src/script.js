@@ -130,7 +130,7 @@ function CreateAnimProperties(idName, data)
     fadeTrail: true,
     //getTimestamps: (data) => data.timestamps,
     getTimestamps: (data) => data.datTimestamps,
-    trailLength: 10,
+    trailLength: 20,
     
     /* props inherited from PathLayer class */
     
@@ -143,7 +143,7 @@ function CreateAnimProperties(idName, data)
     jointRounded: true,
     // miterLimit: 4,
     // widthMaxPixels: Number.MAX_SAFE_INTEGER,
-    widthMinPixels: 4,
+    widthMinPixels: 6,
     //widthScale: 2,
     // widthUnits: 'meters',
     
