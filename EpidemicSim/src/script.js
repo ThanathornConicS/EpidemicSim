@@ -3,34 +3,33 @@ const GOOGLE_MAPS_API_KEY = "AIzaSyDEQPWQuG15KfetsMZM2jPzrwJyz0vAdAc"; // eslint
 const GOOGLE_MAP_ID = "5afdd176907dbee8"; // eslint-disable-line
 const GOOGLE_MAPS_API_URL = "https://maps.googleapis.com/maps/api/js?key=AIzaSyDEQPWQuG15KfetsMZM2jPzrwJyz0vAdAc&libraries=places&map_ids=5afdd176907dbee8&v=beta";
 
-//const DATA_URL = "https://raw.githubusercontent.com/visgl/deck.gl-data/master/website/sf.trips.json";         // DeckGL Test
-const DATA_URL = "https://raw.githubusercontent.com/visgl/deck.gl-data/master/examples/trips/trips-v7.json";    // Google Map Test
-const LOOP_LENGTH = 1600;
+//const DATA_URL = "https://raw.githubusercontent.com/visgl/deck.gl-data/master/website/sf.trips.json";               // DeckGL Test
+//const DATA_URL = "https://raw.githubusercontent.com/visgl/deck.gl-data/master/examples/trips/trips-v7.json";          // Google Map Test
+const DATA_URL = "https://raw.githubusercontent.com/ThanathornConicS/EpidemicSim/develop/EpidemicSim/src/data.json"   // Our Test
+const LOOP_LENGTH = 100;
 
 const dat = 
 [
   {
-    "vendor": 0,
     "datPath": [
-      [-74.20986, 40.81773],
-      [-74.20987, 40.81765],
-      [-74.20998, 40.81746],
-      [-74.21062, 40.81682],
-      [-74.21002, 40.81644],
-      [-74.21084, 40.81536],
-      [-74.21142, 40.8146],
-      [-74.20965, 40.81354],
-      [-74.21166, 40.81158],
-      [-74.21247, 40.81073],
-      [-74.21294, 40.81019],
-      [-74.21302, 40.81009],
-      [-74.21055, 40.80768],
-      [-74.20995, 40.80714],
-      [-74.20674, 40.80398],
-      [-74.20659, 40.80382],
-      [-74.20634, 40.80352],
-      [-74.20466, 40.80157]],
-      "datTimestamps": [ 1191, 1193.803, 1205.321, 1249.883, 1277.923, 1333.85, 1373.257, 1451.769, 1527.939, 1560.114, 1579.966, 1583.555, 1660.904, 1678.797, 1779.882, 1784.858, 1793.853, 1868.948]
+      [-74.0059728,40.7127753],
+      [-74.00531076499999,40.713196679999996],
+      [-74.00464873,40.71361806],
+      [-74.003986695,40.71403944],
+      [-74.00332466,40.71446082],
+      [-74.002662625,40.7148822],
+      [-74.00200059,40.71530358],
+      [-74.00133855499999,40.71572496]],
+      "datTimestamps": [ 0,10.9999999999999,20,30,40,50,60,70]
+  },
+  {
+    "datPath": [
+      [-74.00475441999998,40.71962951],
+      [-74.00470046,40.71977938],
+      [-74.00464649999999,40.71992925],
+      [-74.00459253999999,40.72007912],
+      [-74.00453858,40.720228989999995]],
+      "datTimestamps": [ 0,10.9999999999999,20,30,40]
   }
 ]
 
@@ -73,18 +72,20 @@ function CreateAnimProperties(idName, data)
   {
     id: idName,
     data: data,
-    currentTime,
+    currentTime: 0,
     /* props from TripsLayer class */
     fadeTrail: true,
-    getTimestamps: (data) => data.timestamps,
-    trailLength: 20,
+    //getTimestamps: (data) => data.timestamps,
+    getTimestamps: (data) => data.datTimestamps,
+    trailLength: 10,
     
     /* props inherited from PathLayer class */
     
     // billboard: false,
     capRounded: true,
     //getColor:  (data) => VENDOR_COLORS[data.vendor],
-    getPath: (data) => data.path,
+    //getPath: (data) => data.path,
+    getPath: (data) => data.datPath,
     // getWidth: 1,
     jointRounded: true,
     // miterLimit: 4,
@@ -104,7 +105,7 @@ function CreateAnimProperties(idName, data)
     // pickable: false,
     // visible: true,
     // wrapLongitude: false,
-    shadowEnabled: true,
+    //shadowEnabled: true,
   }
 
   return properties;

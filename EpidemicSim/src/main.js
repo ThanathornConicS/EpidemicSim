@@ -52,7 +52,8 @@ var initLoop = window.setInterval(() =>
     // data = JSON.stringify(manager.m_animData);
     // console.log(data);
 
-    props = CreateAnimProperties("trip", data);
+    props = CreateAnimProperties("trip", dat);
+    //props = CreateAnimProperties("trip", DATA_URL);
  
     // // checking 
  
@@ -98,14 +99,13 @@ var mainLoop = window.setInterval(() =>
   }
 }, timeStep);
 
-
 // render Loop
 var renderLoop = window.setInterval(() =>
 {
   if(executeStep >= 2){
     console.time("render_time")
     //console.log("[renderLoop] Place Counter: " + placeCounter);
-    currentTime = (currentTime + 4) % LOOP_LENGTH;
+    currentTime = (currentTime + 1) % LOOP_LENGTH;
     
     console.log(currentTime);
 
@@ -113,11 +113,8 @@ var renderLoop = window.setInterval(() =>
     {
       const tripsLayer = new TripsLayer({
         ...props,
-        //data: dat,
-        currentTime,
+        currentTime: currentTime,
         getColor: [0, 0, 255],
-        //getPath: (data) => data.datPath,
-        //getTimestamps: (data) => data.datTimestamps,
       });
 
       overlay.setProps({
