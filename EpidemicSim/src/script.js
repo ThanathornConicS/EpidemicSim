@@ -6,7 +6,7 @@ const GOOGLE_MAPS_API_URL = "https://maps.googleapis.com/maps/api/js?key=AIzaSyD
 //const DATA_URL = "https://raw.githubusercontent.com/visgl/deck.gl-data/master/website/sf.trips.json";               // DeckGL Test
 //const DATA_URL = "https://raw.githubusercontent.com/visgl/deck.gl-data/master/examples/trips/trips-v7.json";          // Google Map Test
 const DATA_URL = "https://raw.githubusercontent.com/ThanathornConicS/EpidemicSim/develop/EpidemicSim/src/data.json"   // Our Test
-const LOOP_LENGTH = 1100;
+const LOOP_LENGTH = 5900;
 
 const dat = 
 [
@@ -130,7 +130,7 @@ function CreateAnimProperties(idName, data)
     fadeTrail: true,
     //getTimestamps: (data) => data.timestamps,
     getTimestamps: (data) => data.datTimestamps,
-    trailLength: 20,
+    trailLength: 40,
     
     /* props inherited from PathLayer class */
     

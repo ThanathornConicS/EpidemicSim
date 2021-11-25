@@ -52,8 +52,8 @@ var initLoop = window.setInterval(() =>
     data = JSON.stringify(manager.m_animData);
     console.log(data);
 
-    props = CreateAnimProperties("trip", dat);
-    //props = CreateAnimProperties("trip", DATA_URL);
+    //props = CreateAnimProperties("trip", dat);
+    props = CreateAnimProperties("trip", DATA_URL);
  
     // // checking 
  
@@ -105,7 +105,7 @@ var renderLoop = window.setInterval(() =>
   if(executeStep >= 2){
     console.time("render_time")
     //console.log("[renderLoop] Place Counter: " + placeCounter);
-    currentTime = (currentTime + 5) % LOOP_LENGTH;
+    currentTime = (currentTime + 10) % LOOP_LENGTH;
     
     console.log(currentTime);
 
