@@ -16,7 +16,8 @@ let manager = new Manager();
 const placeList = ["resturant"]; 
 
 // Create Properties for overlay
-//let props;
+let props;
+let data = "data.json";
 
 // Main Function
 loadScript(GOOGLE_MAPS_API_URL).then(() => 
@@ -33,7 +34,7 @@ loadScript(GOOGLE_MAPS_API_URL).then(() =>
 
   console.timeEnd("init_map")
 
-  const props = CreateAnimProperties("trip", DATA_URL);
+  //const props = CreateAnimProperties("trip", DATA_URL);
 
   var unitColor = [];
   
@@ -47,6 +48,11 @@ var initLoop = window.setInterval(() =>
     manager.SpawnSpot(Math.floor(Math.random() * placeCounter)); 
  
     manager.InitLocation(renderStep); 
+
+    // data = JSON.stringify(manager.m_animData);
+    // console.log(data);
+
+    props = CreateAnimProperties("trip", data);
  
     // // checking 
  
@@ -99,11 +105,9 @@ var renderLoop = window.setInterval(() =>
   if(executeStep >= 2){
     console.time("render_time")
     //console.log("[renderLoop] Place Counter: " + placeCounter);
-    currentTime = (currentTime + 1) % LOOP_LENGTH;
+    currentTime = (currentTime + 4) % LOOP_LENGTH;
     
-    //let json = JSON.stringify(manager.m_animData);
     console.log(currentTime);
-    //console.log(json);
 
     const animate = () => 
     {
