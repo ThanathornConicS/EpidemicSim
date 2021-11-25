@@ -6,7 +6,7 @@ const INF_PER = 0.50; // range 0 to 1
 function DrawData()
 {
     this.datPath = [];
-    this.datTimestamp = [];
+    this.datTimestamps = [];
 }
 
 //-------types and methods-------
@@ -230,7 +230,8 @@ function Manager() {
     this.InitLocation = function(renderStep){
 
         for(let i = 0; i < this.m_unitList.length; i++){
-            let step =  this.m_unitList[i].m_travDelay / (renderStep / 1000.0);
+            //let step =  this.m_unitList[i].m_travDelay / (renderStep / 1000.0);
+            let step = 1;
             let tempDrawData = new DrawData();
             for(j = 0; j < this.m_unitList[i].m_destPath.length; j++){
 
@@ -253,7 +254,7 @@ function Manager() {
                     tempLngLat.push(Cal.y);
 
                     tempDrawData.datPath.push(tempLngLat); 
-                    tempDrawData.datTimestamp.push(time)
+                    tempDrawData.datTimestamps.push(time)
                 }
             }
             this.m_animData.push(tempDrawData);
