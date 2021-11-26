@@ -59,8 +59,8 @@ var initLoop = window.setInterval(() =>
     data = JSON.stringify(manager.m_animData);
     console.log(data);
 
-    props = CreateAnimProperties("trip", data);
-    //props = CreateAnimProperties("trip", DATA_URL);
+    //props = CreateAnimProperties("trip", data);
+    props = CreateAnimProperties("trip", DATA_URL);
  
     // // checking 
  
@@ -88,11 +88,12 @@ var mainLoop = window.setInterval(() =>
     manager.MoveUnits();
     manager.UpdateDests();
     
-    unitColor = [];
-
+    //unitColor = [];
+    m_vendorColor = [];
     for(let i = 0; i < manager.m_unitList.length; i++)
     {
-      unitColor.push(manager.m_unitList[i].m_state);
+      let check = manager.m_unitList[i].m_state
+      m_vendorColor.push(VENDOR_COLORS[Number(check)]);
     }
 
     stepCounter++; /*iterate*/
@@ -121,7 +122,7 @@ var renderLoop = window.setInterval(() =>
       const tripsLayer = new TripsLayer({
         ...props,
         currentTime: currentTime,
-        getColor: [0, 0, 255],
+        getColor: (data) => manager.m_vendorColor[data.vendor],
       });
 
       overlay.setProps({
