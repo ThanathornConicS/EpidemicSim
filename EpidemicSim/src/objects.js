@@ -44,7 +44,7 @@ function Vec2(x, y){
 }
 
 function Lerp (start, end, amt){
-    return (1-amt)*start+amt*end
+    return (1-amt)*start+amt*end;
 }
 
 
@@ -231,7 +231,7 @@ function Manager() {
 
         for(let i = 0; i < this.m_unitList.length; i++){
             //let step =  this.m_unitList[i].m_travDelay / (renderStep / 1000.0);
-            let step = 1;
+            //let step = 1;
             let tempDrawData = new DrawData();
             for(j = 0; j < this.m_unitList[i].m_destPath.length; j++){
 
@@ -242,20 +242,34 @@ function Manager() {
                 let start = (this.m_unitList[i].m_stayDelay - 1) + (j * (this.m_unitList[i].m_stayDelay + this.m_unitList[i].m_stayDelay)) ;
                 let end = start + this.m_unitList[i].m_travDelay;
 
-                for(k = 0; k <= step; k++){
-                    let tempLngLat = [];
-                    let stepFrac = k/step;
-                    let Cal = this.m_destList[A].m_position.LerpTo(this.m_destList[B].m_position, stepFrac);
+                let tempLngLat_s = [];
+                tempLngLat_s.push(this.m_destList[A].m_position.x.toFixed(5));
+                tempLngLat_s.push(this.m_destList[A].m_position.y.toFixed(5));
+
+                tempDrawData.datPath.push(tempLngLat_s); 
+                tempDrawData.datTimestamps.push(start * 100);
+
+                let tempLngLat_e = [];
+                tempLngLat_e.push(this.m_destList[B].m_position.x.toFixed(5));
+                tempLngLat_e.push(this.m_destList[B].m_position.y.toFixed(5));
+
+                tempDrawData.datPath.push(tempLngLat_e); 
+                tempDrawData.datTimestamps.push(end * 100);
+                
+                // for(k = 0; k <= step; k++){
+                //     let tempLngLat = [];
+                //     let stepFrac = k/step;
+                //     let Cal = this.m_destList[A].m_position.LerpTo(this.m_destList[B].m_position, stepFrac);
                     
-                    //let stepFrac = k/step;
-                    let time = Lerp(start, end, stepFrac) * 100;
+                //     //let stepFrac = k/step;
+                //     let time = Lerp(start, end, stepFrac) * 100;
 
-                    tempLngLat.push(Cal.x);
-                    tempLngLat.push(Cal.y);
+                //     tempLngLat.push(Cal.x);
+                //     tempLngLat.push(Cal.y);
 
-                    tempDrawData.datPath.push(tempLngLat); 
-                    tempDrawData.datTimestamps.push(time)
-                }
+                //     tempDrawData.datPath.push(tempLngLat); 
+                //     tempDrawData.datTimestamps.push(time);
+                // }
             }
             this.m_animData.push(tempDrawData);
         } 

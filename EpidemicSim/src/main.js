@@ -59,8 +59,8 @@ var initLoop = window.setInterval(() =>
     data = JSON.stringify(manager.m_animData);
     console.log(data);
 
-    //props = CreateAnimProperties("trip", dat);
-    props = CreateAnimProperties("trip", DATA_URL);
+    props = CreateAnimProperties("trip", data);
+    //props = CreateAnimProperties("trip", DATA_URL);
  
     // // checking 
  
