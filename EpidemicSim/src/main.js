@@ -1,120 +1,88 @@
-const units = 10;
+const units = 1000;
 //const dests = 3;
 const loop = 100; 
 const timeStep = 1000 // msec
 const renderStep = 100 // msec
+
 let stepCounter = 0;
 let executeStep = 0;
-
 var currentTime = 0;
 
 var map;
 var placeService;
 
 let manager = new Manager();
-
 const placeList = ["resturant", "airport","bus_station" ,"hospital" ,"school" ,"shopping_mall" ]; 
 
 // Create Properties for overlay
 let props;
 let data = "data.json";
 
+
+
 // Main Function
 loadScript(GOOGLE_MAPS_API_URL).then(() => 
 {
-  //Initialize
-  console.time("init_map")
-
   // Google Map Init
   map = new google.maps.Map(document.getElementById('map'), mapOptions);
   placeService = new google.maps.places.PlacesService(map);
 
   // Create overlay instance
   const overlay = new GoogleMapsOverlay({});
-
-  console.timeEnd("init_map")
-
-  //const props = CreateAnimProperties("trip", DATA_URL);
-
-  var unitColor = [];
   
-  // Init 
+
+
+  // ----------------Init Loop----------------
 var initLoop = window.setInterval(() => 
 { 
-  if(searchComplete == placeList.length){ 
-    console.log("Counter: " + placeCounter); 
- 
-    manager.Init(units, placeCounter);     // #of unit, #of dest 
-
-    let spawnPos = 0;//Math.floor(Math.random() * placeCounter);
-    
+  if(searchComplete == placeList.length)    // wait search to complete 
+  {   
+    manager.Init(units, placeCounter);      // #of unit, #of dest 
+    let spawnPos = 0;                       // inf spawn location
     while(manager.m_destList[spawnPos].m_susList.size == 0){
       spawnPos = (spawnPos + 1) % placeCounter;
     }
-
     manager.SpawnSpot(spawnPos); 
- 
     manager.InitLocation(renderStep); 
 
     data = JSON.stringify(manager.m_animData);
     console.log(data);
-
-    //props = CreateAnimProperties("trip", data);
+    //props = CreateAnimProperties("trip", dat);
     props = CreateAnimProperties("trip", DATA_URL);
- 
-    // // checking 
- 
-    // console.log(manager.m_unitList[0].m_stayDelay + " " + manager.m_unitList[0].m_travDelay); 
- 
-    // for(let i = 0; i < manager.m_unitList[0].m_anim.datPath.length; i++){ 
-    //   console.log(manager.m_unitList[0].m_anim.datPath[i][0] + ", " + manager.m_unitList[0].m_anim.datPath[i][1]); 
-    // } 
- 
-    // for(let i = 0; i < manager.m_unitList[0].m_anim.datTimestamp.length; i++){ 
-    //   console.log(manager.m_unitList[0].m_anim.datTimestamp[i]); 
-    // } 
-    executeStep = 1; 
-    clearInterval(initLoop); 
+
+    executeStep = 1;                        // update stage => 1
+    clearInterval(initLoop);                
   } 
- 
 }, timeStep); 
 
-  // Logic Loop
+
+
+  // ----------------Logic Loop----------------
 var mainLoop = window.setInterval(() =>
 {
-  /// call your function here
-  if(executeStep >= 1){
+  if(executeStep >= 1)                      // check stage >= 1
+  {                   
     console.time("loop_time")
     manager.MoveUnits();
     manager.UpdateDests();
-    
-    //unitColor = [];
-    m_vendorColor = [];
-    for(let i = 0; i < manager.m_unitList.length; i++)
-    {
-      let check = manager.m_unitList[i].m_state
-      m_vendorColor.push(VENDOR_COLORS[Number(check)]);
-    }
+    manager.UpdateAnimColor();              // get color state of units
 
-    stepCounter++; /*iterate*/
-    if(stepCounter >= loop){ clearInterval(mainLoop); }
-    
-    //console.log("Place Counter: " + placeCounter);
-
+    executeStep = 2;                        // update stage => 2
     console.timeEnd("loop_time")
 
-    executeStep = 2;
+    stepCounter++; /*iterate*/
+    if(stepCounter >= loop){ clearInterval(mainLoop); } // end loop
   }
 }, timeStep);
 
-// render Loop
+
+
+// ----------------render Loop----------------
 var renderLoop = window.setInterval(() =>
 {
   if(executeStep >= 2){
     console.time("render_time")
-    //console.log("[renderLoop] Place Counter: " + placeCounter);
     currentTime = (currentTime + 10) % LOOP_LENGTH;
-    
     console.log(currentTime);
 
     const animate = () => 
@@ -134,11 +102,14 @@ var renderLoop = window.setInterval(() =>
     window.requestAnimationFrame(animate);
     overlay.setMap(map);
     
-    if(stepCounter >= loop){ clearInterval(renderLoop); }
+    if(stepCounter >= loop){ clearInterval(renderLoop); } // end loop
     console.timeEnd("render_time")
   }
 }, renderStep);
 
+
+
+  // ---------------- Mouse Callback ----------------
   map.addListener("click", (mouseEvent) => 
   {
     // Add Circle Later
@@ -167,47 +138,8 @@ var renderLoop = window.setInterval(() =>
 async function Initmanager(lat, lng)
 {
   await AddCircle();
-
-  console.time("init_Sim")
-
-  for(let i = 0; i < placeList.length; i++){ 
+  for(let i = 0; i < placeList.length; i++)
+  { 
     placeService.nearbySearch(CreateSearchRequest({lat, lng}, placeList[i]), SearchNearbyCallback); 
   } 
-
-  // Search
-  //placeService.nearbySearch(CreateSearchRequest({lat, lng}, "airport"), SearchNearbyCallback);
-  // placeService.nearbySearch(CreateSearchRequest({lat, lng}, "bus_station"), SearchNearbyCallback);
-  // placeService.nearbySearch(CreateSearchRequest({lat, lng}, "hospital"), SearchNearbyCallback);
-  // placeService.nearbySearch(CreateSearchRequest({lat, lng}, "school"), SearchNearbyCallback);
-  // placeService.nearbySearch(CreateSearchRequest({lat, lng}, "shopping_mall"), SearchNearbyCallback);
-  //placeService.nearbySearch(CreateSearchRequest({lat, lng}, "resturant"), SearchNearbyCallback);
-
-  // setTimeout(function (){
-
-  //   console.log("Counter: " + placeCounter);
-  //   manager.Init(units, placeCounter);     // #of unit, #of dest
-  //   manager.SpawnSpot(Math.floor(Math.random() * placeCounter));
-
-  //   manager.InitLocation(renderStep);
-    
-  //   //let json = JSON.stringify(manager.m_animData);
-  //   //props = CreateAnimProperties("trips", dat)
-
-  //   // // checking
-
-  //   // console.log(manager.m_unitList[0].m_stayDelay + " " + manager.m_unitList[0].m_travDelay);
-
-  //   // for(let i = 0; i < manager.m_unitList[0].m_anim.datPath.length; i++){
-  //   //   console.log(manager.m_unitList[0].m_anim.datPath[i][0] + ", " + manager.m_unitList[0].m_anim.datPath[i][1]);
-  //   // }
-
-  //   // for(let i = 0; i < manager.m_unitList[0].m_anim.datTimestamp.length; i++){
-  //   //   console.log(manager.m_unitList[0].m_anim.datTimestamp[i]);
-  //   // }
-  
-  // }, 5000); 
-
-  // executeStep = 1;  
-
-  console.timeEnd("init_Sim")
 }

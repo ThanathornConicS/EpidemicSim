@@ -1,4 +1,4 @@
-// control the simulation
+// variables
 const MAXTIME = 2;
 const MAXDEST = 3;
 const INF_PER = 0.50; // range 0 to 1
@@ -142,8 +142,15 @@ function Manager() {
         }
     }
 
+    this.UpdateAnimColor = function(){
+        m_vendorColor = [];     // clear
+        for(let i = 0; i < manager.m_unitList.length; i++){
+            let check = manager.m_unitList[i].m_state
+            manager.m_vendorColor.push(VENDOR_COLORS[Number(check)]);
+        }
+    }
 
-    // positioning
+    // init positioning
     this.InitLocation = function(renderStep){
 
         for(let i = 0; i < this.m_unitList.length; i++){
@@ -191,31 +198,12 @@ function Manager() {
             }
             this.m_animData.push(tempDrawData);
         } 
-
-        // console.log("datLength: " + this.m_datPath.length);
-
-        // for(let i = 0; i < this.m_datPath.length; i++){
-        //     console.log("datPath: " + this.m_datPath[i][0] + ", " + this.m_datPath[i][1]);
-        // }
-    
     }
-
-    
-
-    // this.UpdateLocation = function(renderStep){
-    //     for(let i = 0; i < this.m_unitList.length; i++){
-    //         if(this.m_unitList[i].m_onTrav){
-    //             this.m_unitList[i].m_position.x = lerp (this.m_unitList[i].m_position.x, this.m_destList[this.m_unitList[i].GetDest()].m_position.x , renderStep * 0.001);
-    //             this.m_unitList[i].m_position.y = lerp (this.m_unitList[i].m_position.y, this.m_destList[this.m_unitList[i].GetDest()].m_position.y , renderStep * 0.001);
-    //         }
-    //     }
-    // }
-
 }
 
 function Unit(arg_stay, arg_trav) {
-    this.m_state = false,       // boolean
-    this.m_onTrav = false,      // boolean
+    this.m_state = false,       
+    this.m_onTrav = false,      
 
     this.m_destPath = []
     this.m_pathPos = 0;
@@ -224,39 +212,12 @@ function Unit(arg_stay, arg_trav) {
     this.m_travDelay = arg_trav,
     this.m_counter = 0
 
-    //this.m_position = new Vec2(0,0);    // for visualization
-    // this.m_anim = new DrawData();
-
     this.GetDest = function() { return this.m_destPath[this.m_pathPos]; }
-    //this.GetDest = function(m_destPos) { return this.m_destPath[m_destPos]; }
 }
 
 function Dest(lnglat){
-
-    // // using array
-    // this.m_susList = [],  // list of sus in this location, position of unit in unitList[]
-    // this.m_infList = []   // list of inf in this location
-
-    // using map for optimization
     this.m_susList = new Map();
     this.m_infList = new Map();
 
-    this.m_position = lnglat;    // for visualization
+    this.m_position = lnglat;    
 }
-
-// test class 2
-// separate sus and inf 
-
-// var Sus = {     // susceptible
-//     m_dest: [],     // array of destination that unit will take
-
-//     m_stayDelay: 0,     // time spent in one location
-//     m_travDelay: 0     // time spent travel from one place to another
-// }
-
-// var Inf = {     // infected
-//     m_dest: [],     // array of destination that unit will take
-
-//     m_stayDelay: 0,     // time spent in one location
-//     m_travDelay: 0      // time spent travel from one place to another
-// }
