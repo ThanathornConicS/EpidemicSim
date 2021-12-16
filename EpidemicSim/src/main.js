@@ -18,8 +18,6 @@ const placeList = ["resturant", "airport","bus_station" ,"hospital" ,"school" ,"
 let props;
 let data = "data.json";
 
-
-
 // Main Function
 loadScript(GOOGLE_MAPS_API_URL).then(() => 
 {
@@ -30,8 +28,25 @@ loadScript(GOOGLE_MAPS_API_URL).then(() =>
   // Create overlay instance
   const overlay = new GoogleMapsOverlay({});
   
+  const scene = new THREE.Scene();
+  const ambientLight = new THREE.AmbientLight(0xffffff, 0.75);
 
+  scene.add(ambientLight);
+  const directionalLight = new THREE.DirectionalLight(0xffffff, 0.25);
 
+  directionalLight.position.set(0, 10, 50);
+  scene.add(directionalLight);
+
+  const geometry = new THREE.BoxGeometry( 1, 1, 1 );
+  const material = new THREE.MeshBasicMaterial( {color: 0x00ff00} );
+  const cube = new THREE.Mesh( geometry, material );
+  scene.add( cube );
+
+  new google.maps.plugins.three.ThreeJSOverlayView({
+    map,
+    scene,
+    anchor: { ...mapOptions.center, altitude: 100 },
+  });
   // ----------------Init Loop----------------
 var initLoop = window.setInterval(() => 
 { 
