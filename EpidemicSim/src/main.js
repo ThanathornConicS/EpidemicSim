@@ -12,7 +12,7 @@ var map;
 var placeService;
 
 let manager = new Manager();
-const placeList = ["resturant", "airport","bus_station" ,"hospital" ,"school" ,"shopping_mall" ]; 
+const placeList = ["resturant"/*, "airport","bus_station" ,"hospital" ,"school" ,"shopping_mall" */]; 
 
 // Create Properties for overlay
 let props;
@@ -32,80 +32,80 @@ loadScript(GOOGLE_MAPS_API_URL).then(() =>
   
 
 
-  // ----------------Init Loop----------------
-var initLoop = window.setInterval(() => 
-{ 
-  if(searchComplete == placeList.length)    // wait search to complete 
-  {   
-    manager.Init(units, placeCounter);      // #of unit, #of dest 
-    let spawnPos = 0;                       // inf spawn location
-    while(manager.m_destList[spawnPos].m_susList.size == 0){
-      spawnPos = (spawnPos + 1) % placeCounter;
-    }
-    manager.SpawnSpot(spawnPos); 
-    manager.InitLocation(renderStep); 
-
-    data = JSON.stringify(manager.m_animData);
-    console.log(data);
-    //props = CreateAnimProperties("trip", dat);
-    props = CreateAnimProperties("trip", DATA_URL);
-
-    executeStep = 1;                        // update stage => 1
-    clearInterval(initLoop);                
-  } 
-}, timeStep); 
+  
+  var executeLoop = window.setInterval(() => 
+  { 
+    if(searchComplete == placeList.length)    // wait search to complete 
+    {   
+      clearInterval(executeLoop);             // clear interval
 
 
+      // ----------------Init Loop----------------
+      manager.Init(units, placeCounter);      // #of unit, #of dest 
+      let spawnPos = 0;                       // inf spawn location
 
-  // ----------------Logic Loop----------------
-var mainLoop = window.setInterval(() =>
-{
-  if(executeStep >= 1)                      // check stage >= 1
-  {                   
-    console.time("loop_time")
-    manager.MoveUnits();
-    manager.UpdateDests();
-    manager.UpdateAnimColor();              // get color state of units
+      // hotfix: empty init location 
+      while(manager.m_destList[spawnPos].m_susList.size == 0){
+        spawnPos = (spawnPos + 1) % placeCounter;
+      }
 
-    executeStep = 2;                        // update stage => 2
-    console.timeEnd("loop_time")
+      
+      manager.SpawnSpot(spawnPos); 
+      
+      // need change 
+      manager.InitLocation(renderStep); 
 
-    stepCounter++; /*iterate*/
-    if(stepCounter >= loop){ clearInterval(mainLoop); } // end loop
-  }
-}, timeStep);
+      // need change 
+      data = JSON.stringify(manager.m_animData);  
+      console.log(data);
+      //props = CreateAnimProperties("trip", dat);
+      props = CreateAnimProperties("trip", DATA_URL);
+
+      
+
+      // ----------------Logic Loop----------------
+      for(let i = 0; i < loop; i++)                    
+      {                   
+        //console.time("loop_time")
+        manager.MoveUnits();
+        manager.UpdateDests();
+      
+        /* function to collect infect population / timestep */
+        /* function to collect color */
+        //manager.UpdateAnimColor();
+
+        //console.timeEnd("loop_time")
+      }
 
 
 
-// ----------------render Loop----------------
-var renderLoop = window.setInterval(() =>
-{
-  if(executeStep >= 2){
-    console.time("render_time")
-    currentTime = (currentTime + 10) % LOOP_LENGTH;
-    console.log(currentTime);
-
-    const animate = () => 
-    {
-      const tripsLayer = new TripsLayer({
-        ...props,
-        currentTime: currentTime,
-        getColor: (data) => manager.m_vendorColor[data.vendor],
-      });
-
-      overlay.setProps({
-        layers: [tripsLayer],
-      });
-      window.requestAnimationFrame(animate);
-    };
-
-    window.requestAnimationFrame(animate);
-    overlay.setMap(map);
+      // ----------------render Loop----------------
+      for(let i = 0; i < loop; i++)   
+      {
+        //console.time("render_time")
+        currentTime = (currentTime + 5) % LOOP_LENGTH;
+        console.log(currentTime);
     
-    if(stepCounter >= loop){ clearInterval(renderLoop); } // end loop
-    console.timeEnd("render_time")
-  }
-}, renderStep);
+        const animate = () => 
+        {
+          const tripsLayer = new TripsLayer({
+            ...props,
+            currentTime: currentTime,
+            // getColor: (data) => manager.m_vendorColor[data.vendor],
+            getColor: [0,0,255],
+          });
+    
+          overlay.setProps({
+            layers: [tripsLayer],
+          });
+          window.requestAnimationFrame(animate);
+        };
+    
+        window.requestAnimationFrame(animate);
+        overlay.setMap(map);
+      }
+    } 
+  }, timeStep); 
 
 
 
