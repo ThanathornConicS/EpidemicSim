@@ -1,12 +1,14 @@
-const units = 1000;
+const units = 20;
 //const dests = 3;
-const loop = 100; 
-const timeStep = 1000 // msec
-const renderStep = 100 // msec
+const totalDays = 7;
+const perDay = 24; 
+const timeStep = 1000 ;// msec
+const loop = perDay * totalDays;
+// const renderStep = 100 // msec
 
-let stepCounter = 0;
-let executeStep = 0;
-var currentTime = 0;
+// let stepCounter = 0;
+// let executeStep = 0;
+// var currentTime = 0;
 
 var map;
 var placeService;
@@ -66,19 +68,21 @@ loadScript(GOOGLE_MAPS_API_URL).then(() =>
       
 
       // ----------------Logic Loop----------------
-      for(let i = 0; i < loop; i++)                    
-      {                   
-        //console.time("loop_time")
-        manager.MoveUnits();
-        manager.UpdateDests();
       
-        /* function to collect infect population / timestep */
-        /* function to collect color */
-        //manager.UpdateAnimColor();
+      for(let day = 0; day < totalDays; day){
+        for(let hour = 0; hour < perDay; hour++)                    
+        {                   
+          //console.time("loop_time")
+          manager.MoveUnits(hour + (day * perDay));
+          manager.UpdateDests();
+        
+          /* function to collect infect population / timestep */
+          /* function to collect color */
+          //manager.UpdateAnimColor();
 
-        //console.timeEnd("loop_time")
+          //console.timeEnd("loop_time")
+        }
       }
-
 
 
       // ----------------render Loop----------------

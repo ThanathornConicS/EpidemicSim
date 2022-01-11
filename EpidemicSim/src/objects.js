@@ -58,8 +58,9 @@ function Manager() {
     // this.m_datTimestamp = [],
     // this.m_datColor = [],
 
-    this.m_animData = []
-    this.m_vendorColor = []
+    this.m_animData = [],
+    this.m_infAnimData = [],
+    this.m_vendorColor = [],
 
     // initialize unit and destination
     this.Init = function(units, dests){
@@ -77,7 +78,10 @@ function Manager() {
                 this.m_unitList[i].m_destPath.push(Math.floor(Math.random() * this.m_destList.length));
                 if(j == this.m_unitList[i].m_pathPos){ first = this.m_unitList[i].GetDest(); }  
             }
-            this.m_destList[first].m_susList.set(i, i);   // push units to their first dest                                                   
+            this.m_destList[first].m_susList.set(i, i);   // push units to their first dest            
+            
+            // initialize infAnimData
+            this.m_infAnimData.push(new DrawData());
         }
     }
 
@@ -93,7 +97,7 @@ function Manager() {
     }
     
     // Move unit by m_unitList
-    this.MoveUnits = function(){
+    this.MoveUnits = function(time){
         for(let i = 0; i < this.m_unitList.length; i++){
             if(!this.m_unitList[i].m_onTrav){   // staying
                 if(this.m_unitList[i].m_counter < this.m_unitList[i].m_stayDelay){  // keep staying
@@ -103,9 +107,12 @@ function Manager() {
                     this.m_unitList[i].m_pathPos = (this.m_unitList[i].m_pathPos + 1) % this.m_unitList[i].m_destPath.length;
                     if(this.m_unitList[i].m_destPath[prevPos] !== this.m_unitList[i].GetDest()){ // different dest
                         if(!this.m_unitList[i].m_state){
-                            this.m_destList[this.m_unitList[i].m_destPath[prevPos]].m_susList.delete(i); 
+                            this.m_destList[this.m_unitList[i].m_destPath[prevPos]].m_susList.delete(i);
                         }else{
                             this.m_destList[this.m_unitList[i].m_destPath[prevPos]].m_infList.delete(i);
+                            // inf path & timestamp out
+                            this.m_infAnimData[i].datPath.push(this.m_destList[this.m_unitList[i].m_destPath[prevPos]].m_position)
+                            this.m_infAnimData[i].datTimestamps.push(time)
                         }
                         this.m_unitList[i].m_onTrav = true   // is on travel
                     }
@@ -119,6 +126,9 @@ function Manager() {
                         this.m_destList[this.m_unitList[i].GetDest()].m_susList.set(parseInt(i,10),parseInt(i,10)); 
                     }else{
                         this.m_destList[this.m_unitList[i].GetDest()].m_infList.set(parseInt(i,10),parseInt(i,10)); 
+                        // inf path & timestamp in
+                        this.m_infAnimData[i].datPath.push(this.m_destList[this.m_unitList[i].GetDest()].m_position)
+                        this.m_infAnimData[i].datTimestamps.push(time)
                     }
                     this.m_unitList[i].m_counter = 0;   // reset counter
                     this.m_unitList[i].m_onTrav = false;    // is not travel
@@ -171,7 +181,7 @@ function Manager() {
                 tempLngLat_s.push(this.m_destList[A].m_position.y.toFixed(5));
 
                 tempDrawData.datPath.push(tempLngLat_s); 
-                tempDrawData.datTimestamps.push(start * 100);
+                tempDrawData.datTimestamps.push(start);
 
                 let tempLngLat_e = [];
                 tempLngLat_e.push(this.m_destList[B].m_position.x.toFixed(5));
@@ -179,7 +189,7 @@ function Manager() {
 
                 tempDrawData.vendor = i;
                 tempDrawData.datPath.push(tempLngLat_e); 
-                tempDrawData.datTimestamps.push(end * 100);
+                tempDrawData.datTimestamps.push(end);
                 
                 // for(k = 0; k <= step; k++){
                 //     let tempLngLat = [];
