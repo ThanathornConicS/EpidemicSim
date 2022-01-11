@@ -30,13 +30,6 @@ loadScript(GOOGLE_MAPS_API_URL).then(() =>
   // Create overlay instance
   const overlay = new GoogleMapsOverlay({});
   
-  const scene = new THREE.Scene();
-  const ambientLight = new THREE.AmbientLight(0xffffff, 0.75);
-
-  scene.add(ambientLight);
-  const directionalLight = new THREE.DirectionalLight(0xffffff, 0.25);
-
-  
   var executeLoop = window.setInterval(() => 
   { 
     if(searchComplete == placeList.length)    // wait search to complete 
@@ -63,9 +56,8 @@ loadScript(GOOGLE_MAPS_API_URL).then(() =>
       data = JSON.stringify(manager.m_animData);  
       console.log(data);
       //props = CreateAnimProperties("trip", dat);
-      props = CreateAnimProperties("trip", DATA_URL);
-
-      
+      susProps = CreateAnimProperties("sus", DATA_URL);
+      infProps = CreateAnimProperties("inf", DATA_URL);
 
       // ----------------Logic Loop----------------
       
@@ -84,7 +76,6 @@ loadScript(GOOGLE_MAPS_API_URL).then(() =>
         }
       }
 
-
       // ----------------render Loop----------------
       for(let i = 0; i < loop; i++)   
       {
@@ -94,15 +85,22 @@ loadScript(GOOGLE_MAPS_API_URL).then(() =>
     
         const animate = () => 
         {
-          const tripsLayer = new TripsLayer({
-            ...props,
+          const susLayer = new TripsLayer({
+            ...susProps,
             currentTime: currentTime,
             // getColor: (data) => manager.m_vendorColor[data.vendor],
-            getColor: [0,0,255],
+            getColor: [0, 66, 176],
+          });
+
+          const infLayer = new TripsLayer({
+            ...infProps,
+            currentTime: currentTime,
+            // getColor: (data) => manager.m_vendorColor[data.vendor],
+            getColor: [190, 25, 25],
           });
     
           overlay.setProps({
-            layers: [tripsLayer],
+            layers: [susLayer, infLayer],
           });
           window.requestAnimationFrame(animate);
         };
