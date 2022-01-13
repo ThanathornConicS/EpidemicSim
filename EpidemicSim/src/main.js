@@ -65,7 +65,7 @@ loadScript(GOOGLE_MAPS_API_URL).then(() =>
         for(let hour = 0; hour < perDay; hour++)                    
         {                   
           //console.time("loop_time")
-          manager.MoveUnits(hour + (day * perDay));
+          manager.MoveUnits(hour, day);
           manager.UpdateDests();
         
           /* function to collect infect population / timestep */

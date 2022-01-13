@@ -97,41 +97,50 @@ function Manager() {
     }
     
     // Move unit by m_unitList
-    this.MoveUnits = function(time){
+    this.MoveUnits = function(hour, day){
         for(let i = 0; i < this.m_unitList.length; i++){
-            if(!this.m_unitList[i].m_onTrav){   // staying
-                if(this.m_unitList[i].m_counter < this.m_unitList[i].m_stayDelay){  // keep staying
-                    this.m_unitList[i].m_counter++; // update                        
-                }else{  // moving out
-                    let prevPos = this.m_unitList[i].m_pathPos;
-                    this.m_unitList[i].m_pathPos = (this.m_unitList[i].m_pathPos + 1) % this.m_unitList[i].m_destPath.length;
-                    if(this.m_unitList[i].m_destPath[prevPos] !== this.m_unitList[i].GetDest()){ // different dest
-                        if(!this.m_unitList[i].m_state){
-                            this.m_destList[this.m_unitList[i].m_destPath[prevPos]].m_susList.delete(i);
-                        }else{
-                            this.m_destList[this.m_unitList[i].m_destPath[prevPos]].m_infList.delete(i);
-                            // inf path & timestamp out
-                            this.m_infAnimData[i].datPath.push(this.m_destList[this.m_unitList[i].m_destPath[prevPos]].m_position)
-                            this.m_infAnimData[i].datTimestamps.push(time)
+
+            //check awake
+            if(this.m_unitList[i].awakeAt == hour){
+                this.m_unitList[i].isAwake = true;
+            }
+
+            if(this.m_unitList[i].isAwake == true){
+                if(!this.m_unitList[i].m_onTrav){   // staying
+                    if(this.m_unitList[i].m_counter < this.m_unitList[i].m_stayDelay){  // keep staying
+                        this.m_unitList[i].m_counter++; // update                        
+                    }else{  // moving out
+                        let prevPos = this.m_unitList[i].m_pathPos;
+                        this.m_unitList[i].m_pathPos = (this.m_unitList[i].m_pathPos + 1) % this.m_unitList[i].m_destPath.length;
+                        if(this.m_unitList[i].m_destPath[prevPos] !== this.m_unitList[i].GetDest()){ // different dest
+                            if(!this.m_unitList[i].m_state){
+                                this.m_destList[this.m_unitList[i].m_destPath[prevPos]].m_susList.delete(i);
+                            }else{
+                                this.m_destList[this.m_unitList[i].m_destPath[prevPos]].m_infList.delete(i);
+                                // inf path & timestamp out
+                                this.m_infAnimData[i].datPath.push(this.m_destList[this.m_unitList[i].m_destPath[prevPos]].m_position)
+                                this.m_infAnimData[i].datTimestamps.push(hour + (day * 24))
+                            }
+                            this.m_unitList[i].m_onTrav = true   // is on travel
                         }
-                        this.m_unitList[i].m_onTrav = true   // is on travel
+                        this.m_unitList[i].m_counter = 1; // reset counter
                     }
-                    this.m_unitList[i].m_counter = 1; // reset counter
-                }
-            }else{  // traveling
-                if(this.m_unitList[i].m_counter < this.m_unitList[i].m_travDelay){  // keep staying
-                    this.m_unitList[i].m_counter++; // update  
-                }else{  // arriving                                                                                                                                    
-                    if(this.m_unitList[i].m_state == false){
-                        this.m_destList[this.m_unitList[i].GetDest()].m_susList.set(parseInt(i,10),parseInt(i,10)); 
-                    }else{
-                        this.m_destList[this.m_unitList[i].GetDest()].m_infList.set(parseInt(i,10),parseInt(i,10)); 
-                        // inf path & timestamp in
-                        this.m_infAnimData[i].datPath.push(this.m_destList[this.m_unitList[i].GetDest()].m_position)
-                        this.m_infAnimData[i].datTimestamps.push(time)
+                }else{  // traveling
+                    if(this.m_unitList[i].m_counter < this.m_unitList[i].m_travDelay){  // keep staying
+                        this.m_unitList[i].m_counter++; // update  
+                    }else{  // arriving                                                                                                                                    
+                        if(this.m_unitList[i].m_state == false){
+                            this.m_destList[this.m_unitList[i].GetDest()].m_susList.set(parseInt(i,10),parseInt(i,10)); 
+                        }else{
+                            this.m_destList[this.m_unitList[i].GetDest()].m_infList.set(parseInt(i,10),parseInt(i,10)); 
+                            // inf path & timestamp in
+                            this.m_infAnimData[i].datPath.push(this.m_destList[this.m_unitList[i].GetDest()].m_position)
+                            this.m_infAnimData[i].datTimestamps.push(hour + (day * 24))
+                        }
+                        this.m_unitList[i].m_counter = 0;   // reset counter
+                        this.m_unitList[i].m_onTrav = false;    // is not travel
+                        if(this.m_unitList[i].m_pathPos == 0){ this.m_unitList[i].isAwake = false;} // set sleep
                     }
-                    this.m_unitList[i].m_counter = 0;   // reset counter
-                    this.m_unitList[i].m_onTrav = false;    // is not travel
                 }
             }
         }
@@ -155,7 +164,7 @@ function Manager() {
     this.UpdateAnimColor = function(){
         m_vendorColor = [];     // clear
         for(let i = 0; i < manager.m_unitList.length; i++){
-            let check = manager.m_unitList[i].m_state
+            let check = manager.m_unitList[i].m_state;
             manager.m_vendorColor.push(VENDOR_COLORS[Number(check)]);
         }
     }
@@ -217,6 +226,8 @@ function Unit(arg_stay, arg_trav) {
 
     this.m_destPath = []
     this.m_pathPos = 0;
+    this.awakeAt = Math.floor(Math.random() * (24 /*hrs*/ - (MAXDEST * (arg_stay + arg_trav))));  // awake time
+    this.isAwake = false;
     
     this.m_stayDelay = arg_stay,
     this.m_travDelay = arg_trav,
