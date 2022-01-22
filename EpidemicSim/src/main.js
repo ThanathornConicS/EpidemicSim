@@ -18,7 +18,6 @@ const placeList = ["resturant"/*, "airport","bus_station" ,"hospital" ,"school" 
 
 // Create Properties for overlay
 let props;
-let data = "data.json";
 
 // Main Function
 loadScript(GOOGLE_MAPS_API_URL).then(() => 
@@ -36,7 +35,6 @@ loadScript(GOOGLE_MAPS_API_URL).then(() =>
     {   
       clearInterval(executeLoop);             // clear interval
 
-
       // ----------------Init Loop----------------
       manager.Init(units, placeCounter);      // #of unit, #of dest 
       let spawnPos = 0;                       // inf spawn location
@@ -50,20 +48,31 @@ loadScript(GOOGLE_MAPS_API_URL).then(() =>
       manager.SpawnSpot(spawnPos); 
       
       // need change 
-      manager.InitLocation(renderStep); 
+      manager.InitLocation(); 
 
       // need change 
-      data = JSON.stringify(manager.m_animData);  
+      let infdata = JSON.stringify(manager.m_infAnimData);
+      let data = JSON.stringify(manager.m_animData);  
+      
+
       console.log(data);
+      console.log(infdata);
+
+      console.log(manager.m_animData);
+      console.log(manager.m_infAnimData);
+
       //props = CreateAnimProperties("trip", dat);
       susProps = CreateAnimProperties("sus", DATA_URL);
       infProps = CreateAnimProperties("inf", DATA_URL);
 
+      console.log("FINISH DATA");
+
       // ----------------Logic Loop----------------
       
-      for(let day = 0; day < totalDays; day){
+      for(let day = 0; day < totalDays; day++){
         for(let hour = 0; hour < perDay; hour++)                    
-        {                   
+        {  
+          console.log("LOGIC");                 
           //console.time("loop_time")
           manager.MoveUnits(hour, day);
           manager.UpdateDests();
@@ -79,22 +88,23 @@ loadScript(GOOGLE_MAPS_API_URL).then(() =>
       // ----------------render Loop----------------
       for(let i = 0; i < loop; i++)   
       {
+        console.log("DRAW");
         //console.time("render_time")
-        currentTime = (currentTime + 5) % LOOP_LENGTH;
-        console.log(currentTime);
+        //currentTime = (currentTime + 1) % loop;
+        //console.log(currentTime);
     
         const animate = () => 
         {
           const susLayer = new TripsLayer({
             ...susProps,
-            currentTime: currentTime,
+            currentTime: i,
             // getColor: (data) => manager.m_vendorColor[data.vendor],
             getColor: [0, 66, 176],
           });
 
           const infLayer = new TripsLayer({
             ...infProps,
-            currentTime: currentTime,
+            currentTime: i,
             // getColor: (data) => manager.m_vendorColor[data.vendor],
             getColor: [190, 25, 25],
           });

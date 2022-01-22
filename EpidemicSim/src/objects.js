@@ -5,7 +5,7 @@ const INF_PER = 0.50; // range 0 to 1
 
 function DrawData()
 {
-    this.vendor = 0;
+    //this.vendor = 0;
     this.datPath = [];
     this.datTimestamps = [];
 }
@@ -118,8 +118,20 @@ function Manager() {
                             }else{
                                 this.m_destList[this.m_unitList[i].m_destPath[prevPos]].m_infList.delete(i);
                                 // inf path & timestamp out
-                                this.m_infAnimData[i].datPath.push(this.m_destList[this.m_unitList[i].m_destPath[prevPos]].m_position)
-                                this.m_infAnimData[i].datTimestamps.push(hour + (day * 24))
+                                
+                                if(i == 0)
+                                {
+                                    let tempPos = [];
+                                    tempPos.push(this.m_destList[this.m_unitList[i].m_destPath[prevPos]].m_position.x.toFixed(5));
+                                    tempPos.push(this.m_destList[this.m_unitList[i].m_destPath[prevPos]].m_position.y.toFixed(5));
+
+                                    this.m_infAnimData[i].datPath.push(tempPos)
+                                    this.m_infAnimData[i].datTimestamps.push(hour + (day * 24))
+                                }
+                                // console.log(this.m_infAnimData[i].datPath);
+                                // console.log(this.m_infAnimData[i].datTimestamps);
+
+                                //console.log(this.m_infAnimData)
                             }
                             this.m_unitList[i].m_onTrav = true   // is on travel
                         }
@@ -134,8 +146,15 @@ function Manager() {
                         }else{
                             this.m_destList[this.m_unitList[i].GetDest()].m_infList.set(parseInt(i,10),parseInt(i,10)); 
                             // inf path & timestamp in
-                            this.m_infAnimData[i].datPath.push(this.m_destList[this.m_unitList[i].GetDest()].m_position)
-                            this.m_infAnimData[i].datTimestamps.push(hour + (day * 24))
+                            if(i == 0)
+                            {
+                                let tempPos = [];
+                                tempPos.push(this.m_destList[this.m_unitList[i].GetDest()].m_position.x.toFixed(5));
+                                tempPos.push(this.m_destList[this.m_unitList[i].GetDest()].m_position.y.toFixed(5));
+
+                                this.m_infAnimData[i].datPath.push(tempPos)
+                                this.m_infAnimData[i].datTimestamps.push(hour + (day * 24))
+                            }
                         }
                         this.m_unitList[i].m_counter = 0;   // reset counter
                         this.m_unitList[i].m_onTrav = false;    // is not travel
@@ -170,7 +189,7 @@ function Manager() {
     }
 
     // init positioning
-    this.InitLocation = function(renderStep){
+    this.InitLocation = function(){
 
         for(let i = 0; i < this.m_unitList.length; i++){
             //let step =  this.m_unitList[i].m_travDelay / (renderStep / 1000.0);
@@ -196,7 +215,6 @@ function Manager() {
                 tempLngLat_e.push(this.m_destList[B].m_position.x.toFixed(5));
                 tempLngLat_e.push(this.m_destList[B].m_position.y.toFixed(5));
 
-                tempDrawData.vendor = i;
                 tempDrawData.datPath.push(tempLngLat_e); 
                 tempDrawData.datTimestamps.push(end);
                 
