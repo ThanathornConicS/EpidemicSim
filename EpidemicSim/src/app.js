@@ -25,10 +25,18 @@ const apiOptions = {
 const mapOptions = {
   "tilt": 0,
   "heading": 0,
-  "zoom": 18,
-  "center": { lat: 35.6594945, lng: 139.6999859 },
+  "zoom": 13,
+  "center": { lat: 13.764844967161544, lng: 100.53827147273205 },
   "mapId": "5afdd176907dbee8"    
 }
+
+const geometry = new THREE.CircleGeometry( 100, 32 );
+const susMaterial = new THREE.MeshBasicMaterial( { color: 0x1e1ed9 } );
+const infMaterial = new THREE.MeshBasicMaterial( { color: 0x870900 } );
+
+const circle = new THREE.Mesh( geometry, infMaterial );
+
+let circles = new Array();
 
 async function initMap() {    
   const mapDiv = document.getElementById("map");
@@ -51,18 +59,27 @@ function initWebglOverlayView(map) {
     const directionalLight = new THREE.DirectionalLight(0xffffff, 0.25);
     directionalLight.position.set(0.5, -1, 0.5);
     scene.add(directionalLight);
-  
+
+    for(let i = 0; i < 100; i++)
+    {
+      let cir = new THREE.Mesh( geometry, infMaterial );
+      circles.push(cir);
+      scene.add(circles[i]);
+    }
+    
+    //scene.add(circle);
+
     // load the model    
-    loader = new GLTFLoader();               
-    const source = "pin.gltf";
-    loader.load(
-      source,
-      gltf => {      
-        gltf.scene.scale.set(25,25,25);
-        gltf.scene.rotation.x = 180 * Math.PI/180; // rotations are in radians
-        scene.add(gltf.scene);           
-      }
-    );
+    // loader = new GLTFLoader();               
+    // const source = "pin.gltf";
+    // loader.load(
+    //   source,
+    //   gltf => {      
+    //     gltf.scene.scale.set(25,25,25);
+    //     gltf.scene.rotation.x = 180 * Math.PI/180; // rotations are in radians
+    //     scene.add(gltf.scene);           
+    //   }
+    // );
   }
   
   webglOverlayView.onContextRestored = (gl) => {        
@@ -76,31 +93,36 @@ function initWebglOverlayView(map) {
     renderer.autoClear = false;
 
     // wait to move the camera until the 3D model loads    
-    loader.manager.onLoad = () => {        
-      renderer.setAnimationLoop(() => {
-        map.moveCamera({
-          "tilt": mapOptions.tilt,
-          "heading": mapOptions.heading,
-          "zoom": mapOptions.zoom
-        });            
+    // loader.manager.onLoad = () => {        
+    //   renderer.setAnimationLoop(() => {
+    //     map.moveCamera({
+    //       "tilt": mapOptions.tilt,
+    //       "heading": mapOptions.heading,
+    //       "zoom": mapOptions.zoom
+    //     });            
         
-        // rotate the map 360 degrees 
-        if (mapOptions.tilt < 67.5) {
-          mapOptions.tilt += 0.5
-        } else if (mapOptions.heading <= 360) {
-          mapOptions.heading += 0.2;
-        } else {
-          renderer.setAnimationLoop(null)
-        }
-      });        
-    }
+    //     // rotate the map 360 degrees 
+    //     if (mapOptions.tilt < 67.5) {
+    //       mapOptions.tilt += 0.5
+    //     } else if (mapOptions.heading <= 360) {
+    //       mapOptions.heading += 0.2;
+    //     } else {
+    //       renderer.setAnimationLoop(null)
+    //     }
+    //   });        
+    // }
   }
 
   webglOverlayView.onDraw = (gl, coordinateTransformer) => {
     // update camera matrix to ensure the model is georeferenced correctly on the map     
     const matrix = coordinateTransformer.fromLatLngAltitude(mapOptions.center, 120);
     camera.projectionMatrix = new THREE.Matrix4().fromArray(matrix);
-    
+
+    circles[0].translateX(0.1);
+
+    circles[1].translateY(0.2);
+    circles[1].material = susMaterial;
+
     webglOverlayView.requestRedraw();      
     renderer.render(scene, camera);                  
 
