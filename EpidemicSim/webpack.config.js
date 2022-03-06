@@ -23,8 +23,9 @@ const CONFIG = {
     app: './src/app.js'
   },
   devServer: {
-    contentBase: path.join(__dirname, 'src'),
-    index: 'index.html'
+    static: path.join(__dirname, 'src'),
+    liveReload: true,
+    //index: 'index.html'
   },
 
   plugins: [

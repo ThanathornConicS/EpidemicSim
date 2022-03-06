@@ -13,6 +13,7 @@
 // limitations under the License.
 
 import { Loader } from '@googlemaps/js-api-loader';
+import { latLngToVector3, latLngToVector3Relative} from '@googlemaps/three';
 import * as THREE from 'three';
 import {GLTFLoader} from 'three/examples/jsm/loaders/GLTFLoader.js';
 
@@ -34,6 +35,8 @@ const geometry = new THREE.CircleGeometry( 100, 32 );
 const susMaterial = new THREE.MeshBasicMaterial( { color: 0x1e1ed9 } );
 const infMaterial = new THREE.MeshBasicMaterial( { color: 0x870900 } );
 
+const testMat = new THREE.MeshBasicMaterial( { color: 0x602de0 } );
+
 const circle = new THREE.Mesh( geometry, infMaterial );
 
 let circles = new Array();
@@ -53,7 +56,7 @@ function initWebglOverlayView(map) {
   webglOverlayView.onAdd = () => {   
     // set up the scene
     scene = new THREE.Scene();
-    camera = new THREE.PerspectiveCamera();
+    camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
     const ambientLight = new THREE.AmbientLight( 0xffffff, 0.75 ); // soft white light
     scene.add(ambientLight);
     const directionalLight = new THREE.DirectionalLight(0xffffff, 0.25);
@@ -64,9 +67,20 @@ function initWebglOverlayView(map) {
     {
       let cir = new THREE.Mesh( geometry, infMaterial );
       circles.push(cir);
-      scene.add(circles[i]);
     }
     
+    let tempVec = latLngToVector3Relative({lat: 13.767069888905883, lng: 100.51414033330558}, mapOptions.center);
+    console.log(tempVec);
+
+    //circles[2].position.set(latLngToVector3({lat: 13.767069888905883, lng: 100.51414033330558}));
+    for(let i = 0; i < 100; i++)
+    {
+      scene.add(circles[i]);
+    }
+
+    circles[2].translateX(tempVec.x);
+    circles[2].translateY(tempVec.y);
+
     //scene.add(circle);
 
     // load the model    
@@ -119,9 +133,11 @@ function initWebglOverlayView(map) {
     camera.projectionMatrix = new THREE.Matrix4().fromArray(matrix);
 
     circles[0].translateX(0.1);
-
+    console.log(circles[0].position);
     circles[1].translateY(0.2);
     circles[1].material = susMaterial;
+
+    circles[2].material = testMat;
 
     webglOverlayView.requestRedraw();      
     renderer.render(scene, camera);                  
