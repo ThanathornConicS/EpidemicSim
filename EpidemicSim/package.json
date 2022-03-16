@@ -5,7 +5,8 @@
   },
   "dependencies": {
     "@googlemaps/js-api-loader": "^1.13.7",
-    "@googlemaps/three": "^2.0.4"
+    "@googlemaps/three": "^2.0.4",
+    "jsdom": "^19.0.0"
   },
   "devDependencies": {
     "webpack": "^5.70.0",

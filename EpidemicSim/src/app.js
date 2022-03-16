@@ -28,6 +28,8 @@ const mapOptions = {
   "heading": 0,
   "zoom": 13,
   "center": { lat: 13.764844967161544, lng: 100.53827147273205 },
+  "disableDefaultUI": true,
+  "disableDoubleClickZoom": true,
   "mapId": "5afdd176907dbee8"    
 }
 
