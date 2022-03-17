@@ -89,7 +89,7 @@ function Manager() {
 
     // Step tracking
     this.currStep = 0;
-    this.renderStep = 50; // per render update (ms)
+    this.renderStep = 10; // per render update (ms)
     this.stepSol = 1 / (this.renderStep / 1000);
 
     // DrawData container

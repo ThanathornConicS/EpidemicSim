@@ -93,7 +93,7 @@ function initWebglOverlayView(map) {
       circles[i].translateY(tempVec.z);
       scene.add(circles[i]);
       // Add place to manager
-      manager.AddPlace(placeList[i]);
+      manager.AddPlace(new Vec2(tempVec.x, tempVec.z));
     }
     console.log("AddPlace()...[PASS]");
 
@@ -180,12 +180,11 @@ function initWebglOverlayView(map) {
 
         // Set position & visibility
         if(manager.m_drawData[i].datPath.has(loopCounter)){
-          let lnglat = manager.m_drawData[i].datPath.get(loopCounter);
-          let nextPos = latLngToVector3Relative({lat: lnglat.x, lng: lnglat.y}, mapOptions.center);
+          let nextPos = manager.m_drawData[i].datPath.get(loopCounter);
           let thisPos = agents[i].position;
           
           agents[i].translateX(nextPos.x - thisPos.x);
-          agents[i].translateY(nextPos.z - thisPos.y);
+          agents[i].translateY(nextPos.y - thisPos.y);
           agents[i].visible = true;
         }else{
           agents[i].visible = false;
@@ -195,7 +194,7 @@ function initWebglOverlayView(map) {
       // Counter increment
       loopCounter++;
       if(loopCounter > loop * manager.stepSol){
-        loopCounter = -1;
+        loopCounter = 0;
 
         // Reset unit state
         for(let i = 0; i < units; i++){
