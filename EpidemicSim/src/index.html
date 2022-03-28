@@ -24,16 +24,20 @@
     <!-- <script src="js/three.js"></script>
     <script src="https://cdn.rawgit.com/mrdoob/three.js/master/examples/js/loaders/GLTFLoader.js"></script> -->
     <script src="object.js" defer></script>   
-    <script src="app.js" defer></script>    
-
+    
   </head>
   <body style="font-family:Helvetica;">
     <h1>Epidemic Simulation</h1>
+    <script type="text/javascript" src="app.js" defer></script>    
     <div id="map"></div>    
 
-    <button>Press!</button>
+    <br><br>
 
-    <p>Hello There.</p>
+    <form>
+      <label for="popNum">Population Number: </label> <input type="text" id="popNum" name="popNum" value="1000"> <br>
+    </form>
+
+    <button id="Run">Run</button>
 
   </body>
 </html>

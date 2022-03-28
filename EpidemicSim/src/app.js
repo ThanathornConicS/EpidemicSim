@@ -35,7 +35,7 @@ const mapOptions = {
 
 // Simulation var
 let manager = new Manager;
-const units = 20;
+let units = 20;
 const loop = 20; 
 const placeList = [
   new Vec2(13.764844967161544, 100.53827147273205),
@@ -63,6 +63,12 @@ let lastFrame = 0.0;
 let circles = new Array();
 let agents = new Array();
 
+function SetPopValue()
+{
+  units = document.getElementById("popNum").value;
+  units = parseInt(units);
+}
+
 async function initMap() {    
   const mapDiv = document.getElementById("map");
   const apiLoader = new Loader(apiOptions);
@@ -70,11 +76,16 @@ async function initMap() {
   return new google.maps.Map(mapDiv, mapOptions);
 }
 
-
 function initWebglOverlayView(map) {  
   let scene, renderer, camera, loader;
   const webglOverlayView = new google.maps.WebglOverlayView();
   
+  document.getElementById("Run").addEventListener("click", () =>
+  {
+    SetPopValue();
+    console.log("Pressed!!");
+  });
+
   webglOverlayView.onAdd = () => {   
     // set up the scene
     scene = new THREE.Scene();
