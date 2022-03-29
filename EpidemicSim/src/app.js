@@ -83,7 +83,7 @@ function initWebglOverlayView(map) {
   document.getElementById("Run").addEventListener("click", () =>
   {
     SetPopValue();
-    console.log("Pressed!!");
+    console.log("Pressed!!" + units);
   });
 
   webglOverlayView.onAdd = () => {   
@@ -181,7 +181,7 @@ function initWebglOverlayView(map) {
     if(timeCounter > manager.renderStep){
       timeCounter -= manager.renderStep;
 
-      for(let i = 0; i < units; i++){
+      for(let i = 0; i < manager.m_unitList.length; i++){
         // Check state trigger
         if(manager.m_drawData[i].stateCheck.has(loopCounter)){
           if(manager.m_drawData[i].stateCheck.get(loopCounter)){
