@@ -8,6 +8,12 @@ function Lerp(start, end, t) {
     return (1 - t) * start + t * end;
 }
 
+function UserInitData()
+{
+    this.populationNumber = 1000;
+    this.infectionRate = 0.5;
+}
+
 // Vector2 Class
 function Vec2(x, y){
     this.x = x;

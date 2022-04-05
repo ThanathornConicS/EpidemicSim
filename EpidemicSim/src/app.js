@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import { Loader } from '@googlemaps/js-api-loader';
-import { latLngToVector3, latLngToVector3Relative} from '@googlemaps/three';
+import { latLngToVector3, latLngToVector3Relative, ThreeJSOverlayView} from '@googlemaps/three';
 import * as THREE from 'three';
 import {GLTFLoader} from 'three/examples/jsm/loaders/GLTFLoader.js';
 
@@ -35,6 +35,7 @@ const mapOptions = {
 
 // Simulation var
 let manager = new Manager;
+let userInitData = new UserInitData;
 let units = 20;
 const loop = 20; 
 const placeList = [
@@ -63,10 +64,10 @@ let lastFrame = 0.0;
 let circles = new Array();
 let agents = new Array();
 
-function SetPopValue()
+function SetValue()
 {
-  units = document.getElementById("popNum").value;
-  units = parseInt(units);
+  userInitData.populationNumber = parseInt(document.getElementById("popNum").value);
+  userInitData.infectionRate = parseInt(document.getElementById("infRate").value);
 }
 
 async function initMap() {    
@@ -82,8 +83,8 @@ function initWebglOverlayView(map) {
   
   document.getElementById("Run").addEventListener("click", () =>
   {
-    SetPopValue();
-    console.log("Pressed!!" + units);
+    SetValue();
+    console.log("Pressed!!" + userInitData.populationNumber + ", " + userInitData.infectionRate);
   });
 
   webglOverlayView.onAdd = () => {   
