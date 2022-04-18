@@ -78,7 +78,7 @@ async function initMap() {
 
 function initWebglOverlayView(map) {  
   let scene, renderer, camera, loader;
-  const webglOverlayView = new google.maps.WebglOverlayView();
+  const webglOverlayView = new google.maps.WebGLOverlayView();
   
   document.getElementById("Run").addEventListener("click", () =>
   {
@@ -150,7 +150,7 @@ function initWebglOverlayView(map) {
     // }
   }
   
-  webglOverlayView.onContextRestored = (gl) => {        
+  webglOverlayView.onContextRestored = ({gl}) => {        
     // create the three.js renderer, using the
     // maps's WebGL rendering context.
     renderer = new THREE.WebGLRenderer({
@@ -163,7 +163,7 @@ function initWebglOverlayView(map) {
 
   webglOverlayView.onDraw = (gl, coordinateTransformer) => {
     // update camera matrix to ensure the model is georeferenced correctly on the map     
-    const matrix = coordinateTransformer.fromLatLngAltitude(mapOptions.center, 120);
+    const matrix = latLngToVector3Relative(mapOptions.center, 120);
     camera.projectionMatrix = new THREE.Matrix4().fromArray(matrix);
 
     // Time tracking
