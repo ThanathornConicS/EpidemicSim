@@ -30,21 +30,18 @@ class StateMachine{
 // ========= State class ==========
 class Susceptible extends State{
     Evaluate = function(){
-        //super.display();
         console.log("I am Susceptible");
     }
 } 
 
 class Infected extends State{
     Evaluate = function(){
-        //super.display();
         console.log("I am a Infected");
     }
 } 
 
 class Recovered extends State{
     Evaluate = function(){
-        //super.display();
         console.log("I am a Recovered");
     }
 } 
