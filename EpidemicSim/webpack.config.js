@@ -27,7 +27,7 @@ const CONFIG = {
     liveReload: true,
     //index: 'index.html'
   },
-
+  devtool: "source-map",
   plugins: [
     // Read google maps token from environment variable
     new webpack.EnvironmentPlugin
