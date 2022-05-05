@@ -28,12 +28,14 @@ const mapOptions = {
   "heading": 0,
   "zoom": 13,
   "center": { lat: 13.764844967161544, lng: 100.53827147273205 },
+  "disableDefaultUI": true,
+  "disableDoubleClickZoom": true,
   "mapId": "5afdd176907dbee8"    
 }
 
 // Simulation var
 let manager = new Manager;
-const units = 20;
+let units = 20;
 const loop = 20; 
 const placeList = [
   new Vec2(13.764844967161544, 100.53827147273205),
@@ -61,6 +63,12 @@ let lastFrame = 0.0;
 let circles = new Array();
 let agents = new Array();
 
+function SetPopValue()
+{
+  units = document.getElementById("popNum").value;
+  units = parseInt(units);
+}
+
 async function initMap() {    
   const mapDiv = document.getElementById("map");
   const apiLoader = new Loader(apiOptions);
@@ -68,11 +76,16 @@ async function initMap() {
   return new google.maps.Map(mapDiv, mapOptions);
 }
 
-
 function initWebglOverlayView(map) {  
   let scene, renderer, camera, loader;
-  const webglOverlayView = new google.maps.WebglOverlayView();
+  const webglOverlayView = new google.maps.WebGLOverlayView();
   
+  document.getElementById("Run").addEventListener("click", () =>
+  {
+    SetPopValue();
+    console.log("Pressed!!" + units);
+  });
+
   webglOverlayView.onAdd = () => {   
     // set up the scene
     scene = new THREE.Scene();
@@ -137,7 +150,7 @@ function initWebglOverlayView(map) {
     // }
   }
   
-  webglOverlayView.onContextRestored = (gl) => {        
+  webglOverlayView.onContextRestored = ({gl}) => {        
     // create the three.js renderer, using the
     // maps's WebGL rendering context.
     renderer = new THREE.WebGLRenderer({
@@ -148,10 +161,18 @@ function initWebglOverlayView(map) {
     renderer.autoClear = false;
   }
 
-  webglOverlayView.onDraw = (gl, coordinateTransformer) => {
+  webglOverlayView.onDraw = ({gl, transformer}) => {
+    const latlngLit = 
+    {
+      lat: mapOptions.center.lat,
+      lng: mapOptions.center.lng,
+      altitude: 120,
+    };
     // update camera matrix to ensure the model is georeferenced correctly on the map     
-    const matrix = coordinateTransformer.fromLatLngAltitude(mapOptions.center, 120);
+    const matrix = transformer.fromLatLngAltitude(latlngLit);
     camera.projectionMatrix = new THREE.Matrix4().fromArray(matrix);
+
+    console.log(camera.projectionMatrix);
 
     // Time tracking
     let currentFrame = performance.now();
@@ -168,7 +189,7 @@ function initWebglOverlayView(map) {
     if(timeCounter > manager.renderStep){
       timeCounter -= manager.renderStep;
 
-      for(let i = 0; i < units; i++){
+      for(let i = 0; i < manager.m_unitList.length; i++){
         // Check state trigger
         if(manager.m_drawData[i].stateCheck.has(loopCounter)){
           if(manager.m_drawData[i].stateCheck.get(loopCounter)){

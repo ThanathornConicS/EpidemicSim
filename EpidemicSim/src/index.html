@@ -18,7 +18,7 @@
 <html>
   <head>
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-    <title>Google Maps Platform WebGL Codelab</title> 
+    <title>Epidemic Simulation</title> 
     <link rel="stylesheet" type="text/css" href="./styles.css" />   
 
     <!-- <script src="js/three.js"></script>
@@ -26,11 +26,20 @@
     <script src="state.js" defer></script>  
     <script src="behavior.js" defer></script> 
     <script src="object.js" defer></script>   
-    <script src="app.js" defer></script>    
-
+    
   </head>
-  <body>
+  <body style="font-family:Helvetica;">
+    <h1>Epidemic Simulation</h1>
+    <script type="text/javascript" src="app.js" defer></script>    
     <div id="map"></div>    
-    <!-- <script  async src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDEQPWQuG15KfetsMZM2jPzrwJyz0vAdAc&v=beta&libraries=places"></script> -->
+
+    <br><br>
+
+    <form>
+      <label for="popNum">Population Number: </label> <input type="text" id="popNum" name="popNum" value="1000"> <br>
+    </form>
+
+    <button id="Run">Run</button>
+
   </body>
 </html>
