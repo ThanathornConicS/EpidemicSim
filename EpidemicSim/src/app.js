@@ -172,8 +172,6 @@ function initWebglOverlayView(map) {
     const matrix = transformer.fromLatLngAltitude(latlngLit);
     camera.projectionMatrix = new THREE.Matrix4().fromArray(matrix);
 
-    console.log(camera.projectionMatrix);
-
     // Time tracking
     let currentFrame = performance.now();
     deltaTime = currentFrame - lastFrame;

@@ -48,29 +48,58 @@ function DrawData() {
 }
 
 // ========= Unit class ==========
-function Unit(arg_stay, arg_trav) {
-    // Unit state
-    this.m_state = false;
-    this.m_onTrav = false;
+class Unit extends StateMachine{
+    constructor(arg_stay, arg_trav) {
+        super();
+        // Unit timer
+        this.m_stayDelay = arg_stay;
+        this.m_travDelay = arg_trav;
+        this.m_counter = 0;
 
-    // Unit path
-    this.m_destPath = [];
-    this.m_pathPos = 0;
+        // Unit state
+        this.SetState(new Susceptible);
+        this.m_state = false;
+        this.m_onTrav = false;
 
-    // Unit timer
-    this.m_stayDelay = arg_stay;
-    this.m_travDelay = arg_trav;
-    this.m_counter = 0;
+        // Unit path
+        this.m_destPath = [];
+        this.m_pathPos = 0;
+    }
 
     // Func()
-    this.GetDestID = function () {
+    GetDestID = function () {
         return this.m_destPath[this.m_pathPos];
     }
 
-    this.NextPath = function () {
+    NextPath = function () {
         return (this.m_pathPos + 1) % this.m_destPath.length;
     }
+        
 }
+
+// function Unit(arg_stay, arg_trav) {
+//     // Unit state
+//     this.m_state = false;
+//     this.m_onTrav = false;
+
+//     // Unit path
+//     this.m_destPath = [];
+//     this.m_pathPos = 0;
+
+//     // Unit timer
+//     this.m_stayDelay = arg_stay;
+//     this.m_travDelay = arg_trav;
+//     this.m_counter = 0;
+
+//     // Func()
+//     this.GetDestID = function () {
+//         return this.m_destPath[this.m_pathPos];
+//     }
+
+//     this.NextPath = function () {
+//         return (this.m_pathPos + 1) % this.m_destPath.length;
+//     }
+// }
 
 // ====== Destination class ======
 function Dest(lnglat) {
@@ -112,7 +141,7 @@ function Manager() {
             // Unit & drawdata
             this.m_unitList.push(new Unit(Math.floor(Math.random() * MAXTIME) + 1, Math.floor(Math.random() * MAXTIME) + 1));
             this.m_drawData.push(new DrawData);
-
+            
             // Generate unit path
             for (let j = 0; j < MAXDEST; j++) {   
                 this.m_unitList[i].m_destPath.push(Math.floor(Math.random() * this.m_destList.length));
@@ -130,6 +159,11 @@ function Manager() {
         let spawn = this.m_destList[dest_num].m_susList.values().next().value;
         // Set infected state & move to infList
         this.m_unitList[spawn].m_state = true;
+
+        // testing
+        this.m_unitList[spawn].SetState(new Infected);
+        this.m_unitList[spawn].state.Evaluate();
+
         this.m_destList[dest_num].m_susList.delete(parseInt(spawn, 10));   
         this.m_destList[dest_num].m_infList.set(parseInt(spawn, 10), parseInt(spawn, 10));
         // Save to state check
@@ -194,6 +228,11 @@ function Manager() {
                         let unitID = this.m_destList[i].m_susList.get(value);
                         // Set infected state & move to infList
                         this.m_unitList[unitID].m_state = true;
+
+                        // testing
+                        this.m_unitList[unitID].SetState(new Infected);
+                        this.m_unitList[unitID].state.Evaluate();
+
                         this.m_destList[i].m_susList.delete(parseInt(value, 10));
                         this.m_destList[i].m_infList.set(parseInt(value, 10), parseInt(value, 10));
 

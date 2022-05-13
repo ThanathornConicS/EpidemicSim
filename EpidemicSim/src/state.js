@@ -46,12 +46,13 @@ class Recovered extends State{
     }
 } 
 
-class Agent extends StateMachine{
-    constructor() {
-        super();
-        this.SetState(new Infected);
-        this.state.Evaluate();
-    }
-}
+// class Agent extends StateMachine{
+//     constructor(input) {
+//         super();
+//         this.SetState(new Infected);
+//         this.state.Evaluate();
+//         console.log("Input: " + input);
+//     }
+// }
 
-let testSubject = new Agent;
+// let testSubject = new Agent;
