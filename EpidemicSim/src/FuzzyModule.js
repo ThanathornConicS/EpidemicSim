@@ -9,7 +9,7 @@ class FuzzyModule
     CreateFLV(varName)
     {
         let flv = new FuzzyVariable();
-        this.fuzzyVariables.set(String.toString(varName), flv);
+        this.fuzzyVariables.set(varName, flv);
         return flv;
     }
     AddRule(rule)

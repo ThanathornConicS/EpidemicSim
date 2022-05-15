@@ -82,7 +82,7 @@ function initWebglOverlayView(map) {
   
   document.getElementById("Run").addEventListener("click", () =>
   {
-    SetPopValue();
+    SetPopValue(); 
     console.log("Pressed!!" + units);
   });
 
@@ -95,7 +95,7 @@ function initWebglOverlayView(map) {
     const directionalLight = new THREE.DirectionalLight(0xffffff, 0.25);
     directionalLight.position.set(0.5, -1, 0.5);
     scene.add(directionalLight);
-
+    
     // Render Place
     for(let i = 0; i < placeList.length; i++){
       let cir = new THREE.Mesh( geometry, testMat );
@@ -171,8 +171,6 @@ function initWebglOverlayView(map) {
     // update camera matrix to ensure the model is georeferenced correctly on the map     
     const matrix = transformer.fromLatLngAltitude(latlngLit);
     camera.projectionMatrix = new THREE.Matrix4().fromArray(matrix);
-
-    console.log(camera.projectionMatrix);
 
     // Time tracking
     let currentFrame = performance.now();
