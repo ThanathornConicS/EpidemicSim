@@ -29,18 +29,36 @@ class StateMachine{
 
 // ========= State class ==========
 class Susceptible extends State{
+
+    constructor()
+    {
+        super();
+    }
+
     Evaluate = function(){
         console.log("I am Susceptible");
     }
 } 
 
 class Infected extends State{
+
+    constructor()
+    {
+        super();
+    }
+
     Evaluate = function(){
         console.log("I am a Infected");
     }
 } 
 
 class Recovered extends State{
+
+    constructor()
+    {
+        super();
+    }
+
     Evaluate = function(){
         console.log("I am a Recovered");
     }

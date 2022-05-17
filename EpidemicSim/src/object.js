@@ -8,6 +8,12 @@ function Lerp(start, end, t) {
     return (1 - t) * start + t * end;
 }
 
+// Random number function
+function GetRandomArbitrary(min, max) 
+{
+    return Math.random() * (max - min) + min;
+}
+
 // Vector2 Class
 function Vec2(x, y){
     this.x = x;
@@ -58,9 +64,16 @@ function Unit(arg_stay, arg_trav) {
     this.m_pathPos = 0;
 
     // Unit timer
-    this.m_stayDelay = arg_stay;
+    this.m_stayDelay = arg_stay;    // Act as an exposure
     this.m_travDelay = arg_trav;
     this.m_counter = 0;
+
+    // Protection Value
+    this.m_protectionFactor = 0.0;
+
+    // Infected Value
+    this.m_curedPercentage = 0.0;
+    this.m_deathPercentage = 0.0;
 
     // Func()
     this.GetDestID = function () {
@@ -95,6 +108,11 @@ function Manager() {
     // DrawData container
     this.m_drawData = [];
 
+    // Fuzzy State Modules
+    this.SuscepState = new PreInfect_Susceptible();
+    this.MildState = new PreInfect_MildInfect();
+    this.SevereState = new PreInfect_SevereInfect();
+
     // Add destination
     this.AddPlace = function(LngLat){
         this.m_destList.push(new Dest(LngLat));
@@ -120,8 +138,16 @@ function Manager() {
 
             // Push unit ID to it's first destination
             let first = this.m_unitList[i].GetDestID();
-            this.m_destList[first].m_susList.set(i, i);                                             
+            this.m_destList[first].m_susList.set(i, i); 
+            
+            // Random Protection factor for each unit
+            this.m_unitList[i].m_protectionFactor = GetRandomArbitrary(0, 100);
         }
+
+        // Initialize Fuzzy states
+        this.SuscepState.InitFuzzy();
+        this.MildState.InitFuzzy();
+        this.SevereState.InitFuzzy();
     }
 
     // Spawn infected at selected destination
@@ -189,16 +215,70 @@ function Manager() {
             // Check if infected is present
             if (this.m_destList[i].m_infList.size !== 0) {
                 // Randomly infect susList
-                for (let [key, value] of this.m_destList[i].m_susList) {
-                    if (Math.random() >= INF_PER) {
-                        let unitID = this.m_destList[i].m_susList.get(value);
-                        // Set infected state & move to infList
-                        this.m_unitList[unitID].m_state = true;
-                        this.m_destList[i].m_susList.delete(parseInt(value, 10));
-                        this.m_destList[i].m_infList.set(parseInt(value, 10), parseInt(value, 10));
+                for (let [key, value] of this.m_destList[i].m_susList) 
+                {
+                    // Math Random Infect
+                    // if (Math.random() >= INF_PER) {
+                    //     let unitID = this.m_destList[i].m_susList.get(value);
+                    //     // Set infected state & move to infList
+                    //     this.m_unitList[unitID].m_state = true;
+                    //     this.m_destList[i].m_susList.delete(parseInt(value, 10));
+                    //     this.m_destList[i].m_infList.set(parseInt(value, 10), parseInt(value, 10));
 
-                        // Save to state check
-                        this.StateTrigger(unitID, this.currStep, true);
+                    //     // Save to state check
+                    //     this.StateTrigger(unitID, this.currStep, true);
+                    // }
+                    
+                    // Fuzzy Infect
+                    let unitID = this.m_destList[i].m_susList.get(value);
+
+                    let susValue = this.SuscepState.GetDesirability(this.m_unitList[unitID].m_protectionFactor, this.m_unitList[unitID].m_stayDelay);
+                    let mildValue = this.MildState.GetDesirability(this.m_unitList[unitID].m_protectionFactor, this.m_unitList[unitID].m_stayDelay);
+                    let servereValue = this.SevereState.GetDesirability(this.m_unitList[unitID].m_protectionFactor, this.m_unitList[unitID].m_stayDelay);
+
+                    let valueList = [susValue, mildValue, servereValue];
+                    let maxIdx; 
+                    let maxVal = valueList[0];
+                    for(let i = 1; i < 3; i++)
+                    {
+                        if (maxVal < valueList[i])
+                        {
+                            maxVal = valueList[i];
+                            maxIdx = i;
+                        }
+                    }
+
+                    switch (maxIdx) 
+                    {
+                        case 0:
+                            break;
+                        case 1:
+                            // Set infected state & move to infList
+                            this.m_unitList[unitID].m_state = true;
+                            this.m_unitList[unitID].m_curedPercentage = GetRandomArbitrary(0.2, 1.0);
+                            this.m_unitList[unitID].m_deathPercentage = GetRandomArbitrary(0.8, 1.0);
+
+                            this.m_destList[i].m_susList.delete(parseInt(value, 10));
+                            this.m_destList[i].m_infList.set(parseInt(value, 10), parseInt(value, 10));
+
+                            // Save to state check
+                            this.StateTrigger(unitID, this.currStep, true);
+                            break;
+                        case 2:
+                            // Set infected state & move to infList
+                            this.m_unitList[unitID].m_state = true;
+                            this.m_unitList[unitID].m_curedPercentage = GetRandomArbitrary(0.7, 1.0);
+                            this.m_unitList[unitID].m_deathPercentage = GetRandomArbitrary(0.2, 1.0);
+
+                            this.m_destList[i].m_susList.delete(parseInt(value, 10));
+                            this.m_destList[i].m_infList.set(parseInt(value, 10), parseInt(value, 10));
+
+                            // Save to state check
+                            this.StateTrigger(unitID, this.currStep, true);
+                            break;
+                    
+                        default:
+                            break;
                     }
                 }
             }

@@ -195,41 +195,41 @@ class PreInfect_SevereInfect extends PreInfectState
         this.FLV_Exposure = this.fuzzyModule.CreateFLV(this.FLV_NAME.FZ_SET_EXPOSURE.toString("F"));
         this.FLV_Possibility = this.fuzzyModule.CreateFLV(this.FLV_NAME.FZ_SET_POSSIBILITY.toString("F")); 
         
-        this.Protection_Low = FLV_Protection.AddLeftSet
+        this.Protection_Low = this.FLV_Protection.AddLeftSet
         (
             this.FZ_SET_PROTECTION.LOW.toString("F"), 0, 10, 50
         );
-        this.Protection_Normal = FLV_Protection.AddTriangularSet
+        this.Protection_Normal = this.FLV_Protection.AddTriangularSet
         (
             this.FZ_SET_PROTECTION.NORMAL.toString("F"), 10, 50, 90
         );
-        this.Protection_High = FLV_Protection.AddRightSet
+        this.Protection_High = this.FLV_Protection.AddRightSet
         (
             this.FZ_SET_PROTECTION.HIGH.toString("F"), 50, 90, 100
         );
 
-        this.Exposure_Short = FLV_Exposure.AddLeftSet
+        this.Exposure_Short = this.FLV_Exposure.AddLeftSet
         (
             this.FZ_SET_EXPOSURETIME.SHORT.toString("F"), 0, 2, 5
         );
-        this.Exposure_Medium = FLV_Exposure.AddTriangularSet
+        this.Exposure_Medium = this.FLV_Exposure.AddTriangularSet
         (
             this.FZ_SET_EXPOSURETIME.MEDUIM.toString("F"), 2, 5, 8
         );
-        this.Exposure_Long = FLV_Exposure.AddRightSet
+        this.Exposure_Long = this.FLV_Exposure.AddRightSet
         (
             this.FZ_SET_EXPOSURETIME.LONG.toString("F"), 5, 8, 10
         );
 
-        this.Possibility_Impossible = FLV_Possibility.AddLeftSet
+        this.Possibility_Impossible = this.FLV_Possibility.AddLeftSet
         (
             this.FZ_SET_POSSIBILITY.IMPOSSIBLE.toString("F"), 0, 25, 50
         );
-        this.Possibility_Likely = FLV_Possibility.AddTriangularSet
+        this.Possibility_Likely = this.FLV_Possibility.AddTriangularSet
         (
             this.FZ_SET_POSSIBILITY.LIKELY.toString("F"), 25, 50, 75
         );
-        this.Possibility_Guarantee = FLV_Possibility.AddRightSet
+        this.Possibility_Guarantee = this.FLV_Possibility.AddRightSet
         (
             this.FZ_SET_POSSIBILITY.GUARANTEE.toString("F"), 50, 75, 100
         );
