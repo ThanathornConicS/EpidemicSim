@@ -61,6 +61,9 @@ class Unit extends StateMachine{
         this.m_state = false;
         this.m_onTrav = false;
 
+        this.m_detect = false;
+        this.m_active = true;
+
         // Unit path
         this.m_destPath = [];
         this.m_pathPos = 0;
@@ -162,7 +165,7 @@ function Manager() {
 
         // testing
         this.m_unitList[spawn].SetState(new Infected);
-        this.m_unitList[spawn].state.Evaluate();
+        //this.m_unitList[spawn].state.Evaluate();
 
         this.m_destList[dest_num].m_susList.delete(parseInt(spawn, 10));   
         this.m_destList[dest_num].m_infList.set(parseInt(spawn, 10), parseInt(spawn, 10));
@@ -231,7 +234,7 @@ function Manager() {
 
                         // testing
                         this.m_unitList[unitID].SetState(new Infected);
-                        this.m_unitList[unitID].state.Evaluate();
+                        //this.m_unitList[unitID].state.Evaluate();
 
                         this.m_destList[i].m_susList.delete(parseInt(value, 10));
                         this.m_destList[i].m_infList.set(parseInt(value, 10), parseInt(value, 10));

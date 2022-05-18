@@ -30,7 +30,7 @@ class StateMachine{
 // ========= State class ==========
 class Susceptible extends State{
     Evaluate = function(){
-        console.log("I am Susceptible");
+        console.log( );
     }
 } 
 
