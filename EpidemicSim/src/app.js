@@ -36,7 +36,7 @@ const mapOptions = {
 // Simulation var
 let manager = new Manager;
 let units = 20;
-const loop = 20; 
+const loop = 1000; 
 const placeList = [
   new Vec2(13.764844967161544, 100.53827147273205),
   new Vec2(13.79400311190518 , 100.5499287331782),
@@ -120,7 +120,7 @@ function initWebglOverlayView(map) {
       agents.push(agt);
       scene.add(agents[i]);
       // hide by default
-      agents[i].visible = false;
+      //agents[i].visible = true;
     }
     console.log("AgentsMesh...[PASS]");
 
@@ -143,6 +143,16 @@ function initWebglOverlayView(map) {
       manager.SpreadByDest();
     }
     console.log("EXECUTE...[PASS]");
+
+    let unitCount = 0;
+    for(let i = 0; i < manager.m_unitList.length; i++)
+    {
+      if(manager.m_unitList[i].m_state == true)
+      {
+        unitCount++;
+      }
+    }
+    console.log("Total Inf: " + unitCount);
 
     // // Data checking [Debug]
     // for(let i = 0; i < manager.m_unitList.length; i++){
@@ -204,9 +214,9 @@ function initWebglOverlayView(map) {
           
           agents[i].translateX(nextPos.x - thisPos.x);
           agents[i].translateY(nextPos.y - thisPos.y);
-          agents[i].visible = true;
+          //agents[i].visible = true;
         }else{
-          agents[i].visible = false;
+          //agents[i].visible = false;
         }
       }
 

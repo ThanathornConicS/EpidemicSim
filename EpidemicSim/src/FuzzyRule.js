@@ -12,12 +12,14 @@ class FuzzyRule
     CalculateConsequenceWithAND()
     {
         let confidence = Number.MAX_VALUE;
-        for(let condition in this.conditions)
+        for(let i = 0; i < this.conditions.length; i++)
         {
-            if(confidence > condition.degreeOfMembership)
-                confidence = condition.degreeOfMembership;
+            if(confidence > this.conditions[i].degreeOfMembership)
+            {
+                confidence = this.conditions[i].degreeOfMembership;
+            }
         }
-        
+        console.log("Confidence: " + confidence);
         this.consequence.SetConfidenceWithOR(confidence);
     }
 }

@@ -1,7 +1,8 @@
 // Variables
-const MAXTIME = 2;
+const MAXTIME = 10;
 const MAXDEST = 3;
 const INF_PER = 0.50; // range 0 to 1
+const REDUCE_PROTECTION = 1;
 
 // Interpolate func()
 function Lerp(start, end, t) {
@@ -73,6 +74,13 @@ class Unit extends StateMachine{
         // Unit path
         this.m_destPath = [];
         this.m_pathPos = 0;
+
+        // Protection Value
+        this.m_protectionFactor = 0.0;
+
+        // Infected Value
+        this.m_curedPercentage = 0.0;
+        this.m_deathPercentage = 0.0;
     }
 
     // Func()
@@ -173,6 +181,7 @@ function Manager() {
         this.SuscepState.InitFuzzy();
         this.MildState.InitFuzzy();
         this.SevereState.InitFuzzy();
+        console.log("Init Fuzzy... [PASS]");
     }
 
     // Spawn infected at selected destination
@@ -261,28 +270,35 @@ function Manager() {
                     
                     // Fuzzy Infect
                     let unitID = this.m_destList[i].m_susList.get(value);
-
                     let susValue = this.SuscepState.GetDesirability(this.m_unitList[unitID].m_protectionFactor, this.m_unitList[unitID].m_stayDelay);
                     let mildValue = this.MildState.GetDesirability(this.m_unitList[unitID].m_protectionFactor, this.m_unitList[unitID].m_stayDelay);
                     let servereValue = this.SevereState.GetDesirability(this.m_unitList[unitID].m_protectionFactor, this.m_unitList[unitID].m_stayDelay);
-
+                    
                     let valueList = [susValue, mildValue, servereValue];
-                    let maxIdx; 
+                    let maxIdx = 0; 
                     let maxVal = valueList[0];
-                    for(let i = 1; i < 3; i++)
+                    console.log("List: " + valueList);
+                    console.log("Prot/Expos: " + this.m_unitList[unitID].m_protectionFactor + ": " + this.m_unitList[unitID].m_stayDelay);
+                    for(let i = 0; i < 3; i++)
                     {
                         if (maxVal < valueList[i])
                         {
                             maxVal = valueList[i];
                             maxIdx = i;
+                            console.log("HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH");
                         }
                     }
+                    
+                    console.log(maxIdx);
 
                     switch (maxIdx) 
                     {
                         case 0:
+                            this.m_unitList[unitID].m_protectionFactor -= REDUCE_PROTECTION * this.m_unitList[unitID].m_stayDelay;
+                            if(this.m_unitList[unitID].m_protectionFactor < 0)
+                            this.m_unitList[unitID].m_protectionFactor = 0.0;
                             break;
-                        case 1:
+                        case 1:     // Mildly Infected
                             // Set infected state & move to infList
                             this.m_unitList[unitID].m_state = true;
                             this.m_unitList[unitID].m_curedPercentage = GetRandomArbitrary(0.2, 1.0);
@@ -293,8 +309,9 @@ function Manager() {
 
                             // Save to state check
                             this.StateTrigger(unitID, this.currStep, true);
+                            console.log("Mild");
                             break;
-                        case 2:
+                        case 2:     // Severely Infected
                             // Set infected state & move to infList
                             this.m_unitList[unitID].m_state = true;
                             this.m_unitList[unitID].m_curedPercentage = GetRandomArbitrary(0.7, 1.0);
@@ -305,6 +322,7 @@ function Manager() {
 
                             // Save to state check
                             this.StateTrigger(unitID, this.currStep, true);
+                            console.log("Severe");
                             break;
                     
                         default:

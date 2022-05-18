@@ -22,24 +22,6 @@ class FuzzySet
         if(this.degreeOfMembership < val)
             this.degreeOfMembership = val;
     }
-
-    get RepresentativeValue()
-    {
-        return this.RepresentativeValue;
-    }
-    set RepresentativeValue(val)
-    {
-        this.RepresentativeValue = val;
-    }
-
-    get degreeOfMembership()
-    {
-        return this.degreeOfMembership;
-    }
-    set degreeOfMembership(val)
-    {
-        this.degreeOfMembership = val;
-    }
 }
 
 
@@ -56,18 +38,18 @@ class FuzzySet_Left extends FuzzySet
 
     CalculateDOM(val)
     {
-        if ( rightOffset == 0.0 && val == peakPoint) 
+        if ( this.rightOffset == 0.0 && val == this.peakPoint) 
 			return 1.0;
 
 		// If the value is on the left side
-		if ( val <= peakPoint && val >= leftOffset) 
+		if ( val <= this.peakPoint && val >= this.leftOffset) 
         {
 			return 1.0;
 		}
 		// If the value is on the right side
-		else if ( val > peakPoint && val < (peakPoint + rightOffset) ) 
+		else if ( val > this.peakPoint && val < (this.peakPoint + this.rightOffset) ) 
         {
-			return (val - peakPoint) / -rightOffset + 1.0;
+			return (val - this.peakPoint) / -this.rightOffset + 1.0;
 		} 
         else 
         {
@@ -90,16 +72,16 @@ class FuzzySet_Right extends FuzzySet
 
     CalculateDOM(val)
     {
-        if ( leftOffset == 0.0 && val == peakPoint)
+        if ( this.leftOffset == 0.0 && val == this.peakPoint)
 			return 1.0;
 
 		//If the value is on the left side
-		if (val < peakPoint && val >= (peakPoint - leftOffset)) 
+		if (val < this.peakPoint && val >= (this.peakPoint - this.leftOffset)) 
         {
-			return (val - (peakPoint - leftOffset)) / leftOffset;
+			return (val - (this.peakPoint - this.leftOffset)) / this.leftOffset;
 		}
 		//If the value is on the right side
-		else if (val >= peakPoint && val <= rightOffset) 
+		else if (val >= this.peakPoint && val <= this.rightOffset) 
         {
 			return 1.0;
 		} 
@@ -122,19 +104,19 @@ class FuzzySet_Triangle extends FuzzySet
 
     CalculateDOM(val)
     {
-        if ((rightOffset == 0.0 && peakPoint == val) || 
-			(leftOffset == 0.0 && peakPoint == val) )
+        if ((this.rightOffset == 0.0 && this.peakPoint == val) || 
+			(this.leftOffset == 0.0 && this.peakPoint == val) )
 			return 1.0;
 
 		//If the value is on the left side
-		if (val <= peakPoint && val >= (peakPoint - leftOffset)) 
+		if (val <= this.peakPoint && val >= (this.peakPoint - this.leftOffset)) 
         {
-			return (val - (peakPoint - leftOffset)) / leftOffset;
+			return (val - (this.peakPoint - this.leftOffset)) / this.leftOffset;
 		}
 		//If the value is on the right side
-		else if ( val > peakPoint && val < (peakPoint + rightOffset) ) 
+		else if ( val > this.peakPoint && val < (this.peakPoint + this.rightOffset) ) 
         {
-			return (val - peakPoint) / -rightOffset + 1.0;
+			return (val - this.peakPoint) / -this.rightOffset + 1.0;
 		} 
 		else 
         {

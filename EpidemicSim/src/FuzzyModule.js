@@ -16,21 +16,26 @@ class FuzzyModule
     {
         this.fuzzyRules.push(rule);
     }
-    ApplyRule()
+    ApplyRules()
     {
-        for(let rule in this.fuzzyRules)
+        //console.log(this.fuzzyRules);
+        for(let i = 0; i < this.fuzzyRules.length; i++)
+        {
 			// to calculate consequence's confidence of each rule
-			rule.CalculateConsequenceWithAND();
+			this.fuzzyRules[i].CalculateConsequenceWithAND();
+        }
     }
 
     Fuzzification(flvName, val)
     {
-        this.fuzzyVariables[flvName].Fuzzify(val);
+        //console.log(this.fuzzyVariables.get(flvName));
+        this.fuzzyVariables.get(flvName).Fuzzify(val);
     }
     Defuzzification(flvName)
     {
         let desirableValue = 0.0;
-        desirableValue = this.fuzzyVariables[flvName].DefuzzifyAvgMax();
+        desirableValue = this.fuzzyVariables.get(flvName).DefuzzifyAvgMax();
+        
         return desirableValue;
     }
 }
