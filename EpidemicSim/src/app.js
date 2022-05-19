@@ -35,8 +35,10 @@ const mapOptions = {
 
 // Simulation var
 let manager = new Manager;
-let units = 3;
-const loop = 100; 
+let units = 20;
+let deathRate = 50;
+let cureRate = 50;
+const loop = 1000; 
 const placeList = [
   new Vec2(13.764844967161544, 100.53827147273205),
   new Vec2(13.79400311190518 , 100.5499287331782),
@@ -63,10 +65,16 @@ let lastFrame = 0.0;
 let circles = new Array();
 let agents = new Array();
 
-function SetPopValue()
+function SetValue()
 {
   units = document.getElementById("popNum").value;
   units = parseInt(units);
+
+  cureRate = document.getElementById("cureRate").value;
+  cureRate = parseInt(cureRate);
+
+  deathRate = document.getElementById("deathRate").value;
+  deathRate = parseInt(deathRate);
 }
 
 async function initMap() {    
@@ -82,8 +90,8 @@ function initWebglOverlayView(map) {
   
   document.getElementById("Run").addEventListener("click", () =>
   {
-    SetPopValue(); 
-    console.log("Pressed!!" + units);
+    SetValue(); 
+    console.log("Pressed!!" + units + ": " + cureRate + ": " + deathRate);
   });
 
   webglOverlayView.onAdd = () => {   
