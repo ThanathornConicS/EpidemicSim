@@ -35,8 +35,8 @@ const mapOptions = {
 
 // Simulation var
 let manager = new Manager;
-let units = 20;
-const loop = 1000; 
+let units = 3;
+const loop = 100; 
 const placeList = [
   new Vec2(13.764844967161544, 100.53827147273205),
   new Vec2(13.79400311190518 , 100.5499287331782),
@@ -125,9 +125,10 @@ function initWebglOverlayView(map) {
     console.log("AgentsMesh...[PASS]");
 
     // Select first location to spawn inf
-    let spawnPos = 0;                        
+    let spawnPos = 0;                      
     while(manager.m_destList[spawnPos].m_susList.size == 0){
-      spawnPos = (spawnPos + 1) % placeCounter;
+      spawnPos++;
+      console.log("Change SpawnDest..." + spawnPos);
     }
     manager.SpawnInf(spawnPos); 
     console.log("SpawnInf()...[PASS]");

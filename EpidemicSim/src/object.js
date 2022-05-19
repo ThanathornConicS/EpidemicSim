@@ -145,6 +145,9 @@ function Manager() {
     this.SuscepState = new PreInfect_Susceptible();
     this.MildState = new PreInfect_MildInfect();
     this.SevereState = new PreInfect_SevereInfect();
+    
+    // Behavior Tree
+    this.unitBehavior = new UnitBehavior();
 
     // Add destination
     this.AddPlace = function(LngLat){
@@ -204,47 +207,53 @@ function Manager() {
     // Unit decision making 
     this.UpdateUnits = function () {
         for (let i = 0; i < this.m_unitList.length; i++) {
-            // Unit Staying
-            if (!this.m_unitList[i].m_onTrav) {
-                // Check state condition
-                if (this.m_unitList[i].m_counter < this.m_unitList[i].m_stayDelay) {  
-                    this.m_unitList[i].m_counter++;                   
-                } else {
-                    // Moving out & update next destination
-                    let prevDest = this.m_unitList[i].GetDestID();
-                    this.m_unitList[i].m_pathPos = this.m_unitList[i].NextPath();
-                    // Check if next destination is different
-                    if (this.m_unitList[i].GetDestID() !== prevDest) {
-                        if (!this.m_unitList[i].m_state) {
-                            this.m_destList[prevDest].m_susList.delete(parseInt(i, 10));
-                        } else {
-                            this.m_destList[prevDest].m_infList.delete(parseInt(i, 10));
-                        }
-                        // Set to travel state
-                        this.m_unitList[i].m_onTrav = true
-                    }
-                    // Reset counter
-                    this.m_unitList[i].m_counter = 1;
-                }
+            //this.unitBehavior.SelectUnit();
+            this.unitBehavior.Evaluate(this.m_unitList[i]);
 
-            // Unit Travelling
-            } else {
-                // Check state condition
-                if (this.m_unitList[i].m_counter < this.m_unitList[i].m_travDelay) {  
-                    this.m_unitList[i].m_counter++;  
-                } else {
-                    // arriving
-                    let nextDest = this.m_unitList[i].GetDestID();
-                    if (!this.m_unitList[i].m_state) {
-                        this.m_destList[nextDest].m_susList.set(parseInt(i, 10), parseInt(i, 10));
-                    } else {
-                        this.m_destList[nextDest].m_infList.set(parseInt(i, 10), parseInt(i, 10));
-                    }
-                    // Set to stay state & reset counter
-                    this.m_unitList[i].m_onTrav = false;
-                    this.m_unitList[i].m_counter = 1;
-                }
+            if(i == 0){
+                console.log("unit[0] counter: " + this.m_unitList[i].m_counter);
             }
+            // // Unit Staying
+            // if (!this.m_unitList[i].m_onTrav) {
+            //     // Check state condition
+            //     if (this.m_unitList[i].m_counter < this.m_unitList[i].m_stayDelay) {  
+            //         this.m_unitList[i].m_counter++;                   
+            //     } else {
+            //         // Moving out & update next destination
+            //         let prevDest = this.m_unitList[i].GetDestID();
+            //         this.m_unitList[i].m_pathPos = this.m_unitList[i].NextPath();
+            //         // Check if next destination is different
+            //         if (this.m_unitList[i].GetDestID() !== prevDest) {
+            //             if (!this.m_unitList[i].m_state) {
+            //                 this.m_destList[prevDest].m_susList.delete(parseInt(i, 10));
+            //             } else {
+            //                 this.m_destList[prevDest].m_infList.delete(parseInt(i, 10));
+            //             }
+            //             // Set to travel state
+            //             this.m_unitList[i].m_onTrav = true
+            //         }
+            //         // Reset counter
+            //         this.m_unitList[i].m_counter = 1;
+            //     }
+
+            // // Unit Travelling
+            // } else {
+            //     // Check state condition
+            //     if (this.m_unitList[i].m_counter < this.m_unitList[i].m_travDelay) {  
+            //         this.m_unitList[i].m_counter++;  
+            //     } else {
+            //         // arriving
+            //         let nextDest = this.m_unitList[i].GetDestID();
+            //         if (!this.m_unitList[i].m_state) {
+            //             this.m_destList[nextDest].m_susList.set(parseInt(i, 10), parseInt(i, 10));
+            //         } else {
+            //             this.m_destList[nextDest].m_infList.set(parseInt(i, 10), parseInt(i, 10));
+            //         }
+            //         // Set to stay state & reset counter
+            //         this.m_unitList[i].m_onTrav = false;
+            //         this.m_unitList[i].m_counter = 1;
+            //     }
+            // }
         }
     }
 
