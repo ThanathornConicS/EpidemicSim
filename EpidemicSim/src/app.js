@@ -120,6 +120,7 @@ function initWebglOverlayView(map) {
 
     // Simulation
     manager.UnitInit(units);
+    manager.SetCureDeathRate(cureRate, deathRate);
     console.log("UnitInit()...[PASS]");
 
     // Declare agent mesh

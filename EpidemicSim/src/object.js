@@ -138,6 +138,10 @@ function Manager() {
     this.renderStep = 10; // per render update (ms)
     this.stepSol = 1 / (this.renderStep / 1000);
 
+    // Rate of cure/death
+    this.curedRate = 0.0;
+    this.deathRate = 0.0;
+
     // DrawData container
     this.m_drawData = [];
 
@@ -148,6 +152,11 @@ function Manager() {
     
     // Behavior Tree
     this.unitBehavior = new UnitBehavior();
+
+    this.SetCureDeathRate = function(cRate, dRate)
+    {
+        this.curedRate = parseFloat(cRate / 100.0); this.deathRate = parseFloat(dRate / 100.0);
+    }
 
     // Add destination
     this.AddPlace = function(LngLat){
@@ -310,8 +319,8 @@ function Manager() {
                         case 1:     // Mildly Infected
                             // Set infected state & move to infList
                             this.m_unitList[unitID].m_state = true;
-                            this.m_unitList[unitID].m_curedPercentage = GetRandomArbitrary(0.2, 1.0);
-                            this.m_unitList[unitID].m_deathPercentage = GetRandomArbitrary(0.8, 1.0);
+                            this.m_unitList[unitID].m_curedPercentage = GetRandomArbitrary((this.curedRate) - 1.0, 1.0);
+                            this.m_unitList[unitID].m_deathPercentage = GetRandomArbitrary((this.deathRate) - 1.0, 1.0);
 
                             this.m_destList[i].m_susList.delete(parseInt(value, 10));
                             this.m_destList[i].m_infList.set(parseInt(value, 10), parseInt(value, 10));
@@ -323,8 +332,8 @@ function Manager() {
                         case 2:     // Severely Infected
                             // Set infected state & move to infList
                             this.m_unitList[unitID].m_state = true;
-                            this.m_unitList[unitID].m_curedPercentage = GetRandomArbitrary(0.7, 1.0);
-                            this.m_unitList[unitID].m_deathPercentage = GetRandomArbitrary(0.2, 1.0);
+                            this.m_unitList[unitID].m_curedPercentage = GetRandomArbitrary((this.curedRate) - 1.0, 1.0);
+                            this.m_unitList[unitID].m_deathPercentage = GetRandomArbitrary((this.deathRate) - 1.0, 1.0);
 
                             this.m_destList[i].m_susList.delete(parseInt(value, 10));
                             this.m_destList[i].m_infList.set(parseInt(value, 10), parseInt(value, 10));
