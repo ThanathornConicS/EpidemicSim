@@ -29,29 +29,48 @@ class StateMachine{
 
 // ========= State class ==========
 class Susceptible extends State{
+
+    constructor()
+    {
+        super();
+    }
+
     Evaluate = function(){
-        console.log("I am Susceptible");
+        console.log( );
     }
 } 
 
 class Infected extends State{
+
+    constructor()
+    {
+        super();
+    }
+
     Evaluate = function(){
         console.log("I am a Infected");
     }
 } 
 
 class Recovered extends State{
+
+    constructor()
+    {
+        super();
+    }
+
     Evaluate = function(){
         console.log("I am a Recovered");
     }
 } 
 
-class Agent extends StateMachine{
-    constructor() {
-        super();
-        this.SetState(new Infected);
-        this.state.Evaluate();
-    }
-}
+// class Agent extends StateMachine{
+//     constructor(input) {
+//         super();
+//         this.SetState(new Infected);
+//         this.state.Evaluate();
+//         console.log("Input: " + input);
+//     }
+// }
 
-let testSubject = new Agent;
+// let testSubject = new Agent;
