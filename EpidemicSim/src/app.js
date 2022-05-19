@@ -35,7 +35,7 @@ const mapOptions = {
 
 // Simulation var
 let manager = new Manager;
-let userInitData = new UserInitData;
+//let userInitData = new UserInitData;
 let units = 20;
 let deathRate = 50;
 let cureRate = 50;

@@ -6,6 +6,7 @@
   "dependencies": {
     "@googlemaps/js-api-loader": "^1.13.7",
     "@googlemaps/three": "^2.0.4",
+    "chart.js": "^3.7.1",
     "jsdom": "^19.0.0"
   },
   "devDependencies": {

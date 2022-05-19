@@ -23,6 +23,9 @@
 
     <!-- <script src="js/three.js"></script>
     <script src="https://cdn.rawgit.com/mrdoob/three.js/master/examples/js/loaders/GLTFLoader.js"></script> -->
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+
     <script src="state.js" defer></script>  
     <script src="behavior.js" defer></script>
     <script src="FuzzySet.js" defer></script> 
@@ -30,7 +33,8 @@
     <script src="FuzzyVariable.js" defer></script> 
     <script src="FuzzyModule.js" defer></script> 
     <script src="PreInfectState.js" defer></script>
-    <script src="object.js" defer></script>   
+    <script src="object.js" defer></script> 
+  
     
   </head>
   <body style="font-family:Helvetica;">
@@ -55,11 +59,11 @@
       <input type="range" id="RangeDR" value="50" min="0" max="100" oninput="this.nextElementSibling.value = this.value">
       <input type="text" id="deathRate" name="deathRate" value="50" oninput="document.getElementById('RangeDR').value = this.value"> <br>
     </form>
-    <form>
-      <label for="infRate">Infection Rate: </label> <input type="text" id="infRate" name="infRate" value="50"> <br>
-    </form>
 
     <button id="Run">Run</button>
+
+    <canvas id="chartCanvas" width="500" height="200" style="border:5px solid #211e1e;"></canvas>
+    <script type="text/javascript" src="ChartModule.js" defer></script>
 
   </body>
 </html>

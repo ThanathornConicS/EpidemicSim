@@ -3,6 +3,11 @@ body
 {
     background-color: rgb(151, 182, 240);
 }
+/* canvas
+{
+    width: 600px !important;
+    height: 250px !important;
+} */
 input
 {
     width: 5%;
