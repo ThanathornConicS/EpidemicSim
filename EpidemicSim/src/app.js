@@ -36,10 +36,10 @@ const mapOptions = {
 // Simulation var
 let manager = new Manager;
 //let userInitData = new UserInitData;
-let units = 20;
+let units = 10;
 let deathRate = 50;
 let cureRate = 50;
-const loop = 1000; 
+const loop = 100; 
 const placeList = [
   new Vec2(13.764844967161544, 100.53827147273205),
   new Vec2(13.79400311190518 , 100.5499287331782),
@@ -147,23 +147,49 @@ function initWebglOverlayView(map) {
     manager.RenderCalculate();
     console.log("RenderCalculate()...[PASS]");
 
+    // console.log("path : " + manager.m_unitList[0].m_destPath);
+    // console.log("m_stayDelay : " + manager.m_unitList[0].m_stayDelay);
+    // console.log("m_travDelay : " + manager.m_unitList[0].m_travDelay);
+
+
+    manager.CountStat();
+
     // Execute
     for(let i = 1; i <= loop; i++){
+
+      // console.log("counter : " + manager.m_unitList[0].m_counter);
+
+      // // Check dest
+      // for(let x = 0; x < manager.m_destList.length; x++){
+
+      //   console.log(x + " Dest : ");
+      //   for(let [key, value] of manager.m_destList[x].m_susList){
+      //       console.log(value);
+      //   }
+
+      //   console.log("---------");
+      //   for(let [key, value] of manager.m_destList[x].m_infList){
+      //       console.log(value);
+      //   }
+      // }
+
       manager.SetStep(i);
       manager.UpdateUnits();
       manager.SpreadByDest();
+      manager.CountStat();
     }
     console.log("EXECUTE...[PASS]");
 
-    let unitCount = 0;
-    for(let i = 0; i < manager.m_unitList.length; i++)
-    {
-      if(manager.m_unitList[i].m_state == true)
-      {
-        unitCount++;
-      }
-    }
-    console.log("Total Inf: " + unitCount);
+    // // Check inf
+    // let infCount = 0;
+    // for(let i = 0; i < manager.m_unitList.length; i++)
+    // {
+    //   if(manager.m_unitList[i].m_state == true)
+    //   {
+    //     infCount++;
+    //   }
+    // }
+    // console.log("Total Inf: " + infCount);
 
     // // Data checking [Debug]
     // for(let i = 0; i < manager.m_unitList.length; i++){
