@@ -68,9 +68,6 @@ class Unit extends StateMachine{
         this.m_state = false;
         this.m_onTrav = false;
 
-        this.m_detect = false;
-        this.m_active = true;
-
         // Unit path
         this.m_destPath = [];
         this.m_pathPos = 0;
@@ -81,6 +78,11 @@ class Unit extends StateMachine{
         // Infected Value
         this.m_curedPercentage = 0.0;
         this.m_deathPercentage = 0.0;
+
+        // Behavior Val
+        this.m_detect = false;
+        this.m_active = true;
+        this.behaviorTrigger = 0;
     }
 
     // Func()
@@ -132,7 +134,6 @@ function Manager() {
     // Object container
     this.m_unitList = [];
     this.m_destList = [];
-
     // Step tracking
     this.currStep = 0;
     this.renderStep = 10; // per render update (ms)
@@ -151,7 +152,7 @@ function Manager() {
     this.SevereState = new PreInfect_SevereInfect();
     
     // Behavior Tree
-    this.unitBehavior = new UnitBehavior(this);
+    this.unitPath_Behavior = new UnitPath_Behavior(this);
 
     this.SetCureDeathRate = function(cRate, dRate)
     {
@@ -161,6 +162,7 @@ function Manager() {
     // Add destination
     this.AddPlace = function(LngLat){
         this.m_destList.push(new Dest(LngLat));
+        //console.log(this.m_destList);
     }
 
     // Set step
@@ -170,6 +172,7 @@ function Manager() {
 
     // Initialize unit and destination
     this.UnitInit = function (units, dests) {
+
         // Initialize unit
         for (let i = 0; i < units; i++) {
             // Unit & drawdata
@@ -184,7 +187,9 @@ function Manager() {
             // Push unit ID to it's first destination
             let first = this.m_unitList[i].GetDestID();
             this.m_destList[first].m_susList.set(i, i); 
-            
+            // console.log(i + " : " + first);
+            // console.log(this.m_destList);
+
             // Random Protection factor for each unit
             this.m_unitList[i].m_protectionFactor = GetRandomArbitrary(0, 100);
         }
@@ -216,8 +221,41 @@ function Manager() {
     // Unit decision making 
     this.UpdateUnits = function () {
         for (let i = 0; i < this.m_unitList.length; i++) {
-            //this.unitBehavior.SelectUnit();
-            this.unitBehavior.Evaluate(this.m_unitList[i]);
+            // Evaluate unit behavior
+            this.unitPath_Behavior.Evaluate(this.m_unitList[i]);
+
+            // Check action trigger
+            switch (this.m_unitList[i].behaviorTrigger){
+                case 1: // Arriving in
+                    this.m_unitList[i].behaviorTrigger = 0;
+                    let nextDest = this.m_unitList[i].GetDestID();
+
+                    // assign to est
+                    if (!this.m_unitList[i].m_state) {
+                        this.m_destList[nextDest].m_susList.set(parseInt(i, 10), parseInt(i, 10));
+                    } else {
+                        this.m_destList[nextDest].m_infList.set(parseInt(i, 10), parseInt(i, 10));
+                    }
+                    break;
+
+                case 2: // Moving out
+                    this.m_unitList[i].behaviorTrigger = 0;
+                    let prevDest = this.m_unitList[i].GetDestID();
+                    this.m_unitList[i].m_pathPos = this.m_unitList[i].NextPath();
+
+                    // Check if next destination is different
+                    if (this.m_unitList[i].GetDestID() !== prevDest) {
+                        if (!this.m_unitList[i].m_state) {
+                            this.m_destList[prevDest].m_susList.delete(parseInt(i, 10));
+                        } else {
+                            this.m_destList[prevDest].m_infList.delete(parseInt(i, 10));
+                        }
+                    }
+                    break;
+
+                default:
+                    break;
+            }
 
             // if(i == 0){
             //     console.log("unit[0] counter: " + this.m_unitList[i].m_counter);

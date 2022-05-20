@@ -159,7 +159,7 @@ class InverterNode extends B_Node{
 
 
 // ========= B_Tree ==========
-class UnitBehavior{
+class UnitPath_Behavior{
 
     // Start Evaluate from root node
     Evaluate = function(unit){
@@ -316,6 +316,7 @@ class UnitBehavior{
     Arriving = function(unit){
         // assign unit to dest func() [Implement]
         //console.log("Arriving Check...");
+        unit.behaviorTrigger = 1;
         unit.m_onTrav = false;
         unit.m_counter = 1;
         return this.NodeStates.SUCCESS;
@@ -324,6 +325,7 @@ class UnitBehavior{
     MovingOut = function(unit){
          // remove unit from dest func() [Implement]
          //console.log("MovingOut Check...");
+         unit.behaviorTrigger = 2;
          unit.m_onTrav = true;
          unit.m_counter = 1;
          return this.NodeStates.SUCCESS;
