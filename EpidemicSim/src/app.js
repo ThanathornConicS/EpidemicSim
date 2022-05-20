@@ -146,24 +146,50 @@ function initWebglOverlayView(map) {
     // Calculate render data
     manager.RenderCalculate();
     console.log("RenderCalculate()...[PASS]");
+
+    // console.log("path : " + manager.m_unitList[0].m_destPath);
+    // console.log("m_stayDelay : " + manager.m_unitList[0].m_stayDelay);
+    // console.log("m_travDelay : " + manager.m_unitList[0].m_travDelay);
+
+
+    manager.CountStat();
+
     // Execute
     for(let i = 1; i <= loop; i++){
+
+      // console.log("counter : " + manager.m_unitList[0].m_counter);
+
+      // // Check dest
+      // for(let x = 0; x < manager.m_destList.length; x++){
+
+      //   console.log(x + " Dest : ");
+      //   for(let [key, value] of manager.m_destList[x].m_susList){
+      //       console.log(value);
+      //   }
+
+      //   console.log("---------");
+      //   for(let [key, value] of manager.m_destList[x].m_infList){
+      //       console.log(value);
+      //   }
+      // }
+
       manager.SetStep(i);
       manager.UpdateUnits();
       manager.SpreadByDest();
+      manager.CountStat();
     }
     console.log("EXECUTE...[PASS]");
 
-    // Check inf
-    let infCount = 0;
-    for(let i = 0; i < manager.m_unitList.length; i++)
-    {
-      if(manager.m_unitList[i].m_state == true)
-      {
-        infCount++;
-      }
-    }
-    console.log("Total Inf: " + infCount);
+    // // Check inf
+    // let infCount = 0;
+    // for(let i = 0; i < manager.m_unitList.length; i++)
+    // {
+    //   if(manager.m_unitList[i].m_state == true)
+    //   {
+    //     infCount++;
+    //   }
+    // }
+    // console.log("Total Inf: " + infCount);
 
     // // Data checking [Debug]
     // for(let i = 0; i < manager.m_unitList.length; i++){

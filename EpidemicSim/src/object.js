@@ -146,6 +146,9 @@ function Manager() {
     // DrawData container
     this.m_drawData = [];
 
+    // Chart Stat
+    this.m_popStat = [];
+
     // Fuzzy State Modules
     this.SuscepState = new PreInfect_Susceptible();
     this.MildState = new PreInfect_MildInfect();
@@ -154,6 +157,30 @@ function Manager() {
     // Behavior Tree
     this.unitPath_Behavior = new UnitPath_Behavior(this);
 
+    this.CountStat = function(){
+        let statList = [];
+        let S = 0;
+        let I = 0;
+        let R = 0;
+
+        for(let i = 0; i < this.m_unitList.length; i++){
+            if(!this.m_unitList[i].m_active){
+                R++;
+            }else if(this.m_unitList[i].m_state){
+                I++;
+            }else{
+                S++;
+            }
+        }
+
+        console.log("count: " + S + ", " + I + ", " + R);
+
+        statList.push(S);
+        statList.push(I);
+        statList.push(R);
+        this.m_popStat.push(statList);
+    }
+
     this.SetCureDeathRate = function(cRate, dRate)
     {
         this.curedRate = parseFloat(cRate / 100.0); this.deathRate = parseFloat(dRate / 100.0);
@@ -161,8 +188,7 @@ function Manager() {
 
     // Add destination
     this.AddPlace = function(LngLat){
-        this.m_destList.push(new Dest(LngLat));
-        //console.log(this.m_destList);
+        this.m_destList.push(new Dest(LngLat));        
     }
 
     // Set step
