@@ -54,6 +54,13 @@ function DrawData() {
     this.stateCheck = new Map();
 }
 
+// Chart data class
+function ChartData() {
+    this.S = [];
+    this.I = [];
+    this.R = [];
+}
+
 // ========= Unit class ==========
 class Unit extends StateMachine{
     constructor(arg_stay, arg_trav) {
@@ -147,7 +154,7 @@ function Manager() {
     this.m_drawData = [];
 
     // Chart Stat
-    this.m_popStat = [];
+    this.m_chartData = new ChartData();
 
     // Fuzzy State Modules
     this.SuscepState = new PreInfect_Susceptible();
@@ -158,27 +165,29 @@ function Manager() {
     this.unitPath_Behavior = new UnitPath_Behavior(this);
 
     this.CountStat = function(){
-        let statList = [];
-        let S = 0;
-        let I = 0;
-        let R = 0;
+        let Sn = 0;
+        let In = 0;
+        let Rn = 0;
 
         for(let i = 0; i < this.m_unitList.length; i++){
             if(!this.m_unitList[i].m_active){
-                R++;
+                Rn++;
             }else if(this.m_unitList[i].m_state){
-                I++;
+                In++;
             }else{
-                S++;
+                Sn++;
             }
         }
 
-        console.log("count: " + S + ", " + I + ", " + R);
+        this.m_chartData.S.push(Sn);
+        this.m_chartData.I.push(In);
+        this.m_chartData.R.push(Rn);
 
-        statList.push(S);
-        statList.push(I);
-        statList.push(R);
-        this.m_popStat.push(statList);
+        //console.log("count: " + this.m_chartData.S + ", " + this.m_chartData.I + ", " + this.m_chartData.R);
+    }
+
+    this.GetStat = function(){
+        return this.m_chartData;
     }
 
     this.SetCureDeathRate = function(cRate, dRate)
