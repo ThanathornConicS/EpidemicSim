@@ -3,14 +3,31 @@ body
 {
     background-color: rgb(151, 182, 240);
 }
-/* canvas
+article 
 {
-    width: 600px !important;
-    height: 250px !important;
-} */
+    float: right;
+    padding: 5px;
+    width: 70%;
+    /*height: 300px; /* only for demonstration, should be removed */
+}
+aside
+{
+    float: right;
+    padding: 5px;
+    width: 50%;
+    padding-right: 400px;
+    /*height: 300px; /* only for demonstration, should be removed */
+}
+/* Clear floats after the columns */
+section::after 
+{
+    content: "";
+    display: table;
+    clear: both;
+}
 input
 {
-    width: 5%;
+    width: 25%;
 }
 input[type=text]:focus 
 {
@@ -38,10 +55,21 @@ button
     cursor: pointer;
     font-size: large;
 }
-
+.scroller
+{
+    width: 500px;
+    height: 100px;
+    overflow-y: scroll;
+    scrollbar-color: rebeccapurple green;
+    scrollbar-width: auto;
+    background-color: lightgray;
+    border: 3px solid #555;
+    padding: 10px;
+}
 
 #map {
     height: 60%;
     margin: 0;
     padding: 0;
+    border: 3px solid #555;
 }

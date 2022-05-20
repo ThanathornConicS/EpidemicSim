@@ -44,26 +44,36 @@
 
     <br><br>
 
-    <form>
-      <label for="popNum">Population Number: </label> 
-      <input type="range" id="RangePopNum" value="100" min="0" max="1000" oninput="this.nextElementSibling.value = this.value">
-      <input type="text" id="popNum" name="popNum" value="100" oninput="document.getElementById('RangePopNum').value = this.value"> <br>
-    </form>
-    <form>
-      <label for="cureRate">Cure Rate: </label> 
-      <input type="range" id="RangeCR" value="50" min="0" max="100" oninput="this.nextElementSibling.value = this.value">
-      <input type="text" id="cureRate" name="cureRate" value="50" oninput="document.getElementById('RangeCR').value = this.value"> <br>
-    </form>
-    <form>
-      <label for="deathRate">Death Rate: </label> 
-      <input type="range" id="RangeDR" value="50" min="0" max="100" oninput="this.nextElementSibling.value = this.value">
-      <input type="text" id="deathRate" name="deathRate" value="50" oninput="document.getElementById('RangeDR').value = this.value"> <br>
-    </form>
+    <section>
+      <aside>
+        <div class="chart-container" style="height: '40vh'; width: '20vw'">
+          <canvas id="chartCanvas" width="500" height="200" style="border: 3px solid #555;"></canvas>
+          <script type="text/javascript" src="ChartModule.js" defer></script>
+        </div>
+      </aside>
+      <div class="scroller">
+        <form>
+          <label for="popNum">Population Number: </label> 
+          <input type="range" id="RangePopNum" value="100" min="0" max="1000" oninput="this.nextElementSibling.value = this.value">
+          <input type="text" id="popNum" name="popNum" value="100" oninput="document.getElementById('RangePopNum').value = this.value"> <br>
+        </form>
+        <form>
+          <label for="cureRate">Cure Rate: </label> 
+          <input type="range" id="RangeCR" value="50" min="0" max="100" oninput="this.nextElementSibling.value = this.value">
+          <input type="text" id="cureRate" name="cureRate" value="50" oninput="document.getElementById('RangeCR').value = this.value"> <br>
+        </form>
+        <form>
+          <label for="deathRate">Death Rate: </label> 
+          <input type="range" id="RangeDR" value="50" min="0" max="100" oninput="this.nextElementSibling.value = this.value">
+          <input type="text" id="deathRate" name="deathRate" value="50" oninput="document.getElementById('RangeDR').value = this.value"> <br>
+        </form>
+      </div>
 
-    <button id="Run">Run</button>
+      <br>
 
-    <canvas id="chartCanvas" width="500" height="200" style="border:5px solid #211e1e;"></canvas>
-    <script type="text/javascript" src="ChartModule.js" defer></script>
+      <button id="Run">Run</button>
+
+    </section>
 
   </body>
 </html>
