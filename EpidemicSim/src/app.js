@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import { Loader } from '@googlemaps/js-api-loader';
-import { latLngToVector3, latLngToVector3Relative} from '@googlemaps/three';
+import { latLngToVector3, latLngToVector3Relative, ThreeJSOverlayView} from '@googlemaps/three';
 import * as THREE from 'three';
 import {GLTFLoader} from 'three/examples/jsm/loaders/GLTFLoader.js';
 
@@ -35,8 +35,11 @@ const mapOptions = {
 
 // Simulation var
 let manager = new Manager;
+//let userInitData = new UserInitData;
 let units = 20;
-const loop = 20; 
+let deathRate = 50;
+let cureRate = 50;
+const loop = 1000; 
 const placeList = [
   new Vec2(13.764844967161544, 100.53827147273205),
   new Vec2(13.79400311190518 , 100.5499287331782),
@@ -63,10 +66,16 @@ let lastFrame = 0.0;
 let circles = new Array();
 let agents = new Array();
 
-function SetPopValue()
+function SetValue()
 {
   units = document.getElementById("popNum").value;
   units = parseInt(units);
+
+  cureRate = document.getElementById("cureRate").value;
+  cureRate = parseInt(cureRate);
+
+  deathRate = document.getElementById("deathRate").value;
+  deathRate = parseInt(deathRate);
 }
 
 async function initMap() {    
@@ -82,8 +91,8 @@ function initWebglOverlayView(map) {
   
   document.getElementById("Run").addEventListener("click", () =>
   {
-    SetPopValue();
-    console.log("Pressed!!" + units);
+    SetValue(); 
+    console.log("Pressed!!" + units + ": " + cureRate + ": " + deathRate);
   });
 
   webglOverlayView.onAdd = () => {   
@@ -95,7 +104,7 @@ function initWebglOverlayView(map) {
     const directionalLight = new THREE.DirectionalLight(0xffffff, 0.25);
     directionalLight.position.set(0.5, -1, 0.5);
     scene.add(directionalLight);
-
+    
     // Render Place
     for(let i = 0; i < placeList.length; i++){
       let cir = new THREE.Mesh( geometry, testMat );
@@ -112,6 +121,7 @@ function initWebglOverlayView(map) {
 
     // Simulation
     manager.UnitInit(units);
+    manager.SetCureDeathRate(cureRate, deathRate);
     console.log("UnitInit()...[PASS]");
 
     // Declare agent mesh
@@ -120,14 +130,15 @@ function initWebglOverlayView(map) {
       agents.push(agt);
       scene.add(agents[i]);
       // hide by default
-      agents[i].visible = false;
+      //agents[i].visible = true;
     }
     console.log("AgentsMesh...[PASS]");
 
     // Select first location to spawn inf
-    let spawnPos = 0;                        
+    let spawnPos = 0;                      
     while(manager.m_destList[spawnPos].m_susList.size == 0){
-      spawnPos = (spawnPos + 1) % placeCounter;
+      spawnPos++;
+      console.log("Change SpawnDest..." + spawnPos);
     }
     manager.SpawnInf(spawnPos); 
     console.log("SpawnInf()...[PASS]");
@@ -143,6 +154,16 @@ function initWebglOverlayView(map) {
       manager.SpreadByDest();
     }
     console.log("EXECUTE...[PASS]");
+
+    let unitCount = 0;
+    for(let i = 0; i < manager.m_unitList.length; i++)
+    {
+      if(manager.m_unitList[i].m_state == true)
+      {
+        unitCount++;
+      }
+    }
+    console.log("Total Inf: " + unitCount);
 
     // // Data checking [Debug]
     // for(let i = 0; i < manager.m_unitList.length; i++){
@@ -204,9 +225,9 @@ function initWebglOverlayView(map) {
           
           agents[i].translateX(nextPos.x - thisPos.x);
           agents[i].translateY(nextPos.y - thisPos.y);
-          agents[i].visible = true;
+          //agents[i].visible = true;
         }else{
-          agents[i].visible = false;
+          //agents[i].visible = false;
         }
       }
 

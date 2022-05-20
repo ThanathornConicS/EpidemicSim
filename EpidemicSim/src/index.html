@@ -23,9 +23,18 @@
 
     <!-- <script src="js/three.js"></script>
     <script src="https://cdn.rawgit.com/mrdoob/three.js/master/examples/js/loaders/GLTFLoader.js"></script> -->
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+
     <script src="state.js" defer></script>  
-    <script src="behavior.js" defer></script> 
-    <script src="object.js" defer></script>   
+    <script src="behavior.js" defer></script>
+    <script src="FuzzySet.js" defer></script> 
+    <script src="FuzzyRule.js" defer></script> 
+    <script src="FuzzyVariable.js" defer></script> 
+    <script src="FuzzyModule.js" defer></script> 
+    <script src="PreInfectState.js" defer></script>
+    <script src="object.js" defer></script> 
+  
     
   </head>
   <body style="font-family:Helvetica;">
@@ -36,10 +45,25 @@
     <br><br>
 
     <form>
-      <label for="popNum">Population Number: </label> <input type="text" id="popNum" name="popNum" value="1000"> <br>
+      <label for="popNum">Population Number: </label> 
+      <input type="range" id="RangePopNum" value="100" min="0" max="1000" oninput="this.nextElementSibling.value = this.value">
+      <input type="text" id="popNum" name="popNum" value="100" oninput="document.getElementById('RangePopNum').value = this.value"> <br>
+    </form>
+    <form>
+      <label for="cureRate">Cure Rate: </label> 
+      <input type="range" id="RangeCR" value="50" min="0" max="100" oninput="this.nextElementSibling.value = this.value">
+      <input type="text" id="cureRate" name="cureRate" value="50" oninput="document.getElementById('RangeCR').value = this.value"> <br>
+    </form>
+    <form>
+      <label for="deathRate">Death Rate: </label> 
+      <input type="range" id="RangeDR" value="50" min="0" max="100" oninput="this.nextElementSibling.value = this.value">
+      <input type="text" id="deathRate" name="deathRate" value="50" oninput="document.getElementById('RangeDR').value = this.value"> <br>
     </form>
 
     <button id="Run">Run</button>
+
+    <canvas id="chartCanvas" width="500" height="200" style="border:5px solid #211e1e;"></canvas>
+    <script type="text/javascript" src="ChartModule.js" defer></script>
 
   </body>
 </html>

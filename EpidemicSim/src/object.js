@@ -1,11 +1,18 @@
 // Variables
-const MAXTIME = 2;
+const MAXTIME = 10;
 const MAXDEST = 3;
 const INF_PER = 0.50; // range 0 to 1
+const REDUCE_PROTECTION = 1;
 
 // Interpolate func()
 function Lerp(start, end, t) {
     return (1 - t) * start + t * end;
+}
+
+// Random number function
+function GetRandomArbitrary(min, max) 
+{
+    return Math.random() * (max - min) + min;
 }
 
 // Vector2 Class
@@ -67,6 +74,13 @@ class Unit extends StateMachine{
         // Unit path
         this.m_destPath = [];
         this.m_pathPos = 0;
+
+        // Protection Value
+        this.m_protectionFactor = 0.0;
+
+        // Infected Value
+        this.m_curedPercentage = 0.0;
+        this.m_deathPercentage = 0.0;
     }
 
     // Func()
@@ -124,8 +138,25 @@ function Manager() {
     this.renderStep = 10; // per render update (ms)
     this.stepSol = 1 / (this.renderStep / 1000);
 
+    // Rate of cure/death
+    this.curedRate = 0.0;
+    this.deathRate = 0.0;
+
     // DrawData container
     this.m_drawData = [];
+
+    // Fuzzy State Modules
+    this.SuscepState = new PreInfect_Susceptible();
+    this.MildState = new PreInfect_MildInfect();
+    this.SevereState = new PreInfect_SevereInfect();
+    
+    // Behavior Tree
+    this.unitBehavior = new UnitBehavior();
+
+    this.SetCureDeathRate = function(cRate, dRate)
+    {
+        this.curedRate = parseFloat(cRate / 100.0); this.deathRate = parseFloat(dRate / 100.0);
+    }
 
     // Add destination
     this.AddPlace = function(LngLat){
@@ -152,8 +183,17 @@ function Manager() {
 
             // Push unit ID to it's first destination
             let first = this.m_unitList[i].GetDestID();
-            this.m_destList[first].m_susList.set(i, i);                                             
+            this.m_destList[first].m_susList.set(i, i); 
+            
+            // Random Protection factor for each unit
+            this.m_unitList[i].m_protectionFactor = GetRandomArbitrary(0, 100);
         }
+
+        // Initialize Fuzzy states
+        this.SuscepState.InitFuzzy();
+        this.MildState.InitFuzzy();
+        this.SevereState.InitFuzzy();
+        console.log("Init Fuzzy... [PASS]");
     }
 
     // Spawn infected at selected destination
@@ -176,47 +216,53 @@ function Manager() {
     // Unit decision making 
     this.UpdateUnits = function () {
         for (let i = 0; i < this.m_unitList.length; i++) {
-            // Unit Staying
-            if (!this.m_unitList[i].m_onTrav) {
-                // Check state condition
-                if (this.m_unitList[i].m_counter < this.m_unitList[i].m_stayDelay) {  
-                    this.m_unitList[i].m_counter++;                   
-                } else {
-                    // Moving out & update next destination
-                    let prevDest = this.m_unitList[i].GetDestID();
-                    this.m_unitList[i].m_pathPos = this.m_unitList[i].NextPath();
-                    // Check if next destination is different
-                    if (this.m_unitList[i].GetDestID() !== prevDest) {
-                        if (!this.m_unitList[i].m_state) {
-                            this.m_destList[prevDest].m_susList.delete(parseInt(i, 10));
-                        } else {
-                            this.m_destList[prevDest].m_infList.delete(parseInt(i, 10));
-                        }
-                        // Set to travel state
-                        this.m_unitList[i].m_onTrav = true
-                    }
-                    // Reset counter
-                    this.m_unitList[i].m_counter = 1;
-                }
+            //this.unitBehavior.SelectUnit();
+            this.unitBehavior.Evaluate(this.m_unitList[i]);
 
-            // Unit Travelling
-            } else {
-                // Check state condition
-                if (this.m_unitList[i].m_counter < this.m_unitList[i].m_travDelay) {  
-                    this.m_unitList[i].m_counter++;  
-                } else {
-                    // arriving
-                    let nextDest = this.m_unitList[i].GetDestID();
-                    if (!this.m_unitList[i].m_state) {
-                        this.m_destList[nextDest].m_susList.set(parseInt(i, 10), parseInt(i, 10));
-                    } else {
-                        this.m_destList[nextDest].m_infList.set(parseInt(i, 10), parseInt(i, 10));
-                    }
-                    // Set to stay state & reset counter
-                    this.m_unitList[i].m_onTrav = false;
-                    this.m_unitList[i].m_counter = 1;
-                }
+            if(i == 0){
+                console.log("unit[0] counter: " + this.m_unitList[i].m_counter);
             }
+            // // Unit Staying
+            // if (!this.m_unitList[i].m_onTrav) {
+            //     // Check state condition
+            //     if (this.m_unitList[i].m_counter < this.m_unitList[i].m_stayDelay) {  
+            //         this.m_unitList[i].m_counter++;                   
+            //     } else {
+            //         // Moving out & update next destination
+            //         let prevDest = this.m_unitList[i].GetDestID();
+            //         this.m_unitList[i].m_pathPos = this.m_unitList[i].NextPath();
+            //         // Check if next destination is different
+            //         if (this.m_unitList[i].GetDestID() !== prevDest) {
+            //             if (!this.m_unitList[i].m_state) {
+            //                 this.m_destList[prevDest].m_susList.delete(parseInt(i, 10));
+            //             } else {
+            //                 this.m_destList[prevDest].m_infList.delete(parseInt(i, 10));
+            //             }
+            //             // Set to travel state
+            //             this.m_unitList[i].m_onTrav = true
+            //         }
+            //         // Reset counter
+            //         this.m_unitList[i].m_counter = 1;
+            //     }
+
+            // // Unit Travelling
+            // } else {
+            //     // Check state condition
+            //     if (this.m_unitList[i].m_counter < this.m_unitList[i].m_travDelay) {  
+            //         this.m_unitList[i].m_counter++;  
+            //     } else {
+            //         // arriving
+            //         let nextDest = this.m_unitList[i].GetDestID();
+            //         if (!this.m_unitList[i].m_state) {
+            //             this.m_destList[nextDest].m_susList.set(parseInt(i, 10), parseInt(i, 10));
+            //         } else {
+            //             this.m_destList[nextDest].m_infList.set(parseInt(i, 10), parseInt(i, 10));
+            //         }
+            //         // Set to stay state & reset counter
+            //         this.m_unitList[i].m_onTrav = false;
+            //         this.m_unitList[i].m_counter = 1;
+            //     }
+            // }
         }
     }
 
@@ -226,21 +272,79 @@ function Manager() {
             // Check if infected is present
             if (this.m_destList[i].m_infList.size !== 0) {
                 // Randomly infect susList
-                for (let [key, value] of this.m_destList[i].m_susList) {
-                    if (Math.random() >= INF_PER) {
-                        let unitID = this.m_destList[i].m_susList.get(value);
-                        // Set infected state & move to infList
-                        this.m_unitList[unitID].m_state = true;
+                for (let [key, value] of this.m_destList[i].m_susList) 
+                {
+                    // Math Random Infect
+                    // if (Math.random() >= INF_PER) {
+                    //     let unitID = this.m_destList[i].m_susList.get(value);
+                    //     // Set infected state & move to infList
+                    //     this.m_unitList[unitID].m_state = true;
+                    //     this.m_destList[i].m_susList.delete(parseInt(value, 10));
+                    //     this.m_destList[i].m_infList.set(parseInt(value, 10), parseInt(value, 10));
 
-                        // testing
-                        this.m_unitList[unitID].SetState(new Infected);
-                        //this.m_unitList[unitID].state.Evaluate();
+                    //     // Save to state check
+                    //     this.StateTrigger(unitID, this.currStep, true);
+                    // }
+                    
+                    // Fuzzy Infect
+                    let unitID = this.m_destList[i].m_susList.get(value);
+                    let susValue = this.SuscepState.GetDesirability(this.m_unitList[unitID].m_protectionFactor, this.m_unitList[unitID].m_stayDelay);
+                    let mildValue = this.MildState.GetDesirability(this.m_unitList[unitID].m_protectionFactor, this.m_unitList[unitID].m_stayDelay);
+                    let servereValue = this.SevereState.GetDesirability(this.m_unitList[unitID].m_protectionFactor, this.m_unitList[unitID].m_stayDelay);
+                    
+                    let valueList = [susValue, mildValue, servereValue];
+                    let maxIdx = 0; 
+                    let maxVal = valueList[0];
+                    console.log("List: " + valueList);
+                    console.log("Prot/Expos: " + this.m_unitList[unitID].m_protectionFactor + ": " + this.m_unitList[unitID].m_stayDelay);
+                    for(let i = 0; i < 3; i++)
+                    {
+                        if (maxVal < valueList[i])
+                        {
+                            maxVal = valueList[i];
+                            maxIdx = i;
+                            console.log("HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH");
+                        }
+                    }
+                    
+                    console.log(maxIdx);
 
-                        this.m_destList[i].m_susList.delete(parseInt(value, 10));
-                        this.m_destList[i].m_infList.set(parseInt(value, 10), parseInt(value, 10));
+                    switch (maxIdx) 
+                    {
+                        case 0:
+                            this.m_unitList[unitID].m_protectionFactor -= REDUCE_PROTECTION * this.m_unitList[unitID].m_stayDelay;
+                            if(this.m_unitList[unitID].m_protectionFactor < 0)
+                            this.m_unitList[unitID].m_protectionFactor = 0.0;
+                            break;
+                        case 1:     // Mildly Infected
+                            // Set infected state & move to infList
+                            this.m_unitList[unitID].m_state = true;
+                            this.m_unitList[unitID].m_curedPercentage = GetRandomArbitrary((this.curedRate) - 1.0, 1.0);
+                            this.m_unitList[unitID].m_deathPercentage = GetRandomArbitrary((this.deathRate) - 1.0, 1.0);
 
-                        // Save to state check
-                        this.StateTrigger(unitID, this.currStep, true);
+                            this.m_destList[i].m_susList.delete(parseInt(value, 10));
+                            this.m_destList[i].m_infList.set(parseInt(value, 10), parseInt(value, 10));
+
+                            // Save to state check
+                            this.StateTrigger(unitID, this.currStep, true);
+                            console.log("Mild");
+                            break;
+                        case 2:     // Severely Infected
+                            // Set infected state & move to infList
+                            this.m_unitList[unitID].m_state = true;
+                            this.m_unitList[unitID].m_curedPercentage = GetRandomArbitrary((this.curedRate) - 1.0, 1.0);
+                            this.m_unitList[unitID].m_deathPercentage = GetRandomArbitrary((this.deathRate) - 1.0, 1.0);
+
+                            this.m_destList[i].m_susList.delete(parseInt(value, 10));
+                            this.m_destList[i].m_infList.set(parseInt(value, 10), parseInt(value, 10));
+
+                            // Save to state check
+                            this.StateTrigger(unitID, this.currStep, true);
+                            console.log("Severe");
+                            break;
+                    
+                        default:
+                            break;
                     }
                 }
             }
