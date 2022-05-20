@@ -49,6 +49,7 @@ const placeList = [
   new Vec2(13.742963276787627, 100.50933082266478),
 ];
 
+var chartDat;
 
 // Rendering var
 const geometry = new THREE.CircleGeometry( 300, 32 );
@@ -179,6 +180,10 @@ function initWebglOverlayView(map) {
       manager.CountStat();
     }
     console.log("EXECUTE...[PASS]");
+
+    chartDat = manager.GetStat();
+
+    RunChart(chartDat);
 
     // // Check inf
     // let infCount = 0;
