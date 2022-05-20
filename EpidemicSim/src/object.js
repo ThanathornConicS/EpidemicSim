@@ -151,7 +151,7 @@ function Manager() {
     this.SevereState = new PreInfect_SevereInfect();
     
     // Behavior Tree
-    this.unitBehavior = new UnitBehavior();
+    this.unitBehavior = new UnitBehavior(this);
 
     this.SetCureDeathRate = function(cRate, dRate)
     {
@@ -193,7 +193,7 @@ function Manager() {
         this.SuscepState.InitFuzzy();
         this.MildState.InitFuzzy();
         this.SevereState.InitFuzzy();
-        console.log("Init Fuzzy... [PASS]");
+        // console.log("Init Fuzzy... [PASS]");
     }
 
     // Spawn infected at selected destination
@@ -219,9 +219,9 @@ function Manager() {
             //this.unitBehavior.SelectUnit();
             this.unitBehavior.Evaluate(this.m_unitList[i]);
 
-            if(i == 0){
-                console.log("unit[0] counter: " + this.m_unitList[i].m_counter);
-            }
+            // if(i == 0){
+            //     console.log("unit[0] counter: " + this.m_unitList[i].m_counter);
+            // }
             // // Unit Staying
             // if (!this.m_unitList[i].m_onTrav) {
             //     // Check state condition
@@ -303,18 +303,17 @@ function Manager() {
                         {
                             maxVal = valueList[i];
                             maxIdx = i;
-                            console.log("HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH");
+                            //console.log("HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH");
                         }
                     }
                     
-                    console.log(maxIdx);
-
                     switch (maxIdx) 
                     {
                         case 0:
                             this.m_unitList[unitID].m_protectionFactor -= REDUCE_PROTECTION * this.m_unitList[unitID].m_stayDelay;
                             if(this.m_unitList[unitID].m_protectionFactor < 0)
-                            this.m_unitList[unitID].m_protectionFactor = 0.0;
+                                this.m_unitList[unitID].m_protectionFactor = 0.0;
+                            console.log(maxIdx + " : Non");
                             break;
                         case 1:     // Mildly Infected
                             // Set infected state & move to infList
@@ -327,7 +326,7 @@ function Manager() {
 
                             // Save to state check
                             this.StateTrigger(unitID, this.currStep, true);
-                            console.log("Mild");
+                            console.log(maxIdx + " : Mild");
                             break;
                         case 2:     // Severely Infected
                             // Set infected state & move to infList
@@ -340,7 +339,7 @@ function Manager() {
 
                             // Save to state check
                             this.StateTrigger(unitID, this.currStep, true);
-                            console.log("Severe");
+                            console.log(maxIdx +" : Severe");
                             break;
                     
                         default:

@@ -48,10 +48,14 @@ class ActionNode extends B_Node{
         super();
         this.m_action = action;
     }
+
+    SetUnit(unit){
+        this.selectUnit = unit;
+    }
     
     Evaluate = function(){
         //console.log(this.m_action);
-        switch (this.m_action()){
+        switch (this.m_action(this.selectUnit)){
             case this.NodeStates.SUCCESS:
                 this.m_nodeState = this.NodeStates.SUCCESS;
                 return this.m_nodeState;
@@ -159,13 +163,18 @@ class UnitBehavior{
 
     // Start Evaluate from root node
     Evaluate = function(unit){
-        this.selectedUnit = unit;
-        //this.t1Selector.Evaluate();
-    }
-    
-    // SelectUnit = function(unit){
+
+        // Update unit ref
+        this.isOnTravel.SetUnit(unit);
+        this.isArrive.SetUnit(unit);
+        this.isMoveOut.SetUnit(unit); 
+        this.arriving.SetUnit(unit);
+        this.movingOut.SetUnit(unit); 
+        this.continue.SetUnit(unit);
         
-    // }
+
+        this.t1Selector.Evaluate();
+    }
 
     constructor() {
 
@@ -181,9 +190,10 @@ class UnitBehavior{
         // moveTo_D = new ActionNode(this.MoveTo_D);
         // assignToPlace = new ActionNode(this.AssignToPlace);
 
-        // Get unit reference
+        // Get reference
         this.selectedUnit = new Unit();
-
+        //this.manager_Ref = manager;
+        
         // Condition
         this.isOnTravel = new ActionNode(this.IsOnTravel);
         this.isArrive = new ActionNode(this.IsArrive);
@@ -273,28 +283,28 @@ class UnitBehavior{
     
     // Condition Func
 
-    IsOnTravel = function(){   
-        console.log("IsOnTravel Check...");    
-        console.log(this.selectedUnit);
-        if(this.selectedUnit.m_onTrav){
+    IsOnTravel = function(unit){   
+        //console.log("IsOnTravel Check...");
+        //console.log(unit);
+        if(unit.m_onTrav){
             return this.NodeStates.SUCCESS;
         }else{
             return this.NodeStates.FAILURE;
         }
     }
     
-    IsArrive = function(){
-        console.log("IsArrive Check...");
-        if(selectedUnit.m_counter >= selectedUnit.m_travDelay){
+    IsArrive = function(unit){
+        //console.log("IsArrive Check...");
+        if(unit.m_counter >= unit.m_travDelay){
             return this.NodeStates.SUCCESS;
         }else{
             return this.NodeStates.FAILURE;
         }
     }
 
-    IsMoveOut = function(){
-        console.log("IsMoveOut Check...");
-        if(selectedUnit.m_counter >= selectedUnit.m_stayDelay){
+    IsMoveOut = function(unit){
+        //console.log("IsMoveOut Check...");
+        if(unit.m_counter >= unit.m_stayDelay){
             return this.NodeStates.SUCCESS;
         }else{
             return this.NodeStates.FAILURE;
@@ -303,26 +313,25 @@ class UnitBehavior{
 
     // Action Func
 
-    Arriving = function(){
+    Arriving = function(unit){
         // assign unit to dest func() [Implement]
-        console.log("Arriving Check...");
-        this.selectedUnit.m_onTrav = false;
-        this.selectedUnit.m_counter = 1;
+        //console.log("Arriving Check...");
+        unit.m_onTrav = false;
+        unit.m_counter = 1;
         return this.NodeStates.SUCCESS;
     }
 
-    MovingOut = function(){
+    MovingOut = function(unit){
          // remove unit from dest func() [Implement]
-         console.log("MovingOut Check...");
-         this.selectedUnit.m_onTrav = true;
-         this.selectedUnit.m_counter = 1;
+         //console.log("MovingOut Check...");
+         unit.m_onTrav = true;
+         unit.m_counter = 1;
          return this.NodeStates.SUCCESS;
     }
 
-    Continue = function(){
-        console.log("Continue Check...");
-        this.selectedUnit.m_counter++;
-        this.console.log("counter");
+    Continue = function(unit){
+        //console.log("Continue Check...");
+        unit.m_counter++;
         return this.NodeStates.SUCCESS;
     }
 

@@ -155,15 +155,16 @@ function initWebglOverlayView(map) {
     }
     console.log("EXECUTE...[PASS]");
 
-    let unitCount = 0;
+    // Check inf
+    let infCount = 0;
     for(let i = 0; i < manager.m_unitList.length; i++)
     {
       if(manager.m_unitList[i].m_state == true)
       {
-        unitCount++;
+        infCount++;
       }
     }
-    console.log("Total Inf: " + unitCount);
+    console.log("Total Inf: " + infCount);
 
     // // Data checking [Debug]
     // for(let i = 0; i < manager.m_unitList.length; i++){
