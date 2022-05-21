@@ -19,7 +19,7 @@ class FuzzyRule
                 confidence = this.conditions[i].degreeOfMembership;
             }
         }
-        console.log("Confidence: " + confidence);
+        //console.log("Confidence: " + confidence);
         this.consequence.SetConfidenceWithOR(confidence);
     }
 }

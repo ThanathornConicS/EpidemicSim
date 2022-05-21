@@ -2,7 +2,7 @@
 const MAXTIME = 10;
 const MAXDEST = 3;
 const INF_PER = 0.50; // range 0 to 1
-const REDUCE_PROTECTION = 1;
+const REDUCE_PROTECTION = 1.5;
 
 // Interpolate func()
 function Lerp(start, end, t) {

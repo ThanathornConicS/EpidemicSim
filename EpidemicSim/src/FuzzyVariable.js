@@ -9,6 +9,7 @@ class FuzzyVariable
 
     AddLeftSet(name, minBound, peak, maxBound)
     {
+        //console.log("Set Name: " + name + " - " + minBound + ", " + peak + ", " + maxBound);
         let leftSet = new FuzzySet_Left(peak, peak - minBound, maxBound - peak);
         this.MemberSets.set(name, leftSet);
 
@@ -46,7 +47,8 @@ class FuzzyVariable
         {
             sum_repTimeConfidence += (value.degreeOfMembership * value.RepresentativeValue);
 			sum_confidence += value.degreeOfMembership;
-            //console.log((value.degreeOfMembership * value.RepresentativeValue));
+            console.log("DOM: " + value.degreeOfMembership);
+            console.log("REP: " + value.RepresentativeValue);
 		}
         
 		return sum_repTimeConfidence / sum_confidence;
