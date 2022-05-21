@@ -245,11 +245,25 @@ function initWebglOverlayView(map) {
       for(let i = 0; i < manager.m_unitList.length; i++){
         // Check state trigger
         if(manager.m_drawData[i].stateCheck.has(loopCounter % renderMax)){
-          if(manager.m_drawData[i].stateCheck.get(loopCounter % renderMax)){
-            agents[i].material = infMaterial;
-          }else{
-            agents[i].material = susMaterial;
+          // if(manager.m_drawData[i].stateCheck.get(loopCounter % renderMax)){
+          //   agents[i].material = infMaterial;
+          // }else{
+          //   agents[i].material = susMaterial;
+          // }
+          switch(manager.m_drawData[i].stateCheck.get(loopCounter % renderMax)){
+            case 0: // sus,rev
+              agents[i].visible = true;
+              agents[i].material = susMaterial;
+              break;
+            case 1: // inf
+              agents[i].visible = true;
+              agents[i].material = infMaterial;
+              break;
+            case 2: // qua, ded
+              agents[i].visible = false;
           }
+            
+        
         }
 
         // Set position & visibility
@@ -273,6 +287,7 @@ function initWebglOverlayView(map) {
         
         // Reset unit state
         for(let i = 0; i < units; i++){
+          agents[i].visible = false;
           agents[i].material = susMaterial;
         }
       }
