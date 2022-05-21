@@ -4,7 +4,7 @@ const MAX_STAY = 8;
 const MINDEST = 2;
 const DAY = 24;
 const INF_PER = 0.50; // range 0 to 1
-const REDUCE_PROTECTION = 1;
+const REDUCE_PROTECTION = 1.5;
 
 // Interpolate func()
 function Lerp(start, end, t) {

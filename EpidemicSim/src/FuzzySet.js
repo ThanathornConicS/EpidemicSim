@@ -63,8 +63,9 @@ class FuzzySet_Right extends FuzzySet
 {
     constructor(peak, left, right)
     {
-        super((peak + (peak - right)) / 2.0);
+        super((peak + (peak + right)) / 2.0);
 
+        console.log("Peak-Left-Right: " + peak + ", " + left + ", " + right);
         this.peakPoint = peak;
         this.leftOffset = left;
         this.rightOffset = right;
