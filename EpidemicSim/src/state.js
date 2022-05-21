@@ -50,7 +50,7 @@ class Infected extends State{
     Evaluate = function(){
         console.log("I am a Infected");
     }
-} 
+}
 
 class Recovered extends State{
 

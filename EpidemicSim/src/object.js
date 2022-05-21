@@ -1,6 +1,8 @@
 // Variables
-const MAXTIME = 10;
-const MAXDEST = 3;
+const MAX_STAY = 8;
+// const MAXDEST = 3;
+const MINDEST = 2;
+const DAY = 24;
 const INF_PER = 0.50; // range 0 to 1
 const REDUCE_PROTECTION = 1;
 
@@ -68,6 +70,7 @@ class Unit extends StateMachine{
         // Unit timer
         this.m_stayDelay = arg_stay;
         this.m_travDelay = arg_trav;
+        //this.maxDest = arg_stay + arg_trav;
         this.m_counter = 0;
 
         // Unit state
@@ -143,8 +146,8 @@ function Manager() {
     this.m_destList = [];
     // Step tracking
     this.currStep = 0;
-    this.renderStep = 10; // per render update (ms)
-    this.stepSol = 1 / (this.renderStep / 1000);
+    this.renderStep = 20; // per render update (ms)
+    this.stepSol = 1000 / this.renderStep;
 
     // Rate of cure/death
     this.curedRate = 0.0;
@@ -211,12 +214,34 @@ function Manager() {
         // Initialize unit
         for (let i = 0; i < units; i++) {
             // Unit & drawdata
-            this.m_unitList.push(new Unit(Math.floor(Math.random() * MAXTIME) + 1, Math.floor(Math.random() * MAXTIME) + 1));
+
+            // Random trav/stay time
+            let stayTime = Math.floor(Math.random() * MAX_STAY) + 1;
+            let max_trav = (DAY / MINDEST) - stayTime;
+            let travTime = Math.floor(Math.random() * max_trav) + 1;
+
+            this.m_unitList.push(new Unit(stayTime, travTime));
             this.m_drawData.push(new DrawData);
-            
+
             // Generate unit path
-            for (let j = 0; j < MAXDEST; j++) {   
-                this.m_unitList[i].m_destPath.push(Math.floor(Math.random() * this.m_destList.length));
+            let maxDest = DAY / (stayTime + travTime);
+            maxDest = parseInt(maxDest, 10);
+
+            if(i == 0){
+                console.log(i + " stayTime: " + stayTime);
+                console.log(i + " travTime: " + travTime);
+
+                console.log(i + " maxDest " + maxDest);
+                console.log("destPath: ");
+            }
+
+            
+            for (let j = 0; j < maxDest; j++) {   
+                let destID = Math.floor(Math.random() * this.m_destList.length);
+                this.m_unitList[i].m_destPath.push(destID);
+
+                if(i == 0)
+                    console.log(destID);
             }
 
             // Push unit ID to it's first destination
@@ -368,8 +393,8 @@ function Manager() {
                     let valueList = [susValue, mildValue, servereValue];
                     let maxIdx = 0; 
                     let maxVal = valueList[0];
-                    console.log("List: " + valueList);
-                    console.log("Prot/Expos: " + this.m_unitList[unitID].m_protectionFactor + ": " + this.m_unitList[unitID].m_stayDelay);
+                    //console.log("List: " + valueList);
+                    //console.log("Prot/Expos: " + this.m_unitList[unitID].m_protectionFactor + ": " + this.m_unitList[unitID].m_stayDelay);
                     for(let i = 0; i < 3; i++)
                     {
                         if (maxVal < valueList[i])
@@ -386,7 +411,7 @@ function Manager() {
                             this.m_unitList[unitID].m_protectionFactor -= REDUCE_PROTECTION * this.m_unitList[unitID].m_stayDelay;
                             if(this.m_unitList[unitID].m_protectionFactor < 0)
                                 this.m_unitList[unitID].m_protectionFactor = 0.0;
-                            console.log(maxIdx + " : Non");
+                            //console.log(maxIdx + " : Non");
                             break;
                         case 1:     // Mildly Infected
                             // Set infected state & move to infList
@@ -399,7 +424,7 @@ function Manager() {
 
                             // Save to state check
                             this.StateTrigger(unitID, this.currStep, true);
-                            console.log(maxIdx + " : Mild");
+                            //console.log(maxIdx + " : Mild");
                             break;
                         case 2:     // Severely Infected
                             // Set infected state & move to infList
@@ -412,7 +437,7 @@ function Manager() {
 
                             // Save to state check
                             this.StateTrigger(unitID, this.currStep, true);
-                            console.log(maxIdx +" : Severe");
+                            //console.log(maxIdx +" : Severe");
                             break;
                     
                         default:
@@ -440,8 +465,8 @@ function Manager() {
                 let A = this.m_unitList[i].m_destPath[j];
                 let B = this.m_unitList[i].m_destPath[(j + 1) % this.m_unitList[i].m_destPath.length];
                 // Get timestamp
-                let period = this.m_unitList[i].m_stayDelay + this.m_unitList[i].m_stayDelay;
-                let start = (this.m_unitList[i].m_stayDelay - 1) + (j * period);
+                let period = this.m_unitList[i].m_stayDelay + this.m_unitList[i].m_travDelay;
+                let start = (this.m_unitList[i].m_stayDelay) + (j * period);
                 let end = start + this.m_unitList[i].m_travDelay;
 
                 // Calculate path
@@ -453,6 +478,11 @@ function Manager() {
                     this.m_drawData[i].datPath.set(stepTime, stepPos);
                 }
             }
+
+            if(i == 0){
+                console.log(this.m_drawData[i]);
+            }
+
         }
     }
 }

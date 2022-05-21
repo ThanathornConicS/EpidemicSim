@@ -36,10 +36,11 @@ const mapOptions = {
 // Simulation var
 let manager = new Manager;
 //let userInitData = new UserInitData;
-let units = 10;
+let units = 50;
 let deathRate = 50;
 let cureRate = 50;
-const loop = 100; 
+const day = 24;
+const loop = 100; //day * 7 * 4 // days * weeks
 const placeList = [
   new Vec2(13.764844967161544, 100.53827147273205),
   new Vec2(13.79400311190518 , 100.5499287331782),
@@ -48,6 +49,8 @@ const placeList = [
   new Vec2(13.771162652204502, 100.5722447130237),
   new Vec2(13.742963276787627, 100.50933082266478),
 ];
+
+let renderMax = manager.stepSol * day;
 
 var chartDat;
 
@@ -131,7 +134,7 @@ function initWebglOverlayView(map) {
       agents.push(agt);
       scene.add(agents[i]);
       // hide by default
-      //agents[i].visible = true;
+      //agents[i].visible = false;
     }
     console.log("AgentsMesh...[PASS]");
 
@@ -241,8 +244,8 @@ function initWebglOverlayView(map) {
 
       for(let i = 0; i < manager.m_unitList.length; i++){
         // Check state trigger
-        if(manager.m_drawData[i].stateCheck.has(loopCounter)){
-          if(manager.m_drawData[i].stateCheck.get(loopCounter)){
+        if(manager.m_drawData[i].stateCheck.has(loopCounter % renderMax)){
+          if(manager.m_drawData[i].stateCheck.get(loopCounter % renderMax)){
             agents[i].material = infMaterial;
           }else{
             agents[i].material = susMaterial;
@@ -250,8 +253,8 @@ function initWebglOverlayView(map) {
         }
 
         // Set position & visibility
-        if(manager.m_drawData[i].datPath.has(loopCounter)){
-          let nextPos = manager.m_drawData[i].datPath.get(loopCounter);
+        if(manager.m_drawData[i].datPath.has(loopCounter % renderMax)){
+          let nextPos = manager.m_drawData[i].datPath.get(loopCounter % renderMax);
           let thisPos = agents[i].position;
           
           agents[i].translateX(nextPos.x - thisPos.x);
@@ -264,9 +267,10 @@ function initWebglOverlayView(map) {
 
       // Counter increment
       loopCounter++;
+      console.log(loopCounter);
       if(loopCounter > loop * manager.stepSol){
         loopCounter = 0;
-
+        
         // Reset unit state
         for(let i = 0; i < units; i++){
           agents[i].material = susMaterial;
