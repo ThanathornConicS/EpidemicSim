@@ -47,8 +47,8 @@ class FuzzyVariable
         {
             sum_repTimeConfidence += (value.degreeOfMembership * value.RepresentativeValue);
 			sum_confidence += value.degreeOfMembership;
-            console.log("DOM: " + value.degreeOfMembership);
-            console.log("REP: " + value.RepresentativeValue);
+            //console.log("DOM: " + value.degreeOfMembership);
+            //console.log("REP: " + value.RepresentativeValue);
 		}
         
 		return sum_repTimeConfidence / sum_confidence;

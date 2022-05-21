@@ -6,6 +6,8 @@ const DAY = 24;
 const INF_PER = 0.50; // range 0 to 1
 const REDUCE_PROTECTION = 1.5;
 
+const INF_DELAY = 5;
+
 // Interpolate func()
 function Lerp(start, end, t) {
     return (1 - t) * start + t * end;
@@ -72,6 +74,7 @@ class Unit extends StateMachine{
         this.m_travDelay = arg_trav;
         //this.maxDest = arg_stay + arg_trav;
         this.m_counter = 0;
+        this.inf_counter = 0;
 
         // Unit state
         this.SetState(new Susceptible);
@@ -186,7 +189,10 @@ function Manager() {
         this.m_chartData.I.push(In);
         this.m_chartData.R.push(Rn);
 
-        //console.log("count: " + this.m_chartData.S + ", " + this.m_chartData.I + ", " + this.m_chartData.R);
+        console.log("count: ");
+        console.log(this.m_chartData.S);
+        console.log(this.m_chartData.I);
+        console.log(this.m_chartData.R);
     }
 
     this.GetStat = function(){
@@ -269,8 +275,11 @@ function Manager() {
         this.m_unitList[spawn].m_state = true;
 
         // testing
-        this.m_unitList[spawn].SetState(new Infected);
+        //this.m_unitList[spawn].SetState(new Infected);
         //this.m_unitList[spawn].state.Evaluate();
+
+        this.m_unitList[spawn].m_curedPercentage = GetRandomArbitrary((this.curedRate) - 1.0, 1.0);
+        this.m_unitList[spawn].m_deathPercentage = GetRandomArbitrary((this.deathRate) - 1.0, 1.0);
 
         this.m_destList[dest_num].m_susList.delete(parseInt(spawn, 10));   
         this.m_destList[dest_num].m_infList.set(parseInt(spawn, 10), parseInt(spawn, 10));
@@ -282,6 +291,10 @@ function Manager() {
     this.UpdateUnits = function () {
         for (let i = 0; i < this.m_unitList.length; i++) {
             // Evaluate unit behavior
+
+            // Skip inactive
+            if(!this.m_unitList[i].m_active){continue}
+
             this.unitPath_Behavior.Evaluate(this.m_unitList[i]);
 
             // Check action trigger
@@ -290,7 +303,7 @@ function Manager() {
                     this.m_unitList[i].behaviorTrigger = 0;
                     let nextDest = this.m_unitList[i].GetDestID();
 
-                    // assign to est
+                    // assign to dest
                     if (!this.m_unitList[i].m_state) {
                         this.m_destList[nextDest].m_susList.set(parseInt(i, 10), parseInt(i, 10));
                     } else {
@@ -364,8 +377,51 @@ function Manager() {
         }
     }
 
-    // Infect unit by m_destList
     this.SpreadByDest = function () {
+
+        // Recover / Decease
+        for (let i = 0; i < this.m_unitList.length; i++){
+            // only infected
+            if(this.m_unitList[i].m_state){
+
+                if(this.m_unitList[i].inf_counter < INF_DELAY){
+                    this.m_unitList[i].inf_counter++;
+                    continue;
+                }
+                
+                // Random chance
+                let perChance = GetRandomArbitrary(1.0, 0.0);
+                if(perChance <= this.m_unitList[i].m_curedPercentage){
+                    // recovered
+                    this.m_unitList[i].m_state = false;
+                    // switch to susList
+                    if(!this.m_unitList[i].m_onTrav){
+                        let destId = this.m_unitList[i].GetDestID();
+                        this.m_destList[destId].m_infList.delete(parseInt(i, 10));
+                        this.m_destList[destId].m_susList.set(parseInt(i, 10), parseInt(i, 10));
+                    }
+                    continue;
+                }
+
+                // Random chance
+                perChance = GetRandomArbitrary(1.0, 0.0);
+                if(perChance <= this.m_unitList[i].m_deathPercentage){
+                    // dead
+                    this.m_unitList[i].m_state = false;
+                    this.m_unitList[i].m_active = false;
+                    //console.log("dead");
+                    // remove from list
+                    if(!this.m_unitList[i].m_onTrav){
+                        let destId = this.m_unitList[i].GetDestID();
+                        this.m_destList[destId].m_infList.delete(parseInt(i, 10));
+                    }
+                    continue;
+                }
+            }
+        }
+
+
+        // Infect
         for (let i = 0; i < this.m_destList.length; i++) {
             // Check if infected is present
             if (this.m_destList[i].m_infList.size !== 0) {
@@ -416,11 +472,13 @@ function Manager() {
                         case 1:     // Mildly Infected
                             // Set infected state & move to infList
                             this.m_unitList[unitID].m_state = true;
+                            this.m_unitList[unitID].inf_counter = 0;
                             this.m_unitList[unitID].m_curedPercentage = GetRandomArbitrary((this.curedRate) - 1.0, 1.0);
                             this.m_unitList[unitID].m_deathPercentage = GetRandomArbitrary((this.deathRate) - 1.0, 1.0);
 
                             this.m_destList[i].m_susList.delete(parseInt(value, 10));
                             this.m_destList[i].m_infList.set(parseInt(value, 10), parseInt(value, 10));
+                            
 
                             // Save to state check
                             this.StateTrigger(unitID, this.currStep, true);
@@ -429,6 +487,7 @@ function Manager() {
                         case 2:     // Severely Infected
                             // Set infected state & move to infList
                             this.m_unitList[unitID].m_state = true;
+                            this.m_unitList[unitID].inf_counter = 0;
                             this.m_unitList[unitID].m_curedPercentage = GetRandomArbitrary((this.curedRate) - 1.0, 1.0);
                             this.m_unitList[unitID].m_deathPercentage = GetRandomArbitrary((this.deathRate) - 1.0, 1.0);
 

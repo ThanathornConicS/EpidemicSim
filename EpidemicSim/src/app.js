@@ -267,7 +267,7 @@ function initWebglOverlayView(map) {
 
       // Counter increment
       loopCounter++;
-      console.log(loopCounter);
+      //console.log(loopCounter);
       if(loopCounter > loop * manager.stepSol){
         loopCounter = 0;
         
