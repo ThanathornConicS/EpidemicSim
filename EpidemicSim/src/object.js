@@ -71,6 +71,10 @@ function ChartData() {
 class Unit extends StateMachine{
     constructor(arg_stay, arg_trav) {
         super();
+
+        // Set initial state
+        this.SetState(new Susceptible);
+
         // Unit timer
         this.m_stayDelay = arg_stay;
         this.m_travDelay = arg_trav;
@@ -80,7 +84,6 @@ class Unit extends StateMachine{
         this.q_counter = 0;
 
         // Unit state
-        this.SetState(new Susceptible);
         this.m_state = false;
         this.m_onTrav = false;
 
@@ -242,21 +245,21 @@ function Manager() {
             let maxDest = DAY / (stayTime + travTime);
             maxDest = parseInt(maxDest, 10);
 
-            if(i == 0){
-                console.log(i + " stayTime: " + stayTime);
-                console.log(i + " travTime: " + travTime);
+            // if(i == 0){
+            //     console.log(i + " stayTime: " + stayTime);
+            //     console.log(i + " travTime: " + travTime);
 
-                console.log(i + " maxDest " + maxDest);
-                console.log("destPath: ");
-            }
+            //     console.log(i + " maxDest " + maxDest);
+            //     console.log("destPath: ");
+            // }
 
             
             for (let j = 0; j < maxDest; j++) {   
                 let destID = Math.floor(Math.random() * this.m_destList.length);
                 this.m_unitList[i].m_destPath.push(destID);
 
-                if(i == 0)
-                    console.log(destID);
+                // if(i == 0)
+                //     console.log(destID);
             }
             
             // Push unit ID to it's first destination
@@ -273,7 +276,6 @@ function Manager() {
         this.SuscepState.InitFuzzy();
         this.MildState.InitFuzzy();
         this.SevereState.InitFuzzy();
-        // console.log("Init Fuzzy... [PASS]");
     }
 
     // Spawn infected at selected destination
@@ -281,6 +283,7 @@ function Manager() {
         // Pick the first element of susList
         let spawn = this.m_destList[dest_num].m_susList.values().next().value;
         // Set infected state & move to infList
+        this.m_unitList[spawn].SetState(new Infected);
         this.m_unitList[spawn].m_state = true;
 
         // testing
@@ -300,6 +303,8 @@ function Manager() {
     this.UpdateUnits = function () {
         for (let i = 0; i < this.m_unitList.length; i++) {
             // Evaluate unit behavior
+
+            this.m_unitList[i].currentState.OnExecute();
 
             // Skip inactive
             if(!this.m_unitList[i].m_active){continue}
@@ -409,6 +414,7 @@ function Manager() {
                 let perChance = GetRandomArbitrary(1.0, 0.0);
                 if(perChance <= this.m_unitList[i].m_curedPercentage){
                     // recovered
+                    this.m_unitList[i].SetState(new Recovered);
                     this.m_unitList[i].m_state = false;
                     this.m_unitList[i].m_detect = false;
                     this.StateTrigger(i, this.currStep, 0);
@@ -425,6 +431,7 @@ function Manager() {
                 perChance = GetRandomArbitrary(1.0, 0.0);
                 if(perChance <= this.m_unitList[i].m_deathPercentage){
                     // dead
+                    this.m_unitList[i].SetState(new Removed);
                     this.m_unitList[i].m_state = false;
                     this.m_unitList[i].m_active = false;
                     this.StateTrigger(i, this.currStep, 2);
@@ -465,16 +472,16 @@ function Manager() {
                 for (let [key, value] of this.m_destList[i].m_susList) 
                 {
                     // Math Random Infect
-                    // if (Math.random() >= INF_PER) {
-                    //     let unitID = this.m_destList[i].m_susList.get(value);
-                    //     // Set infected state & move to infList
-                    //     this.m_unitList[unitID].m_state = true;
-                    //     this.m_destList[i].m_susList.delete(parseInt(value, 10));
-                    //     this.m_destList[i].m_infList.set(parseInt(value, 10), parseInt(value, 10));
+                    /*if (Math.random() >= INF_PER) {
+                        let unitID = this.m_destList[i].m_susList.get(value);
+                        // Set infected state & move to infList
+                        this.m_unitList[unitID].m_state = true;
+                        this.m_destList[i].m_susList.delete(parseInt(value, 10));
+                        this.m_destList[i].m_infList.set(parseInt(value, 10), parseInt(value, 10));
 
-                    //     // Save to state check
-                    //     this.StateTrigger(unitID, this.currStep, 1);
-                    // }
+                        // Save to state check
+                        this.StateTrigger(unitID, this.currStep, 1);
+                    }*/
                     
                     // Fuzzy Infect
                     let unitID = this.m_destList[i].m_susList.get(value);
@@ -485,15 +492,12 @@ function Manager() {
                     let valueList = [susValue, mildValue, servereValue];
                     let maxIdx = 0; 
                     let maxVal = valueList[0];
-                    //console.log("List: " + valueList);
-                    //console.log("Prot/Expos: " + this.m_unitList[unitID].m_protectionFactor + ": " + this.m_unitList[unitID].m_stayDelay);
                     for(let i = 0; i < 3; i++)
                     {
                         if (maxVal < valueList[i])
                         {
                             maxVal = valueList[i];
                             maxIdx = i;
-                            //console.log("HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH");
                         }
                     }
                     
@@ -507,6 +511,7 @@ function Manager() {
                             break;
                         case 1:     // Mildly Infected
                             // Set infected state & move to infList
+                            this.m_unitList[unitID].SetState(new Infected);
                             this.m_unitList[unitID].m_state = true;
                             this.m_unitList[unitID].inf_counter = 0;
                             this.m_unitList[unitID].q_counter = 0;
@@ -523,6 +528,7 @@ function Manager() {
                             break;
                         case 2:     // Severely Infected
                             // Set infected state & move to infList
+                            this.m_unitList[unitID].SetState(new Infected);
                             this.m_unitList[unitID].m_state = true;
                             this.m_unitList[unitID].inf_counter = 0;
                             this.m_unitList[unitID].q_counter = 0;
@@ -576,9 +582,9 @@ function Manager() {
                 }
             }
 
-            if(i == 0){
-                console.log(this.m_drawData[i]);
-            }
+            // if(i == 0){
+            //     console.log(this.m_drawData[i]);
+            // }
 
         }
     }

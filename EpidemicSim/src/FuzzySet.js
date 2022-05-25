@@ -65,7 +65,6 @@ class FuzzySet_Right extends FuzzySet
     {
         super((peak + (peak + right)) / 2.0);
 
-        console.log("Peak-Left-Right: " + peak + ", " + left + ", " + right);
         this.peakPoint = peak;
         this.leftOffset = left;
         this.rightOffset = right;

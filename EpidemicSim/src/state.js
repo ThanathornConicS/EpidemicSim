@@ -1,68 +1,127 @@
 // ========= Abstract class ==========
 class State{
     // Abstract Constructor
-    constructor() {
-        if(this.constructor == State){
-            //throw new Error(" Object of Abstract Class cannot be created");
-        }
+    constructor() 
+    {
+        if(this.constructor == State)
+            throw new Error(" Object of Abstract Class cannot be created");
+        
     }
     // Abstract Method
-    Evaluate = function(){
+    OnExecute = function(){
+        throw new Error("Abstract Method has no implementation");
+    }
+    OnEnter = function(){
+        throw new Error("Abstract Method has no implementation");
+    }
+    OnExit = function(){
         throw new Error("Abstract Method has no implementation");
     }
 }
 
 class StateMachine{
     // Abstract Constructor
-    constructor() {
-        if(this.constructor == StateMachine){
-            //throw new Error(" Object of Abstract Class cannot be created");
-        }
+    constructor() 
+    {
+        if(this.constructor == StateMachine)
+            throw new Error(" Object of Abstract Class cannot be created");
+        
+        // Members
+        this.currentState = null;
     }
 
-    // Members
-    state = new State;
-    SetState = function(state){
-        this.state = state;
+    SetState(state)
+    {
+        if(this.currentState != null)
+        {   
+            this.currentState.OnExit();
+        }
+
+        this.currentState = state;
+        this.currentState.OnEnter();
+    }
+    GetState = function()
+    {
+        return this.currentState;
     }
 }
 
 // ========= State class ==========
-class Susceptible extends State{
-
+class Susceptible extends State
+{
     constructor()
     {
         super();
     }
 
-    Evaluate = function(){
-        console.log( );
+    OnEnter = function(){
+        console.log("Im Okay!");
+    }
+    OnExecute = function(){
+        console.log("Im still doing Okay!");
+    }
+    OnExit = function(){
+        console.log("Oh no...");
     }
 } 
 
-class Infected extends State{
+class Infected extends State
+{
 
     constructor()
     {
         super();
     }
 
-    Evaluate = function(){
-        console.log("I am a Infected");
+    OnEnter = function(){
+        console.log("-_-");
+    }
+    OnExecute = function(){
+        console.log("I am infected");
+    }
+    OnExit = function(){
+        console.log("Hope that I will survive");
     }
 }
 
-class Recovered extends State{
+class Recovered extends State
+{
+
+    constructor()
+    {
+        super();
+    }
+    
+    OnEnter = function(){
+        console.log("Im cured!");
+    }
+    OnExecute = function(){
+        console.log("Still good");
+    }
+    OnExit = function(){
+        console.log("NOT AGAIN!!");
+    }
+}
+
+
+class Removed extends State
+{
 
     constructor()
     {
         super();
     }
 
-    Evaluate = function(){
-        console.log("I am a Recovered");
+    OnEnter = function(){
+        console.log("Am I dead?");
     }
-} 
+    OnExecute = function(){
+        console.log("Yep I am dead");
+    }
+    OnExit = function(){
+        console.log("----");
+    }
+}
 
 // class Agent extends StateMachine{
 //     constructor(input) {
