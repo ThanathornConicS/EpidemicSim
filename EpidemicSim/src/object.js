@@ -53,6 +53,37 @@ function Vec2(x, y){
     }
 }
 
+function Approximate(t, firstP, secondP)
+{
+    let pLat = firstP.lat * (1 - t) + secondP.lat * t;
+    let pLng = firstP.lng * (1 - t) + secondP.lng * t;
+
+    return {pLat, pLng};
+}
+function BezierLerpPath(pointList, stepSize)
+{
+    beziertargetPoint = [];
+    for(let t = 0; t < 1; t += stepSize)
+    {
+        let tempPoints = pointList;
+        while(tempPoints.size() > 1)
+        {
+            let anotherTempPoints = [];
+            for(let i = 0; i < tempPoints.size() - 1; i++)
+            {
+                let firstPoint = tempPoints[i];
+                let secondPoint = tempPoints[i + 1];
+
+                anotherTempPoints.push(Approximate(t, firstPoint, secondPoint));
+            }
+            tempPoints = anotherTempPoints;
+        }
+        beziertargetPoint.push(tempPoints[0]);
+    }
+
+    return beziertargetPoint;
+}
+
 // Render data class
 function DrawData() {
     this.datPath = new Map();
