@@ -242,21 +242,21 @@ function Manager() {
             let maxDest = DAY / (stayTime + travTime);
             maxDest = parseInt(maxDest, 10);
 
-            if(i == 0){
-                console.log(i + " stayTime: " + stayTime);
-                console.log(i + " travTime: " + travTime);
+            // if(i == 0){
+            //     console.log(i + " stayTime: " + stayTime);
+            //     console.log(i + " travTime: " + travTime);
 
-                console.log(i + " maxDest " + maxDest);
-                console.log("destPath: ");
-            }
+            //     console.log(i + " maxDest " + maxDest);
+            //     console.log("destPath: ");
+            // }
 
             
             for (let j = 0; j < maxDest; j++) {   
                 let destID = Math.floor(Math.random() * this.m_destList.length);
                 this.m_unitList[i].m_destPath.push(destID);
 
-                if(i == 0)
-                    console.log(destID);
+                // if(i == 0)
+                //     console.log(destID);
             }
             
             // Push unit ID to it's first destination
@@ -576,9 +576,9 @@ function Manager() {
                 }
             }
 
-            if(i == 0){
-                console.log(this.m_drawData[i]);
-            }
+            // if(i == 0){
+            //     console.log(this.m_drawData[i]);
+            // }
 
         }
     }

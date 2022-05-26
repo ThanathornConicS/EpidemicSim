@@ -1,4 +1,4 @@
-// ========= Abstract class ==========
+// ========= B_Node Abstract class ==========
 class B_Node{
 
     // Abstract Constructor
@@ -27,18 +27,6 @@ class B_Node{
          return this.m_nodeState; 
     }
 }
-
-class DT_Node{
-    
-    m_positive;
-    m_negative;
-
-     // Abstract Method
-     Evaluate = function(){
-        throw new Error("Abstract Method has no implementation");
-    }
-}
-
 
 // ========= B_Node class ==========
 
@@ -286,29 +274,41 @@ class UnitPath_Behavior{
     IsOnTravel = function(unit){   
         //console.log("IsOnTravel Check...");
         //console.log(unit);
-        if(unit.m_onTrav){
-            return this.NodeStates.SUCCESS;
-        }else{
-            return this.NodeStates.FAILURE;
-        }
+
+        // if(unit.m_onTrav){
+        //     return this.NodeStates.SUCCESS;
+        // }else{
+        //     return this.NodeStates.FAILURE;
+        // }
+
+        let isOnTravel_DT = new IsOnTravel_DT(unit, this.NodeStates.SUCCESS, this.NodeStates.FAILURE);
+        return isOnTravel_DT.Evaluate();
     }
     
     IsArrive = function(unit){
         //console.log("IsArrive Check...");
-        if(unit.m_counter >= unit.m_travDelay){
-            return this.NodeStates.SUCCESS;
-        }else{
-            return this.NodeStates.FAILURE;
-        }
+
+        // if(unit.m_counter >= unit.m_travDelay){
+        //     return this.NodeStates.SUCCESS;
+        // }else{
+        //     return this.NodeStates.FAILURE;
+        // }
+
+        let isArrive_DT = new IsArrive_DT(unit, this.NodeStates.SUCCESS, this.NodeStates.FAILURE);
+        return isArrive_DT.Evaluate();
     }
 
     IsMoveOut = function(unit){
         //console.log("IsMoveOut Check...");
-        if(unit.m_counter >= unit.m_stayDelay){
-            return this.NodeStates.SUCCESS;
-        }else{
-            return this.NodeStates.FAILURE;
-        }
+        
+        // if(unit.m_counter >= unit.m_stayDelay){
+        //     return this.NodeStates.SUCCESS;
+        // }else{
+        //     return this.NodeStates.FAILURE;
+        // }
+
+        let isMoveOut_DT = new IsMoveOut_DT(unit, this.NodeStates.SUCCESS, this.NodeStates.FAILURE);
+        return isMoveOut_DT.Evaluate();
     }
 
     // Action Func
@@ -384,4 +384,77 @@ class UnitPath_Behavior{
     // AssignToPlace = function(){
     //     // unit funtion to assign next place
     // }
+}
+
+
+// ========= DT Abstract class ==========
+class DT_Node{
+    
+    m_positive;
+    m_negative;
+
+     // Abstract Method
+     Evaluate = function(){
+        throw new Error("Abstract Method has no implementation");
+    }
+}
+
+// ========= DT checking class ==========
+
+class IsOnTravel_DT extends B_Node{
+
+    constructor(unit, positive, negative)
+    {
+        super();
+        this.m_unit = unit;
+        this.m_positive = positive;
+        this.m_negative = negative;
+    }
+
+    Evaluate = function(){
+        if(this.m_unit.m_onTrav){
+            return this.m_positive;
+        }else{
+            return this.m_negative;
+        }
+    }
+}
+
+class IsArrive_DT extends B_Node{
+
+    constructor(unit, positive, negative)
+    {
+        super();
+        this.m_unit = unit;
+        this.m_positive = positive;
+        this.m_negative = negative;
+    }
+
+    Evaluate = function(){
+        if(this.m_unit.m_counter >= this.m_unit.m_travDelay){
+            return this.m_positive;
+        }else{
+            return this.m_negative;
+        }
+    }
+}
+
+class IsMoveOut_DT extends B_Node{
+
+    constructor(unit, positive, negative)
+    {
+        super();
+        this.m_unit = unit;
+        this.m_positive = positive;
+        this.m_negative = negative;
+    }
+    
+    Evaluate = function(){
+        if(this.m_unit.m_counter >= this.m_unit.m_stayDelay){
+            return this.m_positive;
+        }else{
+            return this.m_negative;
+        }
+    }
+
 }
