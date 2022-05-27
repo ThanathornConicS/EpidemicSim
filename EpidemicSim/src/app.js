@@ -91,6 +91,8 @@ const neighborList = [
   [5, 6, 18],
 ]; 
 
+let curveZone = [3,4,5,13,14,15,16,17,18,19];
+
 
 
 // map
@@ -199,6 +201,7 @@ function initWebglOverlayView(map) {
           manager.AddNeighbor(i,neighborList[i][j]);
       }
     }
+    manager.pathFinder.bezierZone = curveZone;
     console.log("SetNeighbors...[PASS]");
 
     //console.log(manager.pathFinder.nodeList);

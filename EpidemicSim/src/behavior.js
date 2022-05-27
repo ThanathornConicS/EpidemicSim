@@ -401,7 +401,7 @@ class DT_Node{
 
 // ========= DT checking class ==========
 
-class IsOnTravel_DT extends B_Node{
+class IsOnTravel_DT extends DT_Node{
 
     constructor(unit, positive, negative)
     {
@@ -420,7 +420,7 @@ class IsOnTravel_DT extends B_Node{
     }
 }
 
-class IsArrive_DT extends B_Node{
+class IsArrive_DT extends DT_Node{
 
     constructor(unit, positive, negative)
     {
@@ -439,7 +439,7 @@ class IsArrive_DT extends B_Node{
     }
 }
 
-class IsMoveOut_DT extends B_Node{
+class IsMoveOut_DT extends DT_Node{
 
     constructor(unit, positive, negative)
     {

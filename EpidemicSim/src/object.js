@@ -582,25 +582,10 @@ function Manager() {
                 let A = this.m_unitList[i].m_destPath[j];
                 let B = this.m_unitList[i].m_destPath[(j + 1) % this.m_unitList[i].m_destPath.length];
 
-                // Find path using A*
-                this.pathFinder.SetPath(A, B);
-                this.pathFinder.A_star();
-                //console.log("Pre getPath");
-                let path = this.pathFinder.GetPath();
-                
-                if(path.length <= 0){
-                    //console.log("Continue");
-                    continue;
-                }
-
-                //console.log("Post getPath");
-
                 // Get timestamp
                 let period = this.m_unitList[i].m_stayDelay + this.m_unitList[i].m_travDelay;
                 let start = (this.m_unitList[i].m_stayDelay) + (j * period);
                 //let end = start + this.m_unitList[i].m_travDelay;
-
-                let stepPerNode = Math.floor(step / (path.length - 1));
 
                 // // Calculate path
                 // for (let k = 0; k < step; k++) {
@@ -610,6 +595,17 @@ function Manager() {
 
                 //     this.m_drawData[i].datPath.set(stepTime, stepPos);
                 // }
+
+                // Find path using A*
+                this.pathFinder.SetPath(A, B);
+                this.pathFinder.A_star();
+                let bezierCheck = [];
+                let path = this.pathFinder.GetPath(bezierCheck);
+                let stepPerNode = Math.floor(step / (path.length - 1));
+                // Check same dest
+                if(path.length <= 0){
+                    continue;
+                }
 
                 // // Calculate along each path 
                 // for(let itPath = 0; itPath < path.length - 1; itPath++){
@@ -626,18 +622,93 @@ function Manager() {
                 //     }
                 // }
 
-                // Calculate Bezier 
-                let pointList = []
-                for(let itPath = 0; itPath < path.length; itPath++){
-                    pointList.push(path[itPath].m_position);
+                // Prepare Bezier
+                let pointList = [];
+                let isBezierFound = false; 
+                // Check Bezier Condition
+                if(bezierCheck.length > 0){
+                    // Check least amount of points
+                    if(bezierCheck[1] - bezierCheck[0] > 1){
+                        isBezierFound = true;
+                        for(let b_it = bezierCheck[0]; b_it <= bezierCheck[1]; b_it++){
+                        pointList.push(path[b_it].m_position);
+                        }
+                    }
                 }
 
-                let bezierPos = this.BezierLerpPath(pointList, step);
-                
-                for (let k = 0; k < step; k++) {
-                    let stepTime = (start * this.stepSol) + k;
-                    this.m_drawData[i].datPath.set(stepTime, bezierPos[k]);
+
+                if(!isBezierFound){ // calculate A* normally
+                    // Calculate along each path 
+                    for(let itPath = 0; itPath < path.length - 1; itPath++){
+                        let beginPos = path[itPath].m_position;
+                        let endPos = path[itPath+1].m_position;
+
+                        for (let k = 0; k < stepPerNode; k++) {
+
+                            let stepFrac = k / stepPerNode;
+                            let stepPos = beginPos.LerpTo(endPos, stepFrac)
+                            let stepTime = (start * this.stepSol) + ((stepPerNode * itPath) + k);
+
+                            this.m_drawData[i].datPath.set(stepTime, stepPos);
+                        }
+                    }
+                }else{ // calculate bezier section
+
+                    // Pre bezier 
+                    for(let itPath = 0; itPath < bezierCheck[0]; itPath++){
+                        let beginPos = path[itPath].m_position;
+                        let endPos = path[itPath+1].m_position;
+
+                        for (let k = 0; k < stepPerNode; k++) {
+
+                            let stepFrac = k / stepPerNode;
+                            let stepPos = beginPos.LerpTo(endPos, stepFrac)
+                            let stepTime = (start * this.stepSol) + ((stepPerNode * itPath) + k);
+
+                            this.m_drawData[i].datPath.set(stepTime, stepPos);
+                        }
+                    }
+
+                    // Post bezier 
+                    for(let itPath = bezierCheck[1]; itPath < path.length - 1; itPath++){
+                        let beginPos = path[itPath].m_position;
+                        let endPos = path[itPath+1].m_position;
+
+                        for (let k = 0; k < stepPerNode; k++) {
+
+                            let stepFrac = k / stepPerNode;
+                            let stepPos = beginPos.LerpTo(endPos, stepFrac)
+                            let stepTime = (start * this.stepSol) + ((stepPerNode * itPath) + k);
+
+                            this.m_drawData[i].datPath.set(stepTime, stepPos);
+                        }
+                    }
+
+                    // Calculate Bezier
+                    let remainingStep = (bezierCheck[1] - bezierCheck[0]) * stepPerNode;
+                    let bezierPos = this.BezierLerpPath(pointList, remainingStep);
+
+                    for (let k = 0; k < remainingStep; k++) {
+                        let stepTime = (start * this.stepSol) + ((stepPerNode * bezierCheck[0]) + k);
+                        this.m_drawData[i].datPath.set(stepTime, bezierPos[k]);
+                    }
                 }
+
+
+
+
+                // // Calculate Bezier on all
+                // let pointList = []
+                // for(let itPath = 0; itPath < path.length; itPath++){
+                //     pointList.push(path[itPath].m_position);
+                // }
+
+                // let bezierPos = this.BezierLerpPath(pointList, step);
+                
+                // for (let k = 0; k < step; k++) {
+                //     let stepTime = (start * this.stepSol) + k;
+                //     this.m_drawData[i].datPath.set(stepTime, bezierPos[k]);
+                // }
             }
 
             // if(i == 0){

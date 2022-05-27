@@ -26,6 +26,7 @@ class GraphNode{
 class PathFinder{
     constructor() {
         this.nodeList = [];
+        this.bezierZone;
         this.start;
         this.end;
     }
@@ -90,7 +91,7 @@ class PathFinder{
         }
     }
 
-    GetPath = function(){
+    GetPath = function(bezierCheck){
         let pathList = []
         let child = this.end;
 
@@ -104,6 +105,40 @@ class PathFinder{
             child = child.parent;
         }
         pathList.unshift(this.start);
+
+        // Check Bezier
+        let bStart = false;
+        let bEnd = false;
+        
+        for(let i = 0; i < pathList.length; i++){
+            let bFound = false;
+            for(let id of this.bezierZone){
+                if(pathList[i] == this.nodeList[id]){
+                    // Check entry point
+                    if(!bStart){
+                        bStart = true;
+                        bezierCheck.push(i);
+                        //console.log("bStart" + i);
+                    }
+                    bFound = true; 
+                    break;
+                }
+            }
+
+            //check exit point
+            if(bStart && !bFound && !bEnd){
+                bEnd = true;
+                bezierCheck.push(i-1);
+                //console.log("bEnd" + (i-1));
+            }
+
+        }
+        
+        // check last in
+        if(bStart && !bEnd){
+            bezierCheck.push(pathList.length - 1); 
+            //console.log("bEnd" + (pathList.length - 1));
+        }
 
         return pathList;
     }
