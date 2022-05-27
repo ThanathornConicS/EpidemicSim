@@ -57,37 +57,6 @@ function Vec2(x, y){
     }
 }
 
-function Approximate(t, firstP, secondP)
-{
-    let pLat = firstP.x * (1 - t) + secondP.x * t;
-    let pLng = firstP.y * (1 - t) + secondP.y * t;
-
-    return {pLat, pLng};
-}
-function BezierLerpPath(pointList, stepSize)
-{
-    beziertargetPoint = [];
-    for(let t = 0; t < 1; t += stepSize)
-    {
-        let tempPoints = pointList;
-        while(tempPoints.size() > 1)
-        {
-            let anotherTempPoints = [];
-            for(let i = 0; i < tempPoints.size() - 1; i++)
-            {
-                let firstPoint = tempPoints[i];
-                let secondPoint = tempPoints[i + 1];
-
-                anotherTempPoints.push(Approximate(t, firstPoint, secondPoint));
-            }
-            tempPoints = anotherTempPoints;
-        }
-        beziertargetPoint.push(tempPoints[0]);
-    }
-
-    return beziertargetPoint;
-}
-
 // Render data class
 function DrawData() {
     this.datPath = new Map();
@@ -642,17 +611,32 @@ function Manager() {
                 //     this.m_drawData[i].datPath.set(stepTime, stepPos);
                 // }
 
-                // Calculate each path
-                for(let itPath = 0; itPath < path.length - 1; itPath++){
-                    let beginPos = path[itPath].m_position;
-                    let endPos = path[itPath+1].m_position;
-                    for (let k = 0; k < stepPerNode; k++) {
-                        let stepFrac = k / stepPerNode;
-                        let stepPos = beginPos.LerpTo(endPos, stepFrac)
-                        let stepTime = (start * this.stepSol) + ((stepPerNode * itPath) + k);
+                // // Calculate along each path 
+                // for(let itPath = 0; itPath < path.length - 1; itPath++){
+                //     let beginPos = path[itPath].m_position;
+                //     let endPos = path[itPath+1].m_position;
 
-                        this.m_drawData[i].datPath.set(stepTime, stepPos);
-                    }
+                //     for (let k = 0; k < stepPerNode; k++) {
+
+                //         let stepFrac = k / stepPerNode;
+                //         let stepPos = beginPos.LerpTo(endPos, stepFrac)
+                //         let stepTime = (start * this.stepSol) + ((stepPerNode * itPath) + k);
+
+                //         this.m_drawData[i].datPath.set(stepTime, stepPos);
+                //     }
+                // }
+
+                // Calculate Bezier 
+                let pointList = []
+                for(let itPath = 0; itPath < path.length; itPath++){
+                    pointList.push(path[itPath].m_position);
+                }
+
+                let bezierPos = this.BezierLerpPath(pointList, step);
+                
+                for (let k = 0; k < step; k++) {
+                    let stepTime = (start * this.stepSol) + k;
+                    this.m_drawData[i].datPath.set(stepTime, bezierPos[k]);
                 }
             }
 
@@ -661,5 +645,36 @@ function Manager() {
             // }
 
         }
+    }
+
+    this.Approximate = function (t, firstP, secondP)
+    {
+        let pLat = firstP.x * (1 - t) + secondP.x * t;
+        let pLng = firstP.y * (1 - t) + secondP.y * t;
+
+        return new Vec2(pLat, pLng);
+    }
+
+    this.BezierLerpPath = function(pointList, stepSize)
+    {
+        beziertargetPoint = [];
+        for(let t = 0; t < stepSize; t += 1)
+        {
+            let tempPoints = pointList;
+            while(tempPoints.length > 1)
+            {
+                let anotherTempPoints = [];
+                for(let i = 0; i < tempPoints.length - 1; i++)
+                {
+                    let firstPoint = tempPoints[i];
+                    let secondPoint = tempPoints[i + 1];
+                    anotherTempPoints.push(this.Approximate(t/stepSize, firstPoint, secondPoint));
+                }
+                tempPoints = anotherTempPoints;
+            }
+            beziertargetPoint.push(tempPoints[0]);
+        }
+
+        return beziertargetPoint;
     }
 }

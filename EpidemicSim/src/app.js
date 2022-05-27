@@ -43,7 +43,7 @@ let cureRate = 50;
 const day = 24;
 const loop = 100; //day * 7 * 4 // days * weeks
 const placeList = [
-  new Vec2(13.730811243930567, 100.5458354857367),
+  new Vec2(13.730800592289794, 100.54598072802047),
   new Vec2(13.731062586670296, 100.5467396597854),
   new Vec2(13.731614765300431, 100.54598590319902),
   new Vec2(13.731966590974539, 100.54327031202271),
@@ -57,8 +57,8 @@ const nodes = [
   new Vec2(13.730433785748444, 100.54674096235308),
   new Vec2(13.732103943750552, 100.54674632677094),
   new Vec2(13.73221337646406, 100.54559297689023),
-  new Vec2(13.731869444906772, 100.5459658039447),
   new Vec2(13.73191113360725, 100.54554469712777),
+  new Vec2(13.731869444906772, 100.5459658039447),
   new Vec2(13.732570133808654, 100.5454491543675),
   new Vec2(13.732443094363317, 100.5447537993192),
   new Vec2(13.73146086021523, 100.54381921662171),
@@ -301,7 +301,7 @@ function initWebglOverlayView(map) {
     {
       lat: mapOptions.center.lat,
       lng: mapOptions.center.lng,
-      altitude: 120,
+      altitude: 1,
     };
     // update camera matrix to ensure the model is georeferenced correctly on the map     
     const matrix = transformer.fromLatLngAltitude(latlngLit);
