@@ -6,9 +6,10 @@ class GraphEdge{
         this.toNode = to;
 
         // edge cost
-        let vector = from.position - to.position;
+        let vector = from.m_position.Sub(to.m_position);
         let cost = vector.Length();
         this.totalCost = pathCost + cost;
+        
     }
 }
 
@@ -16,7 +17,7 @@ class GraphNode{
     constructor(position) {
         this.m_position = position;
         this.neighbors = [];
-        this.parent = new GraphNode();
+        this.parent;
         this.isVisited = false;
     }
 }
@@ -25,27 +26,30 @@ class GraphNode{
 class PathFinder{
     constructor() {
         this.nodeList = [];
-        this.start = new GraphNode();
-        this.end = new GraphNode();
-        this.isPathReady = false;
+        this.start;
+        this.end;
     }
 
     AddNode = function(node){
-        nodeList.push(node);
+        this.nodeList.push(node);
+    }
+
+    SetNeighbor = function(from, to){
+        this.nodeList[from].neighbors.push(this.nodeList[to]);
     }
 
     SetPath = function(A, B){
-        this.start = A;
-        this.end = B;
-        
-        // reset when recieve new path
-        this.isPathReady = false;
+        this.start = this.nodeList[A];
+        this.end = this.nodeList[B];
+        for(let node of this.nodeList){
+            node.isVisited = false;
+        }
     }
 
     A_star = function(){
         let list = [];
-        list.push(new GraphEdge(start, start));
-
+        let graphEdge = new GraphEdge(this.start, this.start, 0)
+        list.push(graphEdge);
         while(list.length > 0){
 
             // Find Least F
@@ -55,7 +59,7 @@ class PathFinder{
             // Calculate F - implement total cost
             for(let i = 0; i < list.length; i++){
                 let G = list[i].totalCost;
-                let vH = end.m_position - list[i].toNode.m_position;
+                let vH = this.end.m_position.Sub(list[i].toNode.m_position);
                 let H = vH.Length();
                 let F = G + H;
 
@@ -70,17 +74,37 @@ class PathFinder{
             list.splice(edge, 1);
             nextEdge.toNode.parent = nextEdge.fromNode;
             nextEdge.toNode.isVisited = true;
+            
+            //console.log("check");
 
             // check end path
-            if (nextEdge.toNode == end){
-                isPathReady = true;
+            if (nextEdge.toNode == this.end){
+                //console.log("quit");
                 return;
             }
 
             for(let node of nextEdge.toNode.neighbors){
                 if (!node.isVisited)
-                    list.push(new GraphEdge(nextEdge.toNode, node));
+                    list.push(new GraphEdge(nextEdge.toNode, node, nextEdge.totalCost));
             }
         }
+    }
+
+    GetPath = function(){
+        let pathList = []
+        let child = this.end;
+
+        if(this.start == this.end){
+            //console.log("same")
+            return pathList;
+        }
+
+        while(child.parent != child){
+            pathList.unshift(child);
+            child = child.parent;
+        }
+        pathList.unshift(this.start);
+
+        return pathList;
     }
 }

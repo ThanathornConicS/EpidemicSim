@@ -59,8 +59,8 @@ function Vec2(x, y){
 
 function Approximate(t, firstP, secondP)
 {
-    let pLat = firstP.lat * (1 - t) + secondP.lat * t;
-    let pLng = firstP.lng * (1 - t) + secondP.lng * t;
+    let pLat = firstP.x * (1 - t) + secondP.x * t;
+    let pLng = firstP.y * (1 - t) + secondP.y * t;
 
     return {pLat, pLng};
 }
@@ -188,6 +188,7 @@ function Manager() {
     // Object container
     this.m_unitList = [];
     this.m_destList = [];
+    
     // Step tracking
     this.currStep = 0;
     this.renderStep = 20; // per render update (ms)
@@ -210,6 +211,17 @@ function Manager() {
     
     // Behavior Tree
     this.unitPath_Behavior = new UnitPath_Behavior(this);
+
+    // Graph
+    this.pathFinder = new PathFinder();
+
+    this.AddPath = function(LngLat){
+        this.pathFinder.AddNode(new GraphNode(LngLat));        
+    }
+
+    this.AddNeighbor = function(from,to){
+        this.pathFinder.SetNeighbor(from,to);       
+    }
 
     this.CountStat = function(){
         let Sn = 0;
@@ -600,18 +612,47 @@ function Manager() {
                 this.m_unitList.m_pathPos = j;
                 let A = this.m_unitList[i].m_destPath[j];
                 let B = this.m_unitList[i].m_destPath[(j + 1) % this.m_unitList[i].m_destPath.length];
+
+                // Find path using A*
+                this.pathFinder.SetPath(A, B);
+                this.pathFinder.A_star();
+                //console.log("Pre getPath");
+                let path = this.pathFinder.GetPath();
+                
+                if(path.length <= 0){
+                    //console.log("Continue");
+                    continue;
+                }
+
+                //console.log("Post getPath");
+
                 // Get timestamp
                 let period = this.m_unitList[i].m_stayDelay + this.m_unitList[i].m_travDelay;
                 let start = (this.m_unitList[i].m_stayDelay) + (j * period);
-                let end = start + this.m_unitList[i].m_travDelay;
+                //let end = start + this.m_unitList[i].m_travDelay;
 
-                // Calculate path
-                for (let k = 0; k < step; k++) {
-                    let stepFrac = k / step;
-                    let stepPos = this.m_destList[A].m_position.LerpTo(this.m_destList[B].m_position, stepFrac)
-                    let stepTime = (start * this.stepSol) + k;
+                let stepPerNode = Math.floor(step / (path.length - 1));
 
-                    this.m_drawData[i].datPath.set(stepTime, stepPos);
+                // // Calculate path
+                // for (let k = 0; k < step; k++) {
+                //     let stepFrac = k / step;
+                //     let stepPos = this.m_destList[A].m_position.LerpTo(this.m_destList[B].m_position, stepFrac)
+                //     let stepTime = (start * this.stepSol) + k;
+
+                //     this.m_drawData[i].datPath.set(stepTime, stepPos);
+                // }
+
+                // Calculate each path
+                for(let itPath = 0; itPath < path.length - 1; itPath++){
+                    let beginPos = path[itPath].m_position;
+                    let endPos = path[itPath+1].m_position;
+                    for (let k = 0; k < stepPerNode; k++) {
+                        let stepFrac = k / stepPerNode;
+                        let stepPos = beginPos.LerpTo(endPos, stepFrac)
+                        let stepTime = (start * this.stepSol) + ((stepPerNode * itPath) + k);
+
+                        this.m_drawData[i].datPath.set(stepTime, stepPos);
+                    }
                 }
             }
 

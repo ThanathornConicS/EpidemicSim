@@ -26,8 +26,9 @@ const apiOptions = {
 const mapOptions = {
   "tilt": 0,
   "heading": 0,
-  "zoom": 13,
-  "center": { lat: 13.764844967161544, lng: 100.53827147273205 },
+  "zoom": 17.5,
+  "center": { lat: 13.731103016245251, lng: 100.54504578180229 },
+  // "center": { lat: 13.730953535945233, lng: 100.54204888984198},
   "disableDefaultUI": true,
   "disableDoubleClickZoom": true,
   "mapId": "5afdd176907dbee8"    
@@ -42,25 +43,77 @@ let cureRate = 50;
 const day = 24;
 const loop = 100; //day * 7 * 4 // days * weeks
 const placeList = [
-  new Vec2(13.764844967161544, 100.53827147273205),
-  new Vec2(13.79400311190518 , 100.5499287331782),
-  new Vec2(13.778498517795457, 100.47620017784728),
-  new Vec2(13.747402871956538, 100.539028238978),
-  new Vec2(13.771162652204502, 100.5722447130237),
-  new Vec2(13.742963276787627, 100.50933082266478),
+  new Vec2(13.730811243930567, 100.5458354857367),
+  new Vec2(13.731062586670296, 100.5467396597854),
+  new Vec2(13.731614765300431, 100.54598590319902),
+  new Vec2(13.731966590974539, 100.54327031202271),
+  new Vec2(13.730954721281757, 100.54205486786479),
+  new Vec2(13.730489957174711, 100.54382521338285)
 ];
+
+const nodes = [
+  new Vec2(13.73040191578293, 100.54527926912951),
+  new Vec2(13.73042596906842, 100.54597116836293),
+  new Vec2(13.730433785748444, 100.54674096235308),
+  new Vec2(13.732103943750552, 100.54674632677094),
+  new Vec2(13.73221337646406, 100.54559297689023),
+  new Vec2(13.731869444906772, 100.5459658039447),
+  new Vec2(13.73191113360725, 100.54554469712777),
+  new Vec2(13.732570133808654, 100.5454491543675),
+  new Vec2(13.732443094363317, 100.5447537993192),
+  new Vec2(13.73146086021523, 100.54381921662171),
+  new Vec2(13.731079739869692, 100.5430792057446),
+  new Vec2(13.731569308980818, 100.54237747129223),
+  new Vec2(13.72980623567201, 100.54269963119984),
+  new Vec2(13.729344370419865, 100.54480511708198)
+];
+
+const neighborList = [
+  [7],
+  [8, 9],
+  [12],
+  [14, 15, 16, 17],
+  [17, 18],
+  [15, 16, 18, 19],
+  [7, 19],
+  [0, 6, 8],
+  [1, 7],
+  [1, 10],
+  [9, 11, 13],
+  [10, 12],
+  [2, 11],
+  [10, 14],
+  [3, 13, 15],
+  [3, 5, 14, 16],
+  [3, 5, 15],
+  [3, 4],
+  [4, 5, 19],
+  [5, 6, 18],
+]; 
+
+
+
+// map
+// new Vec2(13.764844967161544, 100.53827147273205),
+//   new Vec2(13.79400311190518 , 100.5499287331782),
+//   new Vec2(13.778498517795457, 100.47620017784728),
+//   new Vec2(13.747402871956538, 100.539028238978),
+//   new Vec2(13.771162652204502, 100.5722447130237),
+//   new Vec2(13.742963276787627, 100.50933082266478),
 
 let renderMax = manager.stepSol * day;
 
 var chartDat;
 
 // Rendering var
-const geometry = new THREE.CircleGeometry( 300, 32 );
-const geometry_unit = new THREE.CircleGeometry( 100, 32 );
+const geometry = new THREE.CircleGeometry( 7, 32 );
+const geometry_unit = new THREE.CircleGeometry( 5, 32 );
+const geometry_node = new THREE.CircleGeometry( 4, 32 );
 
 const susMaterial = new THREE.MeshBasicMaterial( { color: 0x1e1ed9 } );
 const infMaterial = new THREE.MeshBasicMaterial( { color: 0x870900 } );
 const testMat = new THREE.MeshBasicMaterial( { color: 0x602de0 } );
+const nodeMat = new THREE.MeshBasicMaterial( { color: 0x000000 } );
 
 let loopCounter = -1;
 let timeCounter = 0;
@@ -68,6 +121,7 @@ let deltaTime = 0.0;
 let lastFrame = 0.0;
 
 let circles = new Array();
+let nodePaths = new Array();
 let agents = new Array();
 
 function SetValue()
@@ -116,12 +170,38 @@ function initWebglOverlayView(map) {
       circles.push(cir);
 
       circles[i].translateX(tempVec.x);
-      circles[i].translateY(tempVec.z);
+      circles[i].translateY(-tempVec.z);
       scene.add(circles[i]);
       // Add place to manager
-      manager.AddPlace(new Vec2(tempVec.x, tempVec.z));
+      manager.AddPlace(new Vec2(tempVec.x, -tempVec.z));
+      // Add node path to manager --> PathFinder
+      manager.AddPath(new Vec2(tempVec.x, -tempVec.z));
     }
     console.log("AddPlace()...[PASS]");
+
+    // Render Node
+    for(let i = 0; i < nodes.length; i++){
+      let cir = new THREE.Mesh( geometry_node, nodeMat );
+      let tempVec = latLngToVector3Relative({lat: nodes[i].x, lng: nodes[i].y}, mapOptions.center);
+      nodePaths.push(cir);
+
+      nodePaths[i].translateX(tempVec.x);
+      nodePaths[i].translateY(-tempVec.z);
+      scene.add(nodePaths[i]);
+      // Add node path to manager --> PathFinder
+      manager.AddPath(new Vec2(tempVec.x, -tempVec.z));
+    }
+    console.log("AddNodePath...[PASS]");
+
+    // Set Neighbors
+    for(let i = 0; i < neighborList.length; i++){
+      for(let j = 0; j < neighborList[i].length; j++){
+          manager.AddNeighbor(i,neighborList[i][j]);
+      }
+    }
+    console.log("SetNeighbors...[PASS]");
+
+    //console.log(manager.pathFinder.nodeList);
 
     // Simulation
     manager.UnitInit(units);
@@ -134,7 +214,7 @@ function initWebglOverlayView(map) {
       agents.push(agt);
       scene.add(agents[i]);
       // hide by default
-      //agents[i].visible = false;
+      agents[i].visible = false;
     }
     console.log("AgentsMesh...[PASS]");
 
@@ -273,9 +353,9 @@ function initWebglOverlayView(map) {
           
           agents[i].translateX(nextPos.x - thisPos.x);
           agents[i].translateY(nextPos.y - thisPos.y);
-          //agents[i].visible = true;
+          agents[i].visible = true;
         }else{
-          //agents[i].visible = false;
+          agents[i].visible = false;
         }
       }
 
