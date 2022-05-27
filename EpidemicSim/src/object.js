@@ -46,6 +46,10 @@ function Vec2(x, y){
         console.log("(" + this.x + ", " + this.y + ")");
     }
 
+    this.Length = function(){
+        return Math.sqrt((this.x * this.x) + (this.y * this.y));
+    }
+
     // Interpolate func()
     this.LerpTo = function(end, t){
        let result = this.Mul(new Vec2(1.0 - t, 1.0 - t)).Add(end.Mul(new Vec2(t,t)));
@@ -308,11 +312,11 @@ function Manager() {
 
             // Check action trigger
 
-            // Skip quarantine
-            if(this.m_unitList[i].m_detect){
-                this.StateTrigger(i, this.currStep, 2);
-                continue;
-            }
+            // // Skip quarantine
+            // if(this.m_unitList[i].m_detect){
+            //     this.StateTrigger(i, this.currStep, 2);
+            //     continue;
+            // }
 
             switch (this.m_unitList[i].behaviorTrigger){
                 case 1: // Arriving in
@@ -405,56 +409,56 @@ function Manager() {
                     continue;
                 }
                 
-                // Random chance
-                let perChance = GetRandomArbitrary(1.0, 0.0);
-                if(perChance <= this.m_unitList[i].m_curedPercentage){
-                    // recovered
-                    this.m_unitList[i].m_state = false;
-                    this.m_unitList[i].m_detect = false;
-                    this.StateTrigger(i, this.currStep, 0);
-                    // switch to susList
-                    if(!this.m_unitList[i].m_onTrav){
-                        let destId = this.m_unitList[i].GetDestID();
-                        this.m_destList[destId].m_infList.delete(parseInt(i, 10));
-                        this.m_destList[destId].m_susList.set(parseInt(i, 10), parseInt(i, 10));
-                    }
-                    continue;
-                }
+                // // Random chance
+                // let perChance = GetRandomArbitrary(1.0, 0.0);
+                // if(perChance <= this.m_unitList[i].m_curedPercentage){
+                //     // recovered
+                //     this.m_unitList[i].m_state = false;
+                //     this.m_unitList[i].m_detect = false;
+                //     this.StateTrigger(i, this.currStep, 0);
+                //     // switch to susList
+                //     if(!this.m_unitList[i].m_onTrav){
+                //         let destId = this.m_unitList[i].GetDestID();
+                //         this.m_destList[destId].m_infList.delete(parseInt(i, 10));
+                //         this.m_destList[destId].m_susList.set(parseInt(i, 10), parseInt(i, 10));
+                //     }
+                //     continue;
+                // }
 
-                // Random chance
-                perChance = GetRandomArbitrary(1.0, 0.0);
-                if(perChance <= this.m_unitList[i].m_deathPercentage){
-                    // dead
-                    this.m_unitList[i].m_state = false;
-                    this.m_unitList[i].m_active = false;
-                    this.StateTrigger(i, this.currStep, 2);
-                    //console.log("dead");
-                    // remove from list
-                    if(!this.m_unitList[i].m_onTrav){
-                        let destId = this.m_unitList[i].GetDestID();
-                        this.m_destList[destId].m_infList.delete(parseInt(i, 10));
-                    }
-                    continue;
-                }
+                // // Random chance
+                // perChance = GetRandomArbitrary(1.0, 0.0);
+                // if(perChance <= this.m_unitList[i].m_deathPercentage){
+                //     // dead
+                //     this.m_unitList[i].m_state = false;
+                //     this.m_unitList[i].m_active = false;
+                //     this.StateTrigger(i, this.currStep, 2);
+                //     //console.log("dead");
+                //     // remove from list
+                //     if(!this.m_unitList[i].m_onTrav){
+                //         let destId = this.m_unitList[i].GetDestID();
+                //         this.m_destList[destId].m_infList.delete(parseInt(i, 10));
+                //     }
+                //     continue;
+                // }
             }
         }
 
-        // Quarantine
-        for (let i = 0; i < this.m_unitList.length; i++){
-            if(this.m_unitList[i].m_state){
-                if(this.m_unitList[i].q_counter < Q_DELAY){
-                    this.m_unitList[i].q_counter++;
-                }else{
-                    this.m_unitList[i].m_detect = true;
-                    //this.StateTrigger(i, this.currStep, 2);
-                    if(!this.m_unitList[i].m_onTrav){
-                        let destId = this.m_unitList[i].GetDestID();
-                        this.m_destList[destId].m_infList.delete(parseInt(i, 10));
-                    }
-                }
-            }
+        // // Quarantine
+        // for (let i = 0; i < this.m_unitList.length; i++){
+        //     if(this.m_unitList[i].m_state){
+        //         if(this.m_unitList[i].q_counter < Q_DELAY){
+        //             this.m_unitList[i].q_counter++;
+        //         }else{
+        //             this.m_unitList[i].m_detect = true;
+        //             //this.StateTrigger(i, this.currStep, 2);
+        //             if(!this.m_unitList[i].m_onTrav){
+        //                 let destId = this.m_unitList[i].GetDestID();
+        //                 this.m_destList[destId].m_infList.delete(parseInt(i, 10));
+        //             }
+        //         }
+        //     }
 
-        }
+        // }
 
 
         // Infect
