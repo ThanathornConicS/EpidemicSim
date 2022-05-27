@@ -139,8 +139,8 @@ function initWebglOverlayView(map) {
     console.log("AgentsMesh...[PASS]");
 
     // Select first location to spawn inf
-    let spawnPos = 0;                      
-    while(manager.m_destList[spawnPos].m_susList.size == 0){
+    let spawnPos = 0;
+    while(manager.m_destList[spawnPos].m_susList.size == 0){                 
       spawnPos++;
       console.log("Change SpawnDest..." + spawnPos);
     }
